@@ -16,6 +16,9 @@ public class Deliverance extends Game {
 		// Load image assets
 		loadAssets();
 
+		// Load the game screen
+		setScreen(new GameScreen(this));
+
 	}
 
 	@Override
@@ -35,15 +38,17 @@ public class Deliverance extends Game {
 
 		assetManager = new AssetManager();
 
-		FileHandle assetsToLoad = Gdx.files.internal("");
+		FileHandle assetsToLoad = Gdx.files.internal("game_sprites/");
 
 		for(FileHandle f : assetsToLoad.list()) {
 
 			if(f.name().contains(".png")) {
-				assetManager.load(f.name(), Texture.class);
+				assetManager.load(f.path(), Texture.class);
 			}
 
 		}
+
+		assetManager.finishLoading();
 
 	}
 

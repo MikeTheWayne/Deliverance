@@ -2,10 +2,11 @@ package com.waynegames.deliverance;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -17,6 +18,8 @@ public class GameScreen extends ScreenAdapter {
 	private ShapeRenderer shapeRenderer;
 
 	private OrthographicCamera orthographicCamera;
+
+	private Sprite van, box, house, fence, road;
 
 	GameScreen(Deliverance game) {
 
@@ -30,6 +33,14 @@ public class GameScreen extends ScreenAdapter {
 		this.orthographicCamera.position.set(this.orthographicCamera.viewportWidth / 2f, this.orthographicCamera.viewportHeight / 2f, 0);
 		this.orthographicCamera.update();
 
+		// Load game sprites
+		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_01.png", Texture.class));
+		this.box = new Sprite(Deliverance.assetManager.get("game_sprites/box.png", Texture.class));
+		this.house = new Sprite(Deliverance.assetManager.get("game_sprites/house_01.png", Texture.class));
+		this.fence = new Sprite(Deliverance.assetManager.get("game_sprites/fence_01.png", Texture.class));
+		this.road = new Sprite(Deliverance.assetManager.get("game_sprites/road.png", Texture.class));
+
+		// Set the input processor
 		Gdx.input.setInputProcessor(new GameInput());
 
 	}
@@ -45,6 +56,30 @@ public class GameScreen extends ScreenAdapter {
 
 		shapeRenderer.setProjectionMatrix(orthographicCamera.combined);
 		spriteBatch.setProjectionMatrix(orthographicCamera.combined);
+
+		// Draw Sky
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(135 / 255f, 206 / 255f, 235 / 255f, 1.0f);
+		shapeRenderer.rect(0, 0, 640, 360);
+		shapeRenderer.end();
+
+		spriteBatch.begin();
+
+		// Road
+		for(int x = 0; x < 11; x++) {
+			spriteBatch.draw(road, x * 60, 0);
+		}
+
+		// Houses & fences
+		for(int x = 0; x < 4; x++) {
+			spriteBatch.draw(house, x * 200, 32);
+			spriteBatch.draw(fence, x * 200, 32);
+		}
+
+		// Van
+		spriteBatch.draw(van, 256, 3);
+
+		spriteBatch.end();
 
 	}
 }
