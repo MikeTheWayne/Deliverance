@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class GameScreen extends ScreenAdapter {
+	static final int PIXELS_PER_METRE = 20;
 
 	private Game game;
 
@@ -23,9 +24,13 @@ public class GameScreen extends ScreenAdapter {
 	private Sprite van, box, house, fence, road;
 	private Sprite[] pedals;
 
+	private static Van vanObj;
+
 	GameScreen(Deliverance game) {
 
 		this.game = game;
+
+		vanObj = new Van();
 
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
@@ -73,14 +78,14 @@ public class GameScreen extends ScreenAdapter {
 		spriteBatch.begin();
 
 		// Road
-		for(int x = 0; x < 11; x++) {
-			spriteBatch.draw(road, x * 60, 0);
+		for(int x = 0; x < 12; x++) {
+			spriteBatch.draw(road, x * 60 - (vanObj.getX() % 60), 0);
 		}
 
 		// Houses & fences
-		for(int x = 0; x < 4; x++) {
-			spriteBatch.draw(house, x * 200, 32);
-			spriteBatch.draw(fence, x * 200, 32);
+		for(int x = 0; x < 5; x++) {
+			spriteBatch.draw(house, x * 200 - (vanObj.getX() % 200), 32);
+			spriteBatch.draw(fence, x * 200 - (vanObj.getX() % 200), 32);
 		}
 
 		// Van
@@ -92,5 +97,9 @@ public class GameScreen extends ScreenAdapter {
 
 		spriteBatch.end();
 
+	}
+
+	public static Van getVanObj() {
+		return vanObj;
 	}
 }

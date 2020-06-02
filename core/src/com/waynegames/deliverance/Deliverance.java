@@ -19,6 +19,9 @@ public class Deliverance extends Game {
 		// Load the game screen
 		setScreen(new GameScreen(this));
 
+		// Start game threads
+		GameThreads.run();
+
 	}
 
 	@Override
