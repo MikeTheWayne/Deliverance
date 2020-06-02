@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class GameScreen extends ScreenAdapter {
@@ -20,6 +21,7 @@ public class GameScreen extends ScreenAdapter {
 	private OrthographicCamera orthographicCamera;
 
 	private Sprite van, box, house, fence, road;
+	private Sprite[] pedals;
 
 	GameScreen(Deliverance game) {
 
@@ -40,8 +42,13 @@ public class GameScreen extends ScreenAdapter {
 		this.fence = new Sprite(Deliverance.assetManager.get("game_sprites/fence_01.png", Texture.class));
 		this.road = new Sprite(Deliverance.assetManager.get("game_sprites/road.png", Texture.class));
 
+		this.pedals = new Sprite[4];
+		for(int i = 0; i < 4; i++) {
+			this.pedals[i] = new Sprite(new TextureRegion(Deliverance.assetManager.get("game_sprites/pedals.png", Texture.class), i * 80, 0, 80, 120));
+		}
+
 		// Set the input processor
-		Gdx.input.setInputProcessor(new GameInput());
+		Gdx.input.setInputProcessor(new GameInput(orthographicCamera));
 
 	}
 
@@ -78,6 +85,10 @@ public class GameScreen extends ScreenAdapter {
 
 		// Van
 		spriteBatch.draw(van, 256, 3);
+
+		// UI
+		// Pedals
+		spriteBatch.draw(pedals[(int) (GameInput.getPedalPressure() / 10f * 4)], 10, 10, 80, 120 - 60 * (GameInput.getPedalPressure() / 10f));
 
 		spriteBatch.end();
 
