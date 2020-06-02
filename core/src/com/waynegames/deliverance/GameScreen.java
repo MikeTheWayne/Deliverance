@@ -21,7 +21,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private OrthographicCamera orthographicCamera;
 
-	private Sprite van, box, house, fence, road;
+	private Sprite van, box, house, fence, road, speedo, dial;
 	private Sprite[] pedals;
 
 	private static Van vanObj;
@@ -46,6 +46,9 @@ public class GameScreen extends ScreenAdapter {
 		this.house = new Sprite(Deliverance.assetManager.get("game_sprites/house_01.png", Texture.class));
 		this.fence = new Sprite(Deliverance.assetManager.get("game_sprites/fence_01.png", Texture.class));
 		this.road = new Sprite(Deliverance.assetManager.get("game_sprites/road.png", Texture.class));
+
+		this.speedo = new Sprite(Deliverance.assetManager.get("game_sprites/speedometer.png", Texture.class));
+		this.dial = new Sprite(Deliverance.assetManager.get("game_sprites/speedodial.png", Texture.class));
 
 		this.pedals = new Sprite[4];
 		for(int i = 0; i < 4; i++) {
@@ -92,8 +95,12 @@ public class GameScreen extends ScreenAdapter {
 		spriteBatch.draw(van, 256, 3);
 
 		// UI
-		// Pedals
+		// Pedal
 		spriteBatch.draw(pedals[(int) (GameInput.getPedalPressure() / 10f * 4)], 10, 10, 80, 120 - 60 * (GameInput.getPedalPressure() / 10f));
+
+		// Speedometer
+		spriteBatch.draw(speedo, 0, 300);
+		spriteBatch.draw(dial, 10, 328, 21, 2, 22, 4, 1.0f, 1.0f, 65f - (vanObj.getSpeed() * 2.237f) / 100f * 310f, true);
 
 		spriteBatch.end();
 
