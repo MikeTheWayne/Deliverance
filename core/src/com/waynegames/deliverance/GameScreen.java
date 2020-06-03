@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameScreen extends ScreenAdapter {
 	static final int PIXELS_PER_METRE = 20;
 
@@ -25,12 +28,14 @@ public class GameScreen extends ScreenAdapter {
 	private Sprite[] pedals;
 
 	private static Van vanObj;
+	private static Parcel[] parcels;
 
 	GameScreen(Deliverance game) {
 
 		this.game = game;
 
 		vanObj = new Van();
+		parcels = new Parcel[100];
 
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
@@ -85,9 +90,20 @@ public class GameScreen extends ScreenAdapter {
 			spriteBatch.draw(road, x * 60 - (vanObj.getX() % 60), 0);
 		}
 
-		// Houses & fences
+		// Houses
 		for(int x = 0; x < 5; x++) {
 			spriteBatch.draw(house, x * 200 - (vanObj.getX() % 200), 32);
+		}
+
+		// Parcels
+		for(Parcel p : parcels) {
+			if(p != null) {
+				spriteBatch.draw(box, p.getX(), p.getY(), 13 + 13 / 3f * (1 - p.getZ()), 15 + 15 / 3f * (1 - p.getZ()));
+			}
+		}
+
+		// Fences
+		for(int x = 0; x < 5; x++) {
 			spriteBatch.draw(fence, x * 200 - (vanObj.getX() % 200), 32);
 		}
 
@@ -108,5 +124,13 @@ public class GameScreen extends ScreenAdapter {
 
 	public static Van getVanObj() {
 		return vanObj;
+	}
+
+	public static Parcel[] getParcels() {
+		return parcels;
+	}
+
+	public static void setParcel(Parcel parcel, int index) {
+		parcels[index] = parcel;
 	}
 }

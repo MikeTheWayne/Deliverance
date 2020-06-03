@@ -30,6 +30,13 @@ public class GameThreads {
 				// Move van based on speed
 				van.setX(van.getX() + (van.getSpeed() * GameScreen.PIXELS_PER_METRE) / TICKS_PER_SECOND);
 
+				// Parcels
+				for(Parcel p : GameScreen.getParcels()) {
+					if(p != null) {
+						p.fly();
+					}
+				}
+
 			}
 		}, 0, 1f / TICKS_PER_SECOND);
 	}
