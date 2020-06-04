@@ -6,6 +6,8 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -21,11 +23,15 @@ public class GameScreen extends ScreenAdapter {
 
 	private OrthographicCamera orthographicCamera;
 
+	private BitmapFont cbri_12;
+
 	private Sprite van, box, house, fence, road, speedo, dial;
 	private Sprite[] pedals;
 
 	private static Van vanObj;
 	private static Parcel[] parcels;
+
+	private Street street;
 
 	GameScreen(Deliverance game) {
 
@@ -34,6 +40,8 @@ public class GameScreen extends ScreenAdapter {
 		vanObj = new Van();
 		parcels = new Parcel[100];
 
+		this.street = new Street(400);
+
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
 
@@ -41,6 +49,9 @@ public class GameScreen extends ScreenAdapter {
 
 		this.orthographicCamera.position.set(this.orthographicCamera.viewportWidth / 2f, this.orthographicCamera.viewportHeight / 2f, 0);
 		this.orthographicCamera.update();
+
+		// Load Fonts
+		this.cbri_12 = new BitmapFont(Gdx.files.internal("fonts/cbri_12.fnt"));
 
 		// Load game sprites
 		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_01.png", Texture.class));
@@ -88,8 +99,20 @@ public class GameScreen extends ScreenAdapter {
 		}
 
 		// Houses
-		for(int x = 0; x < 5; x++) {
-			spriteBatch.draw(house, x * 200 - (vanObj.getX() % 200), 32);
+		if(street.getStartX() < 640) {
+			for (int x = 0; x < 5; x++) {
+				if(vanObj.getX() + x * 200 >= street.getStartX() && vanObj.getX() + x * 200 <= street.getLength() / 2f * 200) {
+					// House
+					spriteBatch.draw(house, x * 200 - (vanObj.getX() % 200), 32);
+
+					// House number
+					// n = (vX - sX) / 200 + x
+					GlyphLayout houseNumberOdd = new GlyphLayout(cbri_12, "" + (int) (Math.floor((vanObj.getX() - street.getStartX()) / 200f + x) * 2 + 1));
+					GlyphLayout houseNumberEven = new GlyphLayout(cbri_12, "" + (int) (Math.floor((vanObj.getX() - street.getStartX()) / 200f + x) * 2 + 2));
+					cbri_12.draw(spriteBatch, houseNumberOdd, x * 200 - (vanObj.getX() % 200) + 17 - houseNumberOdd.width / 2f, 112);
+					cbri_12.draw(spriteBatch, houseNumberEven, x * 200 - (vanObj.getX() % 200) + 183 - houseNumberEven.width / 2f, 112);
+				}
+			}
 		}
 
 		// Parcels
@@ -100,8 +123,12 @@ public class GameScreen extends ScreenAdapter {
 		}
 
 		// Fences
-		for(int x = 0; x < 5; x++) {
-			spriteBatch.draw(fence, x * 200 - (vanObj.getX() % 200), 32);
+		if(street.getStartX() < 640) {
+			for(int x = 0; x < 5; x++) {
+				if(vanObj.getX() + x * 200 >= street.getStartX() && vanObj.getX() + x * 200 <= street.getLength() / 2f * 200) {
+					spriteBatch.draw(fence, x * 200 - (vanObj.getX() % 200), 32);
+				}
+			}
 		}
 
 		// Van
