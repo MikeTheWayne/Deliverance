@@ -11,9 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GameScreen extends ScreenAdapter {
 	static final int PIXELS_PER_METRE = 20;
 

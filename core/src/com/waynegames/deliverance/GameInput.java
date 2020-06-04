@@ -9,7 +9,7 @@ public class GameInput extends InputAdapter {
 	private OrthographicCamera orthographicCamera;
 
 	private static float pedalPressure;
-	private int pedalPressurePointer;
+	private int pedalPressurePointer, parcelThrowPointer;
 
 	private float initX;
 
@@ -19,6 +19,7 @@ public class GameInput extends InputAdapter {
 
 		pedalPressure = 0;
 		this.pedalPressurePointer = -1;
+		this.parcelThrowPointer = -1;
 
 	}
 
@@ -35,8 +36,9 @@ public class GameInput extends InputAdapter {
 		if(tX < 90 && tY < 130) {
 			pedalPressure = tY / 13f;
 			this.pedalPressurePointer = pointer;
-		} else if(tX >= 200 && tX <= 420 && tY <= 200) {
+		} else if(tX >= 150 && tX <= 480 && tY <= 120) {
 			this.initX = tX;
+			this.parcelThrowPointer = pointer;
 		}
 
 		return super.touchDown(screenX, screenY, pointer, button);
@@ -72,7 +74,7 @@ public class GameInput extends InputAdapter {
 		if(pointer == pedalPressurePointer) {
 			pedalPressure = 0;
 			this.pedalPressurePointer = -1;
-		} else {
+		} else if (pointer == parcelThrowPointer) {
 
 			// Throw parcel
 			for(int i = 0; i < GameScreen.getParcels().length; i++) {
@@ -81,6 +83,8 @@ public class GameInput extends InputAdapter {
 					break;
 				}
 			}
+
+			this.parcelThrowPointer = -1;
 
 		}
 

@@ -2,7 +2,6 @@ package com.waynegames.deliverance;
 
 public class Parcel {
 	final int PARCEL_BASE_HEIGHT = 45;
-	private final float FLIGHT_TIME = 0.65f;
 
 	private float x, y, z;
 	private float dx, vel;
@@ -19,6 +18,8 @@ public class Parcel {
 	}
 
 	public void fly() {
+		
+		final float FLIGHT_TIME = 0.65f;
 
 		if(z < 1) {
 			z += 1 / FLIGHT_TIME / GameThreads.TICKS_PER_SECOND;
