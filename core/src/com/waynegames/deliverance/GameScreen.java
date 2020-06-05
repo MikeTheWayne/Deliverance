@@ -31,7 +31,7 @@ public class GameScreen extends ScreenAdapter {
 	private static Van vanObj;
 	private static Parcel[] parcels;
 
-	private Street street;
+	private static Street street;
 
 	GameScreen(Deliverance game) {
 
@@ -40,7 +40,7 @@ public class GameScreen extends ScreenAdapter {
 		vanObj = new Van();
 		parcels = new Parcel[100];
 
-		this.street = new Street(400);
+		street = new Street(400);
 
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
@@ -99,19 +99,17 @@ public class GameScreen extends ScreenAdapter {
 		}
 
 		// Houses
-		if(street.getStartX() < 640) {
-			for (int x = 0; x < 5; x++) {
-				if(vanObj.getX() + x * 200 >= street.getStartX() && vanObj.getX() + x * 200 <= street.getLength() / 2f * 200) {
-					// House
-					spriteBatch.draw(house, x * 200 - (vanObj.getX() % 200), 32);
+		for (int x = 0; x < 5; x++) {
+			if(vanObj.getX() + x * 200 >= street.getStartX() && vanObj.getX() - street.getStartX() + x * 200 <= street.getLength() / 2f * 200) {
+				// House
+				spriteBatch.draw(house, x * 200 - ((int) Math.floor(vanObj.getX()) % 200), 32);
 
-					// House number
-					// n = (vX - sX) / 200 + x
-					GlyphLayout houseNumberOdd = new GlyphLayout(cbri_12, "" + (int) (Math.floor((vanObj.getX() - street.getStartX()) / 200f + x) * 2 + 1));
-					GlyphLayout houseNumberEven = new GlyphLayout(cbri_12, "" + (int) (Math.floor((vanObj.getX() - street.getStartX()) / 200f + x) * 2 + 2));
-					cbri_12.draw(spriteBatch, houseNumberOdd, x * 200 - (vanObj.getX() % 200) + 17 - houseNumberOdd.width / 2f, 112);
-					cbri_12.draw(spriteBatch, houseNumberEven, x * 200 - (vanObj.getX() % 200) + 183 - houseNumberEven.width / 2f, 112);
-				}
+				// House number
+				// n = (vX - sX) / 200 + x
+				GlyphLayout houseNumberOdd = new GlyphLayout(cbri_12, "" + (int) (Math.floor((vanObj.getX() - street.getStartX()) / 200f + x) * 2 + 1));
+				GlyphLayout houseNumberEven = new GlyphLayout(cbri_12, "" + (int) (Math.floor((vanObj.getX() - street.getStartX()) / 200f + x) * 2 + 2));
+				cbri_12.draw(spriteBatch, houseNumberOdd, x * 200 - ((int) Math.floor(vanObj.getX()) % 200) + 17 - houseNumberOdd.width / 2, 112);
+				cbri_12.draw(spriteBatch, houseNumberEven, x * 200 - ((int) Math.floor(vanObj.getX()) % 200) + 183 - houseNumberEven.width / 2, 112);
 			}
 		}
 
@@ -123,11 +121,9 @@ public class GameScreen extends ScreenAdapter {
 		}
 
 		// Fences
-		if(street.getStartX() < 640) {
-			for(int x = 0; x < 5; x++) {
-				if(vanObj.getX() + x * 200 >= street.getStartX() && vanObj.getX() + x * 200 <= street.getLength() / 2f * 200) {
-					spriteBatch.draw(fence, x * 200 - (vanObj.getX() % 200), 32);
-				}
+		for(int x = 0; x < 5; x++) {
+			if(vanObj.getX() + x * 200 >= street.getStartX() && vanObj.getX() - street.getStartX() + x * 200 <= street.getLength() / 2f * 200) {
+				spriteBatch.draw(fence, x * 200 - ((int) Math.floor(vanObj.getX()) % 200), 32);
 			}
 		}
 
@@ -146,6 +142,15 @@ public class GameScreen extends ScreenAdapter {
 
 	}
 
+	@Override
+	public void dispose() {
+		super.dispose();
+
+		spriteBatch.dispose();
+		shapeRenderer.dispose();
+		cbri_12.dispose();
+	}
+
 	public static Van getVanObj() {
 		return vanObj;
 	}
@@ -156,5 +161,13 @@ public class GameScreen extends ScreenAdapter {
 
 	public static void setParcel(Parcel parcel, int index) {
 		parcels[index] = parcel;
+	}
+
+	public static Street getStreet() {
+		return street;
+	}
+
+	public static void setStreet(Street street) {
+		GameScreen.street = street;
 	}
 }

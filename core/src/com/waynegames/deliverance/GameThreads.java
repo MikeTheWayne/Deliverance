@@ -22,6 +22,7 @@ public class GameThreads {
 			public void run() {
 
 				Van van = GameScreen.getVanObj();
+				Street street = GameScreen.getStreet();
 
 				// Accelerate van based on pressure on pedal
 				// acceleration = (a - cx) - (a - p(a + F) / 10) - F, a = Current max acceleration of van, c = Current acceleration delay coefficient of van, p = pedal pressure, F = friction coefficient
@@ -35,6 +36,11 @@ public class GameThreads {
 					if(p != null) {
 						p.fly();
 					}
+				}
+
+				// Street generation
+				if(van.getX() - street.getStartX() > street.getLength() / 2f * 200 + 640) {
+					GameScreen.setStreet(new Street((((int) van.getX() + 640) / 200 + 1) * 200));
 				}
 
 			}
