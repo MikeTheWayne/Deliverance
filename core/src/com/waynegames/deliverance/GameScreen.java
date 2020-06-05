@@ -25,7 +25,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private BitmapFont cbri_12;
 
-	private Sprite van, box, house, fence, road, speedo, dial;
+	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store;
 	private Sprite[] pedals;
 
 	private static Van vanObj;
@@ -59,6 +59,9 @@ public class GameScreen extends ScreenAdapter {
 		this.house = new Sprite(Deliverance.assetManager.get("game_sprites/house_01.png", Texture.class));
 		this.fence = new Sprite(Deliverance.assetManager.get("game_sprites/fence_01.png", Texture.class));
 		this.road = new Sprite(Deliverance.assetManager.get("game_sprites/road.png", Texture.class));
+
+		this.roadGap = new Sprite(Deliverance.assetManager.get("game_sprites/roadgap.png", Texture.class));
+		this.store = new Sprite(Deliverance.assetManager.get("game_sprites/store_01.png", Texture.class));
 
 		this.speedo = new Sprite(Deliverance.assetManager.get("game_sprites/speedometer.png", Texture.class));
 		this.dial = new Sprite(Deliverance.assetManager.get("game_sprites/speedodial.png", Texture.class));
@@ -111,6 +114,17 @@ public class GameScreen extends ScreenAdapter {
 				cbri_12.draw(spriteBatch, houseNumberOdd, x * 200 - ((int) Math.floor(vanObj.getX()) % 200) + 17 - houseNumberOdd.width / 2, 112);
 				cbri_12.draw(spriteBatch, houseNumberEven, x * 200 - ((int) Math.floor(vanObj.getX()) % 200) + 183 - houseNumberEven.width / 2, 112);
 			}
+		}
+
+		// Street gap
+		if(vanObj.getX() + 640 >= street.getStartX() + street.getLength() / 2f * 200) {
+			spriteBatch.draw(store, street.getStartX() + street.getLength() / 2f * 200 - (int) Math.floor(vanObj.getX()), 32);
+			spriteBatch.draw(store, street.getStartX() + street.getLength() / 2f * 200 - (int) Math.floor(vanObj.getX()) + 800, 32, -250, 200);
+			spriteBatch.draw(roadGap, street.getStartX() + street.getLength() / 2f * 200 - (int) Math.floor(vanObj.getX()) + 250, 19);
+		} else if(vanObj.getX() <= street.getStartX()) {
+			spriteBatch.draw(store, street.getStartX() - (int) Math.floor(vanObj.getX()) - 800, 32);
+			spriteBatch.draw(store, street.getStartX() - (int) Math.floor(vanObj.getX()), 32, -250, 200);
+			spriteBatch.draw(roadGap, street.getStartX() - (int) Math.floor(vanObj.getX()) - 550, 19);
 		}
 
 		// Parcels

@@ -3,7 +3,7 @@ package com.waynegames.deliverance;
 import com.badlogic.gdx.utils.Timer;
 
 public class GameThreads {
-	static final int TICKS_PER_SECOND = 30;
+	static final int TICKS_PER_SECOND = 40;
 	static final float FRICTION_COEFFICIENT = 0.5f;
 
 	private static Timer timer;
@@ -39,8 +39,8 @@ public class GameThreads {
 				}
 
 				// Street generation
-				if(van.getX() - street.getStartX() > street.getLength() / 2f * 200 + 640) {
-					GameScreen.setStreet(new Street((((int) van.getX() + 640) / 200 + 1) * 200));
+				if(van.getX() - street.getStartX() > street.getLength() / 2f * 200) {
+					GameScreen.setStreet(new Street( street.getStartX() + street.getLength() / 2 * 200 + 800));
 				}
 
 			}
