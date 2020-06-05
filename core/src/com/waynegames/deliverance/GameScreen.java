@@ -23,7 +23,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private OrthographicCamera orthographicCamera;
 
-	private BitmapFont cbri_12, arl_10;
+	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2;
 
 	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store;
 	private Sprite[] pedals;
@@ -32,6 +32,7 @@ public class GameScreen extends ScreenAdapter {
 	private static Parcel[] parcels;
 
 	private static Street street;
+	private ShopBanner[] shopBanners;
 
 	GameScreen(Deliverance game) {
 
@@ -39,6 +40,7 @@ public class GameScreen extends ScreenAdapter {
 
 		vanObj = new Van();
 		parcels = new Parcel[100];
+		shopBanners = new ShopBanner[2];
 
 		street = new Street(400);
 
@@ -53,6 +55,8 @@ public class GameScreen extends ScreenAdapter {
 		// Load Fonts
 		this.cbri_12 = new BitmapFont(Gdx.files.internal("fonts/cbri_12.fnt"));
 		this.arl_10 = new BitmapFont(Gdx.files.internal("fonts/arl_10.fnt"));
+		this.arb_12 = new BitmapFont(Gdx.files.internal("fonts/arb_12.fnt"));
+		this.arb_12_2 = new BitmapFont(Gdx.files.internal("fonts/arb_12.fnt"));
 
 		// Load game sprites
 		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_01.png", Texture.class));
@@ -128,6 +132,47 @@ public class GameScreen extends ScreenAdapter {
 			spriteBatch.draw(roadGap, street.getStartX() - (int) Math.floor(vanObj.getX()) - 550, 19);
 		}
 
+		spriteBatch.end();
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		// Shop banner colouring
+		if(vanObj.getX() + 640 >= street.getStartX() + street.getLength() / 2f * 200) {
+			generateShopBanners();
+			shapeRenderer.setColor(shopBanners[0].getBackgroundColour());
+			shapeRenderer.rect(street.getStartX() + street.getLength() / 2f * 200 - (int) Math.floor(vanObj.getX()) + 49, 94, 200, 20);
+			shapeRenderer.setColor(shopBanners[1].getBackgroundColour());
+			shapeRenderer.rect(street.getStartX() + street.getLength() / 2f * 200 - (int) Math.floor(vanObj.getX()) + 800 - 49, 94, -200, 20);
+		} else if(vanObj.getX() <= street.getStartX()) {
+			generateShopBanners();
+			shapeRenderer.setColor(shopBanners[0].getBackgroundColour());
+			shapeRenderer.rect(street.getStartX() - (int) Math.floor(vanObj.getX()) - 800 + 49, 94, 200, 20);
+			shapeRenderer.setColor(shopBanners[1].getBackgroundColour());
+			shapeRenderer.rect(street.getStartX() - (int) Math.floor(vanObj.getX()) - 49, 94, -200, 20);
+		} else{
+			shopBanners[0] = null;
+			shopBanners[1] = null;
+		}
+
+		shapeRenderer.end();
+		spriteBatch.begin();
+
+		// Shop banner text
+		if(vanObj.getX() + 640 >= street.getStartX() + street.getLength() / 2f * 200) {
+			GlyphLayout shop1Glyph = new GlyphLayout(arb_12, shopBanners[0].getName());
+			GlyphLayout shop2Glyph = new GlyphLayout(arb_12_2, shopBanners[1].getName());
+			arb_12.setColor(shopBanners[0].getForegroundColour());
+			arb_12.draw(spriteBatch, shop1Glyph, street.getStartX() + street.getLength() / 2f * 200 - (int) Math.floor(vanObj.getX()) + 50 + 100 - shop1Glyph.width / 2, 103 + shop1Glyph.height / 2);
+			arb_12_2.setColor(shopBanners[1].getForegroundColour());
+			arb_12_2.draw(spriteBatch, shop2Glyph, street.getStartX() + street.getLength() / 2f * 200 - (int) Math.floor(vanObj.getX()) + 800 - 50 - 100 - shop2Glyph.width / 2, 103 + shop2Glyph.height / 2);
+		} else if(vanObj.getX() <= street.getStartX()) {
+			GlyphLayout shop1Glyph = new GlyphLayout(arb_12, shopBanners[0].getName());
+			GlyphLayout shop2Glyph = new GlyphLayout(arb_12_2, shopBanners[1].getName());
+			arb_12.setColor(shopBanners[0].getForegroundColour());
+			arb_12.draw(spriteBatch, shop1Glyph, street.getStartX() - (int) Math.floor(vanObj.getX()) - 800 + 50 + 100 - shop1Glyph.width / 2, 103 + shop1Glyph.height / 2);
+			arb_12_2.setColor(shopBanners[1].getForegroundColour());
+			arb_12_2.draw(spriteBatch, shop2Glyph, street.getStartX() - (int) Math.floor(vanObj.getX()) - 50 - 100 - shop2Glyph.width / 2, 103 + shop2Glyph.height / 2);
+		}
+
 		// Parcels
 		for(Parcel p : parcels) {
 			if(p != null) {
@@ -189,6 +234,13 @@ public class GameScreen extends ScreenAdapter {
 		spriteBatch.dispose();
 		shapeRenderer.dispose();
 		cbri_12.dispose();
+	}
+
+	private void generateShopBanners() {
+		if(shopBanners[0] == null || shopBanners[1] == null) {
+			shopBanners[0] = new ShopBanner(street.getName());
+			shopBanners[1] = new ShopBanner(street.getName());
+		}
 	}
 
 	public static Van getVanObj() {
