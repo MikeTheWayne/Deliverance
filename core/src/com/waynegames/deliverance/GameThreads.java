@@ -3,7 +3,7 @@ package com.waynegames.deliverance;
 import com.badlogic.gdx.utils.Timer;
 
 public class GameThreads {
-	static final int TICKS_PER_SECOND = 40;
+	static final int TICKS_PER_SECOND = 30;
 	static final float FRICTION_COEFFICIENT = 0.5f;
 
 	private static Timer timer;

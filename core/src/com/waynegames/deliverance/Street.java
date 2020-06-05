@@ -25,7 +25,8 @@ public class Street {
 
 		StringBuilder stringBuilder = new StringBuilder();
 
-		for(int i = 0; i < 3 + random.nextInt(10); i++) {
+		int nameLength = 3 + random.nextInt(5);
+		for(int i = 0; i < nameLength; i++) {
 			stringBuilder.append(((i % 2 == 0) ? consonants[random.nextInt(consonants.length)] : vowels[random.nextInt(vowels.length)]));
 		}
 

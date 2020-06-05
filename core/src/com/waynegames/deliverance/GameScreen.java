@@ -23,7 +23,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private OrthographicCamera orthographicCamera;
 
-	private BitmapFont cbri_12;
+	private BitmapFont cbri_12, arl_10;
 
 	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store;
 	private Sprite[] pedals;
@@ -52,6 +52,7 @@ public class GameScreen extends ScreenAdapter {
 
 		// Load Fonts
 		this.cbri_12 = new BitmapFont(Gdx.files.internal("fonts/cbri_12.fnt"));
+		this.arl_10 = new BitmapFont(Gdx.files.internal("fonts/arl_10.fnt"));
 
 		// Load game sprites
 		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_01.png", Texture.class));
@@ -139,6 +140,31 @@ public class GameScreen extends ScreenAdapter {
 			if(vanObj.getX() + x * 200 >= street.getStartX() && vanObj.getX() - street.getStartX() + x * 200 <= street.getLength() / 2f * 200) {
 				spriteBatch.draw(fence, x * 200 - ((int) Math.floor(vanObj.getX()) % 200), 32);
 			}
+		}
+
+		// Street name glyph
+		GlyphLayout streetName = new GlyphLayout(arl_10, street.getName().toUpperCase() + " STREET");
+
+		spriteBatch.end();
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		// Street name sign
+		if((street.getStartX() + 50) - vanObj.getX() <= 640) {
+			shapeRenderer.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+			shapeRenderer.rect((street.getStartX() + 50) - (int) Math.floor(vanObj.getX()), 36, streetName.width + 12, 12);
+			shapeRenderer.rect((street.getStartX() + 50 + 10) - (int) Math.floor(vanObj.getX()), 29, 2, 7);
+			shapeRenderer.rect((street.getStartX() + 50 + (streetName.width + 12) - 10) - (int) Math.floor(vanObj.getX()), 29, 2, 7);
+			shapeRenderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			shapeRenderer.rect((street.getStartX() + 50) - (int) Math.floor(vanObj.getX()), 37, streetName.width + 10, 10);
+		}
+
+		shapeRenderer.end();
+		spriteBatch.begin();
+
+		// Street name
+		if((street.getStartX() + 50) - vanObj.getX() <= 640) {
+			arl_10.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+			arl_10.draw(spriteBatch, streetName, (street.getStartX() + 50) - (int) Math.floor(vanObj.getX()) + 5, 45);
 		}
 
 		// Van
