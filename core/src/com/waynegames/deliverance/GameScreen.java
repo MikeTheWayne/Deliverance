@@ -25,7 +25,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2;
 
-	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, logo_mercury;
+	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury;
 	private Sprite[] pedals;
 
 	private static Van vanObj;
@@ -68,6 +68,8 @@ public class GameScreen extends ScreenAdapter {
 		this.roadGap = new Sprite(Deliverance.assetManager.get("game_sprites/roadgap.png", Texture.class));
 		this.store = new Sprite(Deliverance.assetManager.get("game_sprites/store_01.png", Texture.class));
 		this.warehouse = new Sprite(Deliverance.assetManager.get("game_sprites/warehouse.png", Texture.class));
+		this.warehouse_rival = new Sprite(new TextureRegion(Deliverance.assetManager.get("game_sprites/warehouse.png", Texture.class), 62, 176, 476, 130));
+		this.tree = new Sprite(Deliverance.assetManager.get("game_sprites/tree.png", Texture.class));
 
 		this.logo_mercury = new Sprite(Deliverance.assetManager.get("game_sprites/logo_mercury.png", Texture.class));
 
@@ -121,6 +123,28 @@ public class GameScreen extends ScreenAdapter {
 				GlyphLayout houseNumberEven = new GlyphLayout(cbri_12, "" + (int) (Math.floor((vanObj.getX() - street.getStartX()) / 200f + x) * 2 + 2));
 				cbri_12.draw(spriteBatch, houseNumberOdd, x * 200 - ((int) Math.floor(vanObj.getX()) % 200) + 17 - houseNumberOdd.width / 2, 112);
 				cbri_12.draw(spriteBatch, houseNumberEven, x * 200 - ((int) Math.floor(vanObj.getX()) % 200) + 183 - houseNumberEven.width / 2, 112);
+			}
+		}
+
+		// Industrial Starting Area
+		if(vanObj.getX() <= 2200) {
+			// Rival Warehouses
+			spriteBatch.draw(warehouse_rival, -vanObj.getX() + 1000, 32);
+			spriteBatch.draw(warehouse_rival, -vanObj.getX() + 1600, 32);
+
+			spriteBatch.end();
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+			// Shrubbery
+			shapeRenderer.setColor(16 / 255f, 40 / 255f, 6 / 255f, 1.0f);
+			shapeRenderer.rect(-vanObj.getX(), 32, 2300, 80);
+
+			shapeRenderer.end();
+			spriteBatch.begin();
+
+			// Trees
+			for(int i = 0; i < 30; i++) {
+				spriteBatch.draw(tree, -vanObj.getX() + 550 + i * 55, 32);
 			}
 		}
 
