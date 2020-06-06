@@ -13,6 +13,7 @@ public class GameThreads {
 		timer = new Timer();
 
 		mainThread();
+		secondThread();
 
 	}
 
@@ -45,6 +46,24 @@ public class GameThreads {
 
 			}
 		}, 0, 1f / TICKS_PER_SECOND);
+	}
+
+	private static void secondThread() {
+		timer.scheduleTask(new Timer.Task() {
+			@Override
+			public void run() {
+
+				// Time
+				if(GameScreen.getMinute() == 55) {
+					GameScreen.setHour(GameScreen.getHour() + 1);
+					GameScreen.setMinute(0);
+				} else{
+					GameScreen.setMinute(GameScreen.getMinute() + 5);
+				}
+
+
+			}
+		}, 0, 1f);
 	}
 
 }

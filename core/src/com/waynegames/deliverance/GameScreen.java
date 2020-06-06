@@ -25,7 +25,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2;
 
-	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury;
+	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury, clock;
 	private Sprite[] pedals;
 
 	private static Van vanObj;
@@ -34,6 +34,8 @@ public class GameScreen extends ScreenAdapter {
 	private static Street street;
 	private ShopBanner[] shopBanners;
 
+	private static int hour, minute;
+
 	GameScreen(Deliverance game) {
 
 		this.game = game;
@@ -41,6 +43,9 @@ public class GameScreen extends ScreenAdapter {
 		vanObj = new Van();
 		parcels = new Parcel[100];
 		shopBanners = new ShopBanner[2];
+
+		hour = 9;
+		minute = 0;
 
 		street = new Street(3000);
 
@@ -75,6 +80,7 @@ public class GameScreen extends ScreenAdapter {
 
 		this.speedo = new Sprite(Deliverance.assetManager.get("game_sprites/speedometer.png", Texture.class));
 		this.dial = new Sprite(Deliverance.assetManager.get("game_sprites/speedodial.png", Texture.class));
+		this.clock = new Sprite(Deliverance.assetManager.get("game_sprites/clock.png", Texture.class));
 
 		this.pedals = new Sprite[4];
 		for(int i = 0; i < 4; i++) {
@@ -260,7 +266,16 @@ public class GameScreen extends ScreenAdapter {
 		spriteBatch.draw(speedo, 0, 300);
 		spriteBatch.draw(dial, 10, 328, 21, 2, 22, 4, 1.0f, 1.0f, 65f - (vanObj.getSpeed() * 2.237f) / 100f * 310f, true);
 
+		// Clock
+		spriteBatch.draw(clock, 270, 330);
+
 		spriteBatch.end();
+
+		// Clock numbering
+		lcdNumber(292, hour / 10);
+		lcdNumber(305, hour % 10);
+		lcdNumber(324, minute / 10);
+		lcdNumber(337, minute % 10);
 
 	}
 
@@ -278,6 +293,71 @@ public class GameScreen extends ScreenAdapter {
 			shopBanners[0] = new ShopBanner(street.getName());
 			shopBanners[1] = new ShopBanner(street.getName());
 		}
+	}
+
+	/**
+	 * Displays an LCD digit, by blacking out a part of the default "8" digit on the clock
+	 *
+	 * @param x
+	 * 		The x position of the digit
+	 * @param number
+	 * 		The number which the digit must represent
+	 */
+	private void lcdNumber(float x, int number) {
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(162 / 255f, 180 / 255f, 154 / 255f, 1.0f);
+
+		// T    shapeRenderer.rect(x + 1, 335 + 19, 7, 2);
+		// M    shapeRenderer.rect(x + 1, 335 + 10, 7, 2);
+		// B    shapeRenderer.rect(x + 1, 335, 7, 2);
+		// TL   shapeRenderer.rect(x, 335 + 12, 2, 7);
+		// BL   shapeRenderer.rect(x, 335 + 3, 2, 7);
+		// TR   shapeRenderer.rect(x + 7, 335 + 12, 2, 7);
+		// BR   shapeRenderer.rect(x + 7, 335 + 3, 2, 7);
+
+		switch (number) {
+			case 0:
+				shapeRenderer.rect(x + 1, 335 + 10, 7, 2);
+				break;
+			case 1:
+				shapeRenderer.rect(x + 1, 335 + 19, 7, 2);
+				shapeRenderer.rect(x + 1, 335 + 10, 7, 2);
+				shapeRenderer.rect(x + 1, 335, 7, 2);
+				shapeRenderer.rect(x, 335 + 12, 2, 7);
+				shapeRenderer.rect(x, 335 + 3, 2, 7);
+				break;
+			case 2:
+				shapeRenderer.rect(x , 335 + 12, 2, 7);
+				shapeRenderer.rect(x + 7, 335 + 3, 2, 7);
+				break;
+			case 3:
+				shapeRenderer.rect(x , 335 + 12, 2, 7);
+				shapeRenderer.rect(x, 335 + 3, 2, 7);
+				break;
+			case 4:
+				shapeRenderer.rect(x + 1, 335 + 19, 7, 2);
+				shapeRenderer.rect(x + 1, 335, 7, 2);
+				shapeRenderer.rect(x, 335 + 3, 2, 7);
+				break;
+			case 5:
+				shapeRenderer.rect(x, 335 + 3, 2, 7);
+				shapeRenderer.rect(x + 7, 335 + 12, 2, 7);
+				break;
+			case 6:
+				shapeRenderer.rect(x + 7, 335 + 12, 2, 7);
+				break;
+			case 7:
+				shapeRenderer.rect(x + 1, 335 + 10, 7, 2);
+				shapeRenderer.rect(x + 1, 335, 7, 2);
+				shapeRenderer.rect(x, 335 + 12, 2, 7);
+				shapeRenderer.rect(x, 335 + 3, 2, 7);
+				break;
+			case 9:
+				shapeRenderer.rect(x, 335 + 3, 2, 7);
+				break;
+		}
+
+		shapeRenderer.end();
 	}
 
 	public static Van getVanObj() {
@@ -298,5 +378,21 @@ public class GameScreen extends ScreenAdapter {
 
 	public static void setStreet(Street street) {
 		GameScreen.street = street;
+	}
+
+	public static int getMinute() {
+		return minute;
+	}
+
+	public static int getHour() {
+		return hour;
+	}
+
+	public static void setMinute(int minute) {
+		GameScreen.minute = minute;
+	}
+
+	public static void setHour(int hour) {
+		GameScreen.hour = hour;
 	}
 }
