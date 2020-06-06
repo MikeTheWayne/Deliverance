@@ -25,7 +25,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2;
 
-	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store;
+	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, logo_mercury;
 	private Sprite[] pedals;
 
 	private static Van vanObj;
@@ -42,7 +42,7 @@ public class GameScreen extends ScreenAdapter {
 		parcels = new Parcel[100];
 		shopBanners = new ShopBanner[2];
 
-		street = new Street(400);
+		street = new Street(3000);
 
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
@@ -67,6 +67,9 @@ public class GameScreen extends ScreenAdapter {
 
 		this.roadGap = new Sprite(Deliverance.assetManager.get("game_sprites/roadgap.png", Texture.class));
 		this.store = new Sprite(Deliverance.assetManager.get("game_sprites/store_01.png", Texture.class));
+		this.warehouse = new Sprite(Deliverance.assetManager.get("game_sprites/warehouse.png", Texture.class));
+
+		this.logo_mercury = new Sprite(Deliverance.assetManager.get("game_sprites/logo_mercury.png", Texture.class));
 
 		this.speedo = new Sprite(Deliverance.assetManager.get("game_sprites/speedometer.png", Texture.class));
 		this.dial = new Sprite(Deliverance.assetManager.get("game_sprites/speedodial.png", Texture.class));
@@ -171,6 +174,16 @@ public class GameScreen extends ScreenAdapter {
 			arb_12.draw(spriteBatch, shop1Glyph, street.getStartX() - (int) Math.floor(vanObj.getX()) - 800 + 50 + 100 - shop1Glyph.width / 2, 103 + shop1Glyph.height / 2);
 			arb_12_2.setColor(shopBanners[1].getForegroundColour());
 			arb_12_2.draw(spriteBatch, shop2Glyph, street.getStartX() - (int) Math.floor(vanObj.getX()) - 50 - 100 - shop2Glyph.width / 2, 103 + shop2Glyph.height / 2);
+		}
+
+		// Warehouse
+		if(vanObj.getX() <= 800) {
+			spriteBatch.draw(warehouse, -vanObj.getX(), 0);
+			spriteBatch.draw(logo_mercury, -vanObj.getX() + 441, 135);
+
+			spriteBatch.draw(van, -vanObj.getX() + 240, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
+			spriteBatch.draw(van, -vanObj.getX() + 340, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
+			spriteBatch.draw(van, -vanObj.getX() + 440, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
 		}
 
 		// Parcels
