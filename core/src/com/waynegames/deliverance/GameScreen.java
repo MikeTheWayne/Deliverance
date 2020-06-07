@@ -35,6 +35,7 @@ public class GameScreen extends ScreenAdapter {
 	private ShopBanner[] shopBanners;
 
 	private static int hour, minute;
+	private static boolean dayEnd;
 
 	GameScreen(Deliverance game) {
 
@@ -47,7 +48,9 @@ public class GameScreen extends ScreenAdapter {
 		hour = 9;
 		minute = 0;
 
-		street = new Street(3000);
+		dayEnd = false;
+
+		street = new Street(2400);
 
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
@@ -132,27 +135,16 @@ public class GameScreen extends ScreenAdapter {
 			}
 		}
 
+		spriteBatch.end();
+
 		// Industrial Starting Area
 		if(vanObj.getX() <= 2200) {
-			// Rival Warehouses
-			spriteBatch.draw(warehouse_rival, -vanObj.getX() + 1000, 32);
-			spriteBatch.draw(warehouse_rival, -vanObj.getX() + 1600, 32);
-
-			spriteBatch.end();
-			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-			// Shrubbery
-			shapeRenderer.setColor(16 / 255f, 40 / 255f, 6 / 255f, 1.0f);
-			shapeRenderer.rect(-vanObj.getX(), 32, 2300, 80);
-
-			shapeRenderer.end();
-			spriteBatch.begin();
-
-			// Trees
-			for(int i = 0; i < 30; i++) {
-				spriteBatch.draw(tree, -vanObj.getX() + 550 + i * 55, 32);
-			}
+			drawIndustrialArea(-vanObj.getX());
+		} else if(dayEnd && vanObj.getX() >= street.getStartX() + street.getLength() / 2f * 200) {
+			drawIndustrialArea(street.getStartX() + street.getLength() / 2f * 200 + 250 - vanObj.getX());
 		}
+
+		spriteBatch.begin();
 
 		// Street gap
 		if(vanObj.getX() + 640 >= street.getStartX() + street.getLength() / 2f * 200) {
@@ -208,12 +200,9 @@ public class GameScreen extends ScreenAdapter {
 
 		// Warehouse
 		if(vanObj.getX() <= 800) {
-			spriteBatch.draw(warehouse, -vanObj.getX(), 0);
-			spriteBatch.draw(logo_mercury, -vanObj.getX() + 441, 135);
-
-			spriteBatch.draw(van, -vanObj.getX() + 240, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
-			spriteBatch.draw(van, -vanObj.getX() + 340, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
-			spriteBatch.draw(van, -vanObj.getX() + 440, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
+			drawWarehouse(-vanObj.getX());
+		} else if(dayEnd && vanObj.getX() >= street.getStartX() + street.getLength() / 2f * 200 + 1800 - 800) {
+			drawWarehouse(street.getStartX() + street.getLength() / 2f * 200 + 1800 - vanObj.getX());
 		}
 
 		// Parcels
@@ -360,6 +349,51 @@ public class GameScreen extends ScreenAdapter {
 		shapeRenderer.end();
 	}
 
+	/**
+	 * Draws a warehouse, complete with logo and company vans
+	 *
+	 * @param x
+	 * 		The x position of the warehouse
+	 */
+	private void drawWarehouse(float x) {
+		spriteBatch.draw(tree, x - 10, 32);
+		spriteBatch.draw(warehouse, x, 0);
+		spriteBatch.draw(logo_mercury, x + 441, 135);
+
+		spriteBatch.draw(van, x + 240, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
+		spriteBatch.draw(van, x + 340, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
+		spriteBatch.draw(van, x + 440, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
+	}
+
+	/**
+	 * Draws an industrial area, with rival delivery companies hidden behind trees and foliage
+	 *
+	 * @param x
+	 * 		The starting position of the industrial area
+	 */
+	private void drawIndustrialArea(float x) {
+
+		// Rival warehouses
+		spriteBatch.begin();
+		spriteBatch.draw(warehouse_rival, x + 600, 32);
+		spriteBatch.draw(warehouse_rival, x + 1100, 32);
+		spriteBatch.end();
+
+		// Shrubbery
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(16 / 255f, 40 / 255f, 6 / 255f, 1.0f);
+		shapeRenderer.rect(x, 32, 1800, 80);
+		shapeRenderer.end();
+
+		// Trees
+		spriteBatch.begin();
+		for(int i = 0; i < 19; i++) {
+			spriteBatch.draw(tree, x + 550 + i * 55, 32);
+		}
+		spriteBatch.end();
+
+	}
+
 	public static Van getVanObj() {
 		return vanObj;
 	}
@@ -394,5 +428,9 @@ public class GameScreen extends ScreenAdapter {
 
 	public static void setHour(int hour) {
 		GameScreen.hour = hour;
+	}
+
+	public static void setDayEnd(boolean dayEnd) {
+		GameScreen.dayEnd = dayEnd;
 	}
 }
