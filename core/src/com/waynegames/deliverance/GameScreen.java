@@ -25,7 +25,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private OrthographicCamera orthographicCamera;
 
-	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2;
+	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2, cls_10;
 
 	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury, clock;
 	private Sprite[] pedals;
@@ -75,6 +75,7 @@ public class GameScreen extends ScreenAdapter {
 		this.arl_10 = new BitmapFont(Gdx.files.internal("fonts/arl_10.fnt"));
 		this.arb_12 = new BitmapFont(Gdx.files.internal("fonts/arb_12.fnt"));
 		this.arb_12_2 = new BitmapFont(Gdx.files.internal("fonts/arb_12.fnt"));
+		this.cls_10 = new BitmapFont(Gdx.files.internal("fonts/cls_10.fnt"));
 
 		// Load game sprites
 		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_01.png", Texture.class));
@@ -276,6 +277,9 @@ public class GameScreen extends ScreenAdapter {
 		lcdNumber(324, minute / 10);
 		lcdNumber(337, minute % 10);
 
+		// Manifest
+		drawManifest(570, 260);
+
 	}
 
 	@Override
@@ -400,6 +404,39 @@ public class GameScreen extends ScreenAdapter {
 		for(int i = 0; i < 19; i++) {
 			spriteBatch.draw(tree, x + 550 + i * 55, 32);
 		}
+		spriteBatch.end();
+
+	}
+
+	private void drawManifest(float x, float y) {
+
+		// Outline
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(0f, 0f, 0f, 1f);
+		shapeRenderer.rect(x - 1, y - 1, 72, 54);
+		shapeRenderer.setColor(1f, 1f, 1f, 1f);
+		shapeRenderer.rect(x, y, 70, 52);
+		shapeRenderer.setColor(0f, 0f, 0f, 1f);
+		for(int i = 0; i < 3; i++) {
+			shapeRenderer.rect(x, y + 12 + i * 13, 72, 1);
+		}
+		shapeRenderer.rect(x + 22, y + 12, 1, 40);
+		shapeRenderer.end();
+
+		// Text
+		spriteBatch.begin();
+
+		cls_10.setColor(0f, 0f, 0f, 1f);
+
+		for(int i = 0; i < 3; i++) {
+			GlyphLayout target = new GlyphLayout(cls_10, street.getTargets().get(i) + "");
+			cls_10.draw(spriteBatch, target, x + 11 - target.width / 2f, y + 45 - 13 * i + target.height / 2f);
+			cls_10.draw(spriteBatch, street.getName().substring(0, 1).toUpperCase() + street.getName().substring(1, 3) + ". St", x + 26, y + 45 - 13 * i + target.height / 2f);
+		}
+
+		GlyphLayout parcelsLeftGlyph = new GlyphLayout(cls_10, "Pcls: " + parcelsLeft);
+		cls_10.draw(spriteBatch, parcelsLeftGlyph, x + 4, y + 9);
+
 		spriteBatch.end();
 
 	}

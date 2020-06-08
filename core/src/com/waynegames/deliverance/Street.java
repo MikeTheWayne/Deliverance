@@ -46,7 +46,7 @@ public class Street {
 
 		for(int i = 0; i < this.length; i++) {
 			if(random.nextInt(this.length - i) < parcels) {
-				returnList.add(i);
+				returnList.add(i + 1);
 				parcels--;
 			}
 		}
@@ -67,4 +67,7 @@ public class Street {
 		return startX;
 	}
 
+	public List<Integer> getTargets() {
+		return targets;
+	}
 }
