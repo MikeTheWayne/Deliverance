@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import java.util.Random;
+
 public class GameScreen extends ScreenAdapter {
 	static final int PIXELS_PER_METRE = 20;
 
@@ -37,6 +39,9 @@ public class GameScreen extends ScreenAdapter {
 	private static int hour, minute;
 	private static boolean dayEnd;
 
+	private static int parcelsLeft;
+	private static float parcelDensity;
+
 	GameScreen(Deliverance game) {
 
 		this.game = game;
@@ -49,6 +54,11 @@ public class GameScreen extends ScreenAdapter {
 		minute = 0;
 
 		dayEnd = false;
+
+		Random random = new Random();
+
+		parcelsLeft = random.nextInt(100) + 60;
+		parcelDensity = random.nextFloat() * 2.5f + 1.5f;
 
 		street = new Street(2400);
 
@@ -432,5 +442,13 @@ public class GameScreen extends ScreenAdapter {
 
 	public static void setDayEnd(boolean dayEnd) {
 		GameScreen.dayEnd = dayEnd;
+	}
+
+	public static int getParcelsLeft() {
+		return parcelsLeft;
+	}
+
+	public static float getParcelDensity() {
+		return parcelDensity;
 	}
 }

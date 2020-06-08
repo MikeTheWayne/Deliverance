@@ -1,5 +1,7 @@
 package com.waynegames.deliverance;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Street {
@@ -10,11 +12,15 @@ public class Street {
 	private int startX;
 	private String name;
 
+	private List<Integer> targets;
+
 	Street(int startX) {
 
 		this.length = random.nextInt(16) * 10 + 40;
 		this.name = streetNameGenerator();
 		this.startX = startX;
+
+		this.targets = generateTargets(Math.min((int) (GameScreen.getParcelDensity() * length / 10f), GameScreen.getParcelsLeft()));
 
 	}
 
@@ -31,6 +37,21 @@ public class Street {
 		}
 
 		return stringBuilder.toString();
+
+	}
+
+	private ArrayList<Integer> generateTargets(int parcels) {
+
+		ArrayList<Integer> returnList = new ArrayList<>();
+
+		for(int i = 0; i < this.length; i++) {
+			if(random.nextInt(this.length - i) < parcels) {
+				returnList.add(i);
+				parcels--;
+			}
+		}
+
+		return returnList;
 
 	}
 
