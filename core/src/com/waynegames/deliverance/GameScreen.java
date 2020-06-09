@@ -28,7 +28,7 @@ public class GameScreen extends ScreenAdapter {
 	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2, cls_10;
 
 	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury, clock;
-	private Sprite[] pedals;
+	private Sprite[] pedals, scoreDigits;
 
 	private static Van vanObj;
 	private static Parcel[] parcels;
@@ -42,6 +42,8 @@ public class GameScreen extends ScreenAdapter {
 	private static int parcelsLeft;
 	private static float parcelDensity;
 
+	private static int score;
+
 	GameScreen(Deliverance game) {
 
 		this.game = game;
@@ -54,6 +56,8 @@ public class GameScreen extends ScreenAdapter {
 		minute = 0;
 
 		dayEnd = false;
+
+		score = 0;
 
 		Random random = new Random();
 
@@ -99,6 +103,11 @@ public class GameScreen extends ScreenAdapter {
 		this.pedals = new Sprite[4];
 		for(int i = 0; i < 4; i++) {
 			this.pedals[i] = new Sprite(new TextureRegion(Deliverance.assetManager.get("game_sprites/pedals.png", Texture.class), i * 80, 0, 80, 120));
+		}
+
+		this.scoreDigits = new Sprite[10];
+		for(int i = 0; i < 10; i++) {
+			this.scoreDigits[i] = new Sprite(new TextureRegion(Deliverance.assetManager.get("game_sprites/score_digits.png", Texture.class), 18 * (i % 5), 22 * (i / 5), 18, 22));
 		}
 
 		// Set the input processor
@@ -268,6 +277,9 @@ public class GameScreen extends ScreenAdapter {
 
 		// Clock
 		spriteBatch.draw(clock, 270, 330);
+
+		// Score
+		drawScore();
 
 		spriteBatch.end();
 
@@ -443,6 +455,22 @@ public class GameScreen extends ScreenAdapter {
 		cls_10.draw(spriteBatch, parcelsLeftGlyph, x + 4, y + 9);
 
 		spriteBatch.end();
+
+	}
+
+	/**
+	 * Draws the score, using the digit sprites
+	 */
+	private void drawScore() {
+
+		int x = 635;
+		int y = 355;
+
+		String scoreString = String.valueOf(score);
+
+		for(int i = 0; i < scoreString.length(); i++) {
+			spriteBatch.draw(scoreDigits[Integer.parseInt(scoreString.substring(scoreString.length() - 1 - i, scoreString.length() - i))], x - 18 * (i + 1), y - 22);
+		}
 
 	}
 
