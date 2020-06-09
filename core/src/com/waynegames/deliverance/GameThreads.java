@@ -44,8 +44,15 @@ public class GameThreads {
 					}
 				}
 
+				// Remove parcel from manifest if passed
+				if(GameScreen.getStreet().getTargets().size() > 0) {
+					if(street.getTargets().get(0) < ((van.getX() - street.getStartX()) / 200f) * 2 + 1) {
+						GameScreen.removeTarget();
+					}
+				}
+
 				// Street generation
-				if(GameScreen.getHour() == 21) {
+				if(GameScreen.getHour() == 21 || GameScreen.getParcelsLeft() == 0) {
 					GameScreen.setDayEnd(true);
 				} else if(van.getX() - street.getStartX() > street.getLength() / 2f * 200) {
 					GameScreen.setStreet(new Street( street.getStartX() + street.getLength() / 2 * 200 + 800));

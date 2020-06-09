@@ -278,7 +278,7 @@ public class GameScreen extends ScreenAdapter {
 		lcdNumber(337, minute % 10);
 
 		// Manifest
-		drawManifest(570, 260);
+		drawManifest();
 
 	}
 
@@ -408,7 +408,10 @@ public class GameScreen extends ScreenAdapter {
 
 	}
 
-	private void drawManifest(float x, float y) {
+	private void drawManifest() {
+
+		int x = 570;
+		int y = 260;
 
 		// Outline
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -429,9 +432,11 @@ public class GameScreen extends ScreenAdapter {
 		cls_10.setColor(0f, 0f, 0f, 1f);
 
 		for(int i = 0; i < 3; i++) {
-			GlyphLayout target = new GlyphLayout(cls_10, street.getTargets().get(i) + "");
-			cls_10.draw(spriteBatch, target, x + 11 - target.width / 2f, y + 45 - 13 * i + target.height / 2f);
-			cls_10.draw(spriteBatch, street.getName().substring(0, 1).toUpperCase() + street.getName().substring(1, 3) + ". St", x + 26, y + 45 - 13 * i + target.height / 2f);
+			if(street.getTargets().size() > i) {
+				GlyphLayout target = new GlyphLayout(cls_10, street.getTargets().get(i) + "");
+				cls_10.draw(spriteBatch, target, x + 11 - target.width / 2f, y + 45 - 13 * i + target.height / 2f);
+				cls_10.draw(spriteBatch, street.getName().substring(0, 1).toUpperCase() + street.getName().substring(1, 3) + ". St", x + 26, y + 45 - 13 * i + target.height / 2f);
+			}
 		}
 
 		GlyphLayout parcelsLeftGlyph = new GlyphLayout(cls_10, "Pcls: " + parcelsLeft);
@@ -483,6 +488,11 @@ public class GameScreen extends ScreenAdapter {
 
 	public static int getParcelsLeft() {
 		return parcelsLeft;
+	}
+
+	public static void removeTarget() {
+		street.getTargets().remove(0);
+		parcelsLeft--;
 	}
 
 	public static float getParcelDensity() {
