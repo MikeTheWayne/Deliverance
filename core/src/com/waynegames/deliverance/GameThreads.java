@@ -41,6 +41,19 @@ public class GameThreads {
 				for(Parcel p : GameScreen.getParcels()) {
 					if(p != null) {
 						p.fly();
+
+						if(p.isLanded() && !p.isClaimed()) {
+
+							System.out.println((Math.floor((van.getX() - street.getStartX() + p.getX()) / 100f) + 1) + " " + p.getTarget());
+
+							if(p.getTarget() == Math.floor((van.getX() - street.getStartX() + p.getX()) / 100f) + 1) {
+								GameScreen.incrementScore(100);
+							} else{
+								GameScreen.incrementScore(-250);
+							}
+
+							p.setClaimed();
+						}
 					}
 				}
 
@@ -48,6 +61,7 @@ public class GameThreads {
 				if(GameScreen.getStreet().getTargets().size() > 0) {
 					if(street.getTargets().get(0) < ((van.getX() - street.getStartX()) / 200f) * 2 + 1) {
 						GameScreen.removeTarget();
+						GameScreen.incrementScore(-250);
 					}
 				}
 

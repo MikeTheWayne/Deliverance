@@ -80,7 +80,7 @@ public class GameInput extends InputAdapter {
 			if(GameScreen.getHour() < 21 && GameScreen.getStreet().getTargets().size() > 0 && GameScreen.getParcelsLeft() > 0) {
 				for (int i = 0; i < GameScreen.getParcels().length; i++) {
 					if (GameScreen.getParcels()[i] == null || GameScreen.getParcels()[i].getX() < -100 || i == GameScreen.getParcels().length - 1) {
-						GameScreen.setParcel(new Parcel(tX - initX, GameScreen.getVanObj().getSpeed()), i);
+						GameScreen.setParcel(new Parcel(tX - initX, GameScreen.getVanObj().getSpeed(), GameScreen.getStreet().getTargets().get(0)), i);
 						break;
 					}
 				}

@@ -526,4 +526,12 @@ public class GameScreen extends ScreenAdapter {
 	public static float getParcelDensity() {
 		return parcelDensity;
 	}
+
+	public static void incrementScore(int increment) {
+		score += increment;
+
+		if(score < 0) {
+			score = 0;
+		}
+	}
 }
