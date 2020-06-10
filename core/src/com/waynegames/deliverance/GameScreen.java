@@ -17,6 +17,7 @@ import java.util.Random;
 
 public class GameScreen extends ScreenAdapter {
 	static final int PIXELS_PER_METRE = 20;
+	private static final int FIRST_STREET_START_X = 2400;
 
 	private Game game;
 
@@ -30,6 +31,8 @@ public class GameScreen extends ScreenAdapter {
 	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury, clock;
 	private Sprite[] pedals, scoreDigits;
 
+	private static float blackScreenOpacity;
+
 	private static Van vanObj;
 	private static Parcel[] parcels;
 
@@ -37,6 +40,7 @@ public class GameScreen extends ScreenAdapter {
 	private ShopBanner[] shopBanners;
 
 	private static int hour, minute;
+	private static int day;
 	private static boolean dayEnd;
 
 	private static int parcelsLeft;
@@ -55,16 +59,20 @@ public class GameScreen extends ScreenAdapter {
 		hour = 9;
 		minute = 0;
 
+		day = 1;
+
 		dayEnd = false;
 
 		score = 0;
+
+		blackScreenOpacity = 1f;
 
 		Random random = new Random();
 
 		parcelsLeft = random.nextInt(100) + 60;
 		parcelDensity = random.nextFloat() * 2.5f + 1.5f;
 
-		street = new Street(2400);
+		street = new Street(FIRST_STREET_START_X);
 
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
@@ -291,6 +299,17 @@ public class GameScreen extends ScreenAdapter {
 
 		// Manifest
 		drawManifest();
+
+		// Black Screen
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		shapeRenderer.setColor(0, 0, 0, blackScreenOpacity);
+		shapeRenderer.rect(0, 0, 640, 360);
+
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 
 	}
 
@@ -533,5 +552,31 @@ public class GameScreen extends ScreenAdapter {
 		if(score < 0) {
 			score = 0;
 		}
+	}
+
+	public static float getBlackScreenOpacity() {
+		return blackScreenOpacity;
+	}
+
+	public static void setBlackScreenOpacity(float blackScreenOpacity) {
+		GameScreen.blackScreenOpacity = blackScreenOpacity;
+	}
+
+	public static void incrementDay() {
+
+		day++;
+
+		vanObj.setX(0);
+
+		hour = 9;
+		minute = 0;
+
+		Random random = new Random();
+
+		parcelsLeft = random.nextInt(100) + 60;
+		parcelDensity = random.nextFloat() * 2.5f + 1.5f;
+
+		street = new Street(FIRST_STREET_START_X);
+
 	}
 }

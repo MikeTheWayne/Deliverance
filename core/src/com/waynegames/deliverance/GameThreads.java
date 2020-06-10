@@ -72,6 +72,19 @@ public class GameThreads {
 					GameScreen.setStreet(new Street( street.getStartX() + street.getLength() / 2 * 200 + 800));
 				}
 
+				// Black screen opacity
+				if(van.getX() >= street.getStartX() + street.getLength() / 2f * 200 + 1680) {
+					if(GameScreen.getBlackScreenOpacity() < 1) {
+						GameScreen.setBlackScreenOpacity(GameScreen.getBlackScreenOpacity() + 1f / (TICKS_PER_SECOND / 2f));
+					} else{
+						// Increment day
+						GameScreen.incrementDay();
+					}
+
+				} else if(GameScreen.getBlackScreenOpacity() > 0) {
+					GameScreen.setBlackScreenOpacity(GameScreen.getBlackScreenOpacity() - 1f / (TICKS_PER_SECOND / 2f));
+				}
+
 			}
 		}, 0, 1f / TICKS_PER_SECOND);
 	}
