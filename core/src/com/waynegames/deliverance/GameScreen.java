@@ -33,6 +33,8 @@ public class GameScreen extends ScreenAdapter {
 
 	private static float blackScreenOpacity;
 
+	private static int daySeed;
+
 	private static Van vanObj;
 	private static Parcel[] parcels;
 
@@ -74,6 +76,9 @@ public class GameScreen extends ScreenAdapter {
 
 		street = new Street(FIRST_STREET_START_X);
 
+		daySeed = random.nextInt(1048576);
+
+		// Graphics
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
 
@@ -140,6 +145,9 @@ public class GameScreen extends ScreenAdapter {
 		shapeRenderer.setColor(135 / 255f, 206 / 255f, 235 / 255f, 1.0f);
 		shapeRenderer.rect(0, 0, 640, 360);
 		shapeRenderer.end();
+
+		// Draw Background
+		drawBackgroundScenery();
 
 		spriteBatch.begin();
 
@@ -493,6 +501,30 @@ public class GameScreen extends ScreenAdapter {
 
 	}
 
+	/**
+	 * Draws slowly drifting, blurred silhouettes of buildings in the background
+	 */
+	private void drawBackgroundScenery() {
+
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		for(int j = 0; j < 20; j++) {
+
+			float x = (-vanObj.getX() + j * 5000 + (daySeed * j) % 5000) / 10;
+
+			for (int i = 0; i < 10; i++) {
+				shapeRenderer.setColor(62 / 255f, 94 / 255f, 107 / 255f, 0.1f * i);
+				shapeRenderer.rect(x - 10 + i, 30 - 10 + i, ((daySeed * j) % 100) + 50 + 20 - i * 2, ((daySeed * j) % 100) + 180 + 20 - i * 2);
+			}
+		}
+
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+
+	}
+
 	public static Van getVanObj() {
 		return vanObj;
 	}
@@ -571,12 +603,16 @@ public class GameScreen extends ScreenAdapter {
 		hour = 9;
 		minute = 0;
 
+		dayEnd = false;
+
 		Random random = new Random();
 
 		parcelsLeft = random.nextInt(100) + 60;
 		parcelDensity = random.nextFloat() * 2.5f + 1.5f;
 
 		street = new Street(FIRST_STREET_START_X);
+
+		daySeed = random.nextInt(1048576);
 
 	}
 }
