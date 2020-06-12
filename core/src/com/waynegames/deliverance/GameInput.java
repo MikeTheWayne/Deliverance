@@ -8,7 +8,7 @@ public class GameInput extends InputAdapter {
 
 	private OrthographicCamera orthographicCamera;
 
-	private static float pedalPressure;
+	private static float pedalPressure, brakePressure;
 	private int pedalPressurePointer, parcelThrowPointer;
 
 	private float initX;
@@ -36,7 +36,10 @@ public class GameInput extends InputAdapter {
 		if(tX < 90 && tY < 130) {
 			pedalPressure = tY / 13f;
 			this.pedalPressurePointer = pointer;
-		} else if(tX >= 150 && tX <= 480 && tY <= 120) {
+		} else if(tX < 160 && tY < 90) {
+			brakePressure = tY / 9f;
+			this.pedalPressurePointer = pointer;
+		} else if(tX >= 200 && tX <= 450 && tY <= 120) {
 			this.initX = tX;
 			this.parcelThrowPointer = pointer;
 		}
@@ -56,6 +59,10 @@ public class GameInput extends InputAdapter {
 
 		if(tX < 90 && tY < 130 && pointer == pedalPressurePointer) {
 			pedalPressure = tY / 13f;
+			brakePressure = 0;
+		} else if(tX < 160 && tY < 90 && pointer == pedalPressurePointer) {
+			pedalPressure = 0;
+			brakePressure = tY / 9f;
 		}
 
 		return super.touchDragged(screenX, screenY, pointer);
@@ -73,6 +80,7 @@ public class GameInput extends InputAdapter {
 
 		if(pointer == pedalPressurePointer) {
 			pedalPressure = 0;
+			brakePressure = 0;
 			this.pedalPressurePointer = -1;
 		} else if (pointer == parcelThrowPointer) {
 
@@ -99,4 +107,7 @@ public class GameInput extends InputAdapter {
 		return pedalPressure;
 	}
 
+	public static float getBrakePressure() {
+		return brakePressure;
+	}
 }
