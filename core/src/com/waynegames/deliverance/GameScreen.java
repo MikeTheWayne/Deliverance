@@ -3,6 +3,7 @@ package com.waynegames.deliverance;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -142,8 +143,19 @@ public class GameScreen extends ScreenAdapter {
 
 		// Draw Sky
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.setColor(135 / 255f, 206 / 255f, 235 / 255f, 1.0f);
-		shapeRenderer.rect(0, 0, 640, 360);
+
+		if(hour < 19) {
+			shapeRenderer.setColor(135 / 255f, 206 / 255f, 235 / 255f, 1.0f);
+			shapeRenderer.rect(0, 0, 640, 360);
+		} else{
+			float sunset = ((float) hour - 19) / 2f + (float) minute / 120f;
+			Color sunsetBL = new Color((135 + 68 * sunset) / 255f, (206 - 1 * sunset) / 255f, (235 - 201 * sunset) / 255f, 1.0f);
+			Color sunsetBR = new Color((135 + 3 * sunset) / 255f, (206 - 180 * sunset) / 255f, (235 - 122 * sunset) / 255f, 1.0f);
+			Color sunsetTR = new Color((135 - 56 * sunset) / 255f, (206 - 185 * sunset) / 255f, (235 - 111 * sunset) / 255f, 1.0f);
+			Color sunsetTL = new Color((135 + 3 * sunset) / 255f, (206 - 180 * sunset) / 255f, (235 - 122 * sunset) / 255f, 1.0f);
+			shapeRenderer.rect(0, 0, 640, 360, sunsetBL, sunsetBR, sunsetTR, sunsetTL);
+		}
+
 		shapeRenderer.end();
 
 		// Draw Background
@@ -282,6 +294,24 @@ public class GameScreen extends ScreenAdapter {
 
 		// Van
 		spriteBatch.draw(van, 256, 3);
+
+		spriteBatch.end();
+
+		// Sunset Darkness
+		if(hour >= 19) {
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+			float sunset = ((float) hour - 19) / 2f + (float) minute / 120f;
+			shapeRenderer.setColor(0, 0, 0, sunset / 4f);
+			shapeRenderer.rect(0, 0, 640, 360);
+
+			shapeRenderer.end();
+			Gdx.gl.glDisable(GL20.GL_BLEND);
+		}
+
+		spriteBatch.begin();
 
 		// UI
 		// Pedal
