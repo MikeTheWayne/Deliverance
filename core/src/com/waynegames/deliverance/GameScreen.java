@@ -677,6 +677,10 @@ public class GameScreen extends ScreenAdapter {
 
 		daySeed = random.nextInt(1048576);
 
+		if(gameMode == GameMode.CHALLENGE && day > maxDays) {
+			gameOver = true;
+		}
+
 	}
 
 	public static GameMode getGameMode() {
@@ -695,4 +699,7 @@ public class GameScreen extends ScreenAdapter {
 		}
 	}
 
+	public static boolean isGameOver() {
+		return gameOver;
+	}
 }
