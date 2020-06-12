@@ -29,7 +29,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2, cls_10;
 
-	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury, clock;
+	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury, clock, lifedown;
 	private Sprite[] pedals, scoreDigits;
 
 	private static float blackScreenOpacity;
@@ -51,7 +51,16 @@ public class GameScreen extends ScreenAdapter {
 
 	private static int score;
 
-	GameScreen(Deliverance game) {
+	private static GameMode gameMode;
+
+	private static int livesLeft;
+	private static int maxDays;
+
+	private int maxLives;
+
+	private static boolean gameOver;
+
+	GameScreen(Deliverance game, GameMode gameMode, int lives, int days) {
 
 		this.game = game;
 
@@ -78,6 +87,15 @@ public class GameScreen extends ScreenAdapter {
 		street = new Street(FIRST_STREET_START_X);
 
 		daySeed = random.nextInt(1048576);
+
+		GameScreen.gameMode = gameMode;
+
+		this.maxLives = lives;
+
+		livesLeft = lives;
+		maxDays = days;
+
+		gameOver = false;
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -113,6 +131,8 @@ public class GameScreen extends ScreenAdapter {
 		this.speedo = new Sprite(Deliverance.assetManager.get("game_sprites/speedometer.png", Texture.class));
 		this.dial = new Sprite(Deliverance.assetManager.get("game_sprites/speedodial.png", Texture.class));
 		this.clock = new Sprite(Deliverance.assetManager.get("game_sprites/clock.png", Texture.class));
+
+		this.lifedown = new Sprite(Deliverance.assetManager.get("game_sprites/lifedown.png", Texture.class));
 
 		this.pedals = new Sprite[4];
 		for(int i = 0; i < 4; i++) {
@@ -327,6 +347,17 @@ public class GameScreen extends ScreenAdapter {
 		// Score
 		drawScore();
 
+		// Draw lives lost
+		if(gameMode == GameMode.ENDLESS) {
+
+			for(int i = 0; i < maxLives; i++) {
+				spriteBatch.setColor(1f, 1f, 1f, ((livesLeft > i) ? 0.2f : 1.0f));
+				spriteBatch.draw(lifedown, 638 - 20 * maxLives + i * 20, 313);
+			}
+
+			spriteBatch.setColor(1f, 1f, 1f, 1f);
+		}
+
 		spriteBatch.end();
 
 		// Clock numbering
@@ -336,7 +367,9 @@ public class GameScreen extends ScreenAdapter {
 		lcdNumber(337, minute % 10);
 
 		// Manifest
-		drawManifest();
+		if(hour < 21) {
+			drawManifest();
+		}
 
 		// Black Screen
 		Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -645,4 +678,21 @@ public class GameScreen extends ScreenAdapter {
 		daySeed = random.nextInt(1048576);
 
 	}
+
+	public static GameMode getGameMode() {
+		return gameMode;
+	}
+
+	public static int getLivesLeft() {
+		return livesLeft;
+	}
+
+	public static void setLivesLeft(int livesLeft) {
+		GameScreen.livesLeft = livesLeft;
+
+		if(livesLeft == 0) {
+			gameOver = true;
+		}
+	}
+
 }

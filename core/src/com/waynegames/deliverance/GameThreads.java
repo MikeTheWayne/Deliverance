@@ -50,6 +50,10 @@ public class GameThreads {
 								GameScreen.incrementScore(100);
 							} else{
 								GameScreen.incrementScore(-250);
+
+								if(GameScreen.getGameMode() == GameMode.ENDLESS) {
+									GameScreen.setLivesLeft(GameScreen.getLivesLeft() - 1);
+								}
 							}
 
 							p.setClaimed();
@@ -62,6 +66,10 @@ public class GameThreads {
 					if(street.getTargets().get(0) < ((van.getX() - street.getStartX()) / 200f) * 2 + 1) {
 						GameScreen.removeTarget();
 						GameScreen.incrementScore(-250);
+
+						if(GameScreen.getGameMode() == GameMode.ENDLESS) {
+							GameScreen.setLivesLeft(GameScreen.getLivesLeft() - 1);
+						}
 					}
 				}
 
