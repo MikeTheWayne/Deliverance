@@ -33,15 +33,32 @@ public class GameInput extends InputAdapter {
 		float tX = input.x;
 		float tY = input.y;
 
-		if(tX < 90 && tY < 130) {
-			pedalPressure = tY / 13f;
-			this.pedalPressurePointer = pointer;
-		} else if(tX < 160 && tY < 90) {
-			brakePressure = tY / 9f;
-			this.pedalPressurePointer = pointer;
-		} else if(tX >= 200 && tX <= 450 && tY <= 120) {
-			this.initX = tX;
-			this.parcelThrowPointer = pointer;
+		if(!GameScreen.isGameOver() && GameScreen.getBlackScreenOpacity() >= 1f) {
+			// Contract selection
+			if(tY >= 75 && tY <= 225) {
+				if(tX >= 110 && tX <= 230) {
+					GameScreen.selectContract(0);
+				} else if(tX >= 260 && tX <= 380) {
+					GameScreen.selectContract(1);
+				} else if(tX >= 410 && tX <= 530) {
+					GameScreen.selectContract(2);
+				}
+			}
+
+		} else {
+			// Main game
+
+			if (tX < 90 && tY < 130) {
+				pedalPressure = tY / 13f;
+				this.pedalPressurePointer = pointer;
+			} else if (tX < 160 && tY < 90) {
+				brakePressure = tY / 9f;
+				this.pedalPressurePointer = pointer;
+			} else if (tX >= 200 && tX <= 450 && tY <= 120) {
+				this.initX = tX;
+				this.parcelThrowPointer = pointer;
+			}
+
 		}
 
 		return super.touchDown(screenX, screenY, pointer, button);

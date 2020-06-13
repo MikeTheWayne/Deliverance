@@ -27,7 +27,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private OrthographicCamera orthographicCamera;
 
-	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2, cls_10, arb_24, arl_24;
+	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2, cls_10, arb_24, arl_24, cbri_16;
 
 	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury, clock, lifedown;
 	private Sprite[] pedals, scoreDigits;
@@ -60,6 +60,11 @@ public class GameScreen extends ScreenAdapter {
 
 	private static boolean gameOver;
 
+	private static Contract[] contracts;
+
+	private static float scoreMultiplier;
+	private static float penaltyMultiplier;
+
 	GameScreen(Deliverance game, GameMode gameMode, int lives, int days) {
 
 		this.game = game;
@@ -68,10 +73,10 @@ public class GameScreen extends ScreenAdapter {
 		parcels = new Parcel[100];
 		shopBanners = new ShopBanner[2];
 
-		hour = 9;
+		hour = 21;
 		minute = 0;
 
-		day = 1;
+		day = 0;
 
 		dayEnd = false;
 
@@ -79,12 +84,12 @@ public class GameScreen extends ScreenAdapter {
 
 		blackScreenOpacity = 1f;
 
-		Random random = new Random();
-
-		parcelsLeft = random.nextInt(100) + 60;
-		parcelDensity = random.nextFloat() * 2.5f + 1.5f;
+		parcelsLeft = 0;
+		parcelDensity = 1f;
 
 		street = new Street(FIRST_STREET_START_X);
+
+		Random random = new Random();
 
 		daySeed = random.nextInt(1048576);
 
@@ -96,6 +101,11 @@ public class GameScreen extends ScreenAdapter {
 		maxDays = days;
 
 		gameOver = false;
+
+		scoreMultiplier = 0;
+		penaltyMultiplier = 0;
+
+		generateContracts();
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -114,6 +124,7 @@ public class GameScreen extends ScreenAdapter {
 		this.cls_10 = new BitmapFont(Gdx.files.internal("fonts/cls_10.fnt"));
 		this.arb_24 = new BitmapFont(Gdx.files.internal("fonts/arb_24.fnt"));
 		this.arl_24 = new BitmapFont(Gdx.files.internal("fonts/arl_24.fnt"));
+		this.cbri_16 = new BitmapFont(Gdx.files.internal("fonts/cbri_16.fnt"));
 
 		// Load game sprites
 		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_01.png", Texture.class));
@@ -387,6 +398,48 @@ public class GameScreen extends ScreenAdapter {
 
 		shapeRenderer.end();
 		Gdx.gl.glDisable(GL20.GL_BLEND);
+
+		// Contract selection
+		if(!gameOver && blackScreenOpacity >= 1f) {
+
+			float sat1 = 0.3f;
+			float sat2 = 0.2f;
+			float bCol = 0.8f;
+			float tCol = 0.5f;
+
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+			// Draw contract boxes
+			shapeRenderer.rect(110, 75, 120, 150, new Color(sat1, bCol, sat1, 1f), new Color(sat1, bCol, sat1, 1f), new Color(sat2, tCol, sat2, 1f), new Color(sat2, tCol, sat2, 1f));
+			shapeRenderer.rect(260, 75, 120, 150, new Color(sat1, sat1, bCol, 1f), new Color(sat1, sat1, bCol, 1f), new Color(sat2, sat2, tCol, 1f), new Color(sat2, sat2, tCol, 1f));
+			shapeRenderer.rect(410, 75, 120, 150, new Color(bCol, sat1, sat1, 1f), new Color(bCol, sat1, sat1, 1f), new Color(tCol, sat2, sat2, 1f), new Color(tCol, sat2, sat2, 1f));
+
+			shapeRenderer.end();
+
+			spriteBatch.begin();
+			cbri_16.setColor(1f, 1f, 1f, 1f);
+			arb_12.setColor(1f, 1f, 1f, 1f);
+
+			// Draw contract information
+			for(int i = 0; i < 3; i++) {
+				cbri_16.draw(spriteBatch, "Parcels: " + contracts[i].getParcels(), 110 + 150 * i + 5, 225 - 5);
+				cbri_16.draw(spriteBatch, "Density: " + contracts[i].getDensity(), 110 + 150 * i + 5, 225 - 21);
+				cbri_16.draw(spriteBatch, "Score: x" + contracts[i].getScoreMultiplier(), 110 + 150 * i + 5, 225 - 53);
+				cbri_16.draw(spriteBatch, "Penalty: x" + contracts[i].getFailureMultiplier(), 110 + 150 * i + 5, 225 - 69);
+
+				GlyphLayout acceptGlyph = new GlyphLayout(arb_12, "ACCEPT");
+				arb_12.draw(spriteBatch, acceptGlyph, 170 + 150 * i - acceptGlyph.width / 2f, 75 + 5 + acceptGlyph.height);
+			}
+
+			// Draw day
+			arb_24.setColor(1f, 1f, 1f, 1f);
+
+			GlyphLayout dayGlyph = new GlyphLayout(arb_24, "DAY " + (day + 1));
+			arb_24.draw(spriteBatch, dayGlyph, 320 - dayGlyph.width / 2f, 300);
+
+			spriteBatch.end();
+
+		}
 
 	}
 
@@ -695,12 +748,9 @@ public class GameScreen extends ScreenAdapter {
 
 		dayEnd = false;
 
-		Random random = new Random();
-
-		parcelsLeft = random.nextInt(100) + 60;
-		parcelDensity = random.nextFloat() * 2.5f + 1.5f;
-
 		street = new Street(FIRST_STREET_START_X);
+
+		Random random = new Random();
 
 		daySeed = random.nextInt(1048576);
 
@@ -728,5 +778,21 @@ public class GameScreen extends ScreenAdapter {
 
 	public static boolean isGameOver() {
 		return gameOver;
+	}
+
+	public static void generateContracts() {
+		contracts = new Contract[3];
+		for(int i = 0; i < 3; i++) {
+			contracts[i] = new Contract(day, i);
+		}
+	}
+
+	public static void selectContract(int contract) {
+		parcelsLeft = contracts[contract].getParcels();
+		parcelDensity = contracts[contract].getDensity();
+		scoreMultiplier = contracts[contract].getScoreMultiplier();
+		penaltyMultiplier = contracts[contract].getFailureMultiplier();
+
+		incrementDay();
 	}
 }
