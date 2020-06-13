@@ -748,6 +748,8 @@ public class GameScreen extends ScreenAdapter {
 
 	public static void incrementDay() {
 
+		GameThreads.setTimeStarted(false);
+
 		day++;
 
 		vanObj.setX(0);

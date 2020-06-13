@@ -8,6 +8,8 @@ public class GameThreads {
 
 	private static Timer timer;
 
+	private static boolean timeStarted = false;
+
 	static void run() {
 
 		timer = new Timer();
@@ -111,7 +113,7 @@ public class GameThreads {
 			public void run() {
 
 				// Time
-				if(GameScreen.getHour() < 21) {
+				if(GameScreen.getHour() < 21 && timeStarted) {
 					if (GameScreen.getMinute() == 55) {
 						GameScreen.setHour(GameScreen.getHour() + 1);
 						GameScreen.setMinute(0);
@@ -125,4 +127,7 @@ public class GameThreads {
 		}, 0, 1f);
 	}
 
+	public static void setTimeStarted(boolean timeStarted) {
+		GameThreads.timeStarted = timeStarted;
+	}
 }

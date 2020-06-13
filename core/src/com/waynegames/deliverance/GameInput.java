@@ -77,6 +77,7 @@ public class GameInput extends InputAdapter {
 		if(tX < 90 && tY < 130 && pointer == pedalPressurePointer) {
 			pedalPressure = tY / 13f;
 			brakePressure = 0;
+			GameThreads.setTimeStarted(true);
 		} else if(tX < 160 && tY < 90 && pointer == pedalPressurePointer) {
 			pedalPressure = 0;
 			brakePressure = tY / 9f;
