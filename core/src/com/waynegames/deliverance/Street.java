@@ -20,7 +20,7 @@ public class Street {
 		this.name = streetNameGenerator();
 		this.startX = startX;
 
-		this.targets = generateTargets(Math.min((int) (GameScreen.getParcelDensity() * length / 10f), GameScreen.getParcelsLeft()));
+		this.targets = generateTargets((int) (GameScreen.getParcelDensity() * length / 10f));
 
 	}
 
@@ -45,7 +45,7 @@ public class Street {
 		ArrayList<Integer> returnList = new ArrayList<>();
 
 		for(int i = 0; i < this.length; i++) {
-			if(random.nextInt(this.length - i) < parcels) {
+			if(random.nextInt(this.length - i) < parcels && returnList.size() < GameScreen.getParcelsLeft()) {
 				returnList.add(i + 1);
 				parcels--;
 			}
