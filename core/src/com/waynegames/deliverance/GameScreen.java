@@ -27,7 +27,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private OrthographicCamera orthographicCamera;
 
-	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2, cls_10;
+	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2, cls_10, arb_24, arl_24;
 
 	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury, clock, lifedown;
 	private Sprite[] pedals, scoreDigits;
@@ -112,6 +112,8 @@ public class GameScreen extends ScreenAdapter {
 		this.arb_12 = new BitmapFont(Gdx.files.internal("fonts/arb_12.fnt"));
 		this.arb_12_2 = new BitmapFont(Gdx.files.internal("fonts/arb_12.fnt"));
 		this.cls_10 = new BitmapFont(Gdx.files.internal("fonts/cls_10.fnt"));
+		this.arb_24 = new BitmapFont(Gdx.files.internal("fonts/arb_24.fnt"));
+		this.arl_24 = new BitmapFont(Gdx.files.internal("fonts/arl_24.fnt"));
 
 		// Load game sprites
 		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_01.png", Texture.class));
@@ -372,6 +374,7 @@ public class GameScreen extends ScreenAdapter {
 		// Manifest
 		if(hour < 21) {
 			drawManifest();
+			drawManifestHUD();
 		}
 
 		// Black Screen
@@ -549,6 +552,27 @@ public class GameScreen extends ScreenAdapter {
 
 		spriteBatch.end();
 
+	}
+
+	private void drawManifestHUD() {
+		spriteBatch.begin();
+
+		arb_24.setColor(1f, 1f, 1f, 1f);
+		arl_24.setColor(1f, 1f, 1f, 1f);
+
+		if(street.getTargets().size() > 0) {
+			GlyphLayout hud_1 = new GlyphLayout(arb_24, street.getTargets().get(0) + "");
+			arb_24.draw(spriteBatch, hud_1, 320 - hud_1.width / 2f, 300 + hud_1.height / 2f);
+		}
+
+		for(int i = 0; i < 2; i++) {
+			if(street.getTargets().size() > i + 1) {
+				GlyphLayout hud_i = new GlyphLayout(arl_24, street.getTargets().get(i + 1) + "");
+				arl_24.draw(spriteBatch, hud_i, 370 - hud_i.width / 2f + 50 * i, 300 + hud_i.height / 2f);
+			}
+		}
+
+		spriteBatch.end();
 	}
 
 	/**
