@@ -35,6 +35,10 @@ public class GameThreads {
 				// Stop van when returned to warehouse
 				if(van.getX() >= street.getStartX() + street.getLength() / 2f * 200 + 1680) {
 					van.setSpeed(0);
+
+					if(GameScreen.getGameMode() == GameMode.ENDLESS && GameScreen.getParcelsLeft() > 0) {
+						GameScreen.setLivesLeft(GameScreen.getLivesLeft() - GameScreen.getParcelsLeft());
+					}
 				}
 
 				// Move van based on speed
@@ -66,7 +70,7 @@ public class GameThreads {
 
 				// Remove parcel from manifest if passed
 				if(GameScreen.getStreet().getTargets().size() > 0) {
-					if(street.getTargets().get(0) < ((van.getX() - street.getStartX()) / 200f) * 2 + 1) {
+					if(street.getTargets().get(0) < ((van.getX() - street.getStartX()) / 200f) * 2 + 1 && GameScreen.getHour() < 21) {
 						GameScreen.removeTarget();
 						GameScreen.incrementScore(-250);
 
@@ -79,7 +83,6 @@ public class GameThreads {
 				// Street generation
 				if(GameScreen.getHour() == 21 || GameScreen.getParcelsLeft() == 0) {
 					GameScreen.setDayEnd(true);
-					GameScreen.generateContracts();
 				} else if(van.getX() - street.getStartX() > street.getLength() / 2f * 200) {
 					GameScreen.setStreet(new Street( street.getStartX() + street.getLength() / 2 * 200 + 800));
 				}
@@ -90,6 +93,8 @@ public class GameThreads {
 						GameScreen.setBlackScreenOpacity(GameScreen.getBlackScreenOpacity() + 1f / (TICKS_PER_SECOND / 2f));
 					} else if(GameScreen.isGameOver()) {
 						// Return to menu
+					} else if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
+						GameScreen.incrementDay();
 					}
 
 				} else if(GameScreen.getBlackScreenOpacity() > 0 && GameScreen.getHour() < 21) {

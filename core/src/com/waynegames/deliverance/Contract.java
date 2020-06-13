@@ -15,17 +15,8 @@ public class Contract {
 
 		float targetSpeed = 1f;
 
-		switch (GameScreen.getGameMode()) {
-
-			case ENDLESS:
-				// 25 * Log(0.4 * x + 1) + 20
-				targetSpeed = (25 - difficulty * 5) * (float) Math.log(0.4f * day + 1) + 20 + 10 * difficulty;
-				break;
-
-			case CHALLENGE:
-				break;
-
-		}
+		// 25 * Log(0.4 * x + 1) + 20
+		targetSpeed = (25 - difficulty * 5) * (float) Math.log(0.4f * day + 1) + 20 + 10 * difficulty;
 
 		density = (float) Math.floor((random.nextGaussian() * 0.225f + 1.5f) * 100) / 100f;
 		parcels = (int) (0.6f * targetSpeed * density);

@@ -84,8 +84,8 @@ public class GameScreen extends ScreenAdapter {
 
 		blackScreenOpacity = 1f;
 
-		parcelsLeft = 0;
-		parcelDensity = 1f;
+		parcelsLeft = 300;
+		parcelDensity = 1.8f;
 
 		street = new Street(FIRST_STREET_START_X);
 
@@ -106,6 +106,11 @@ public class GameScreen extends ScreenAdapter {
 		penaltyMultiplier = 0;
 
 		generateContracts();
+
+		if(gameMode == GameMode.CHALLENGE) {
+			// Start day without contract screen
+			incrementDay();
+		}
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -400,7 +405,7 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 
 		// Contract selection
-		if(!gameOver && blackScreenOpacity >= 1f) {
+		if(gameMode == GameMode.ENDLESS && !gameOver && blackScreenOpacity >= 1f) {
 
 			float sat1 = 0.3f;
 			float sat2 = 0.2f;
@@ -705,6 +710,10 @@ public class GameScreen extends ScreenAdapter {
 	}
 
 	public static void setDayEnd(boolean dayEnd) {
+		if(!GameScreen.dayEnd && dayEnd) {
+			GameScreen.generateContracts();
+		}
+
 		GameScreen.dayEnd = dayEnd;
 	}
 
@@ -754,8 +763,12 @@ public class GameScreen extends ScreenAdapter {
 
 		daySeed = random.nextInt(1048576);
 
-		if(gameMode == GameMode.CHALLENGE && day > maxDays) {
-			gameOver = true;
+		if(gameMode == GameMode.CHALLENGE) {
+			parcelsLeft = 300;
+
+			if(day > maxDays) {
+				gameOver = true;
+			}
 		}
 
 	}
@@ -771,7 +784,7 @@ public class GameScreen extends ScreenAdapter {
 	public static void setLivesLeft(int livesLeft) {
 		GameScreen.livesLeft = livesLeft;
 
-		if(livesLeft == 0) {
+		if(livesLeft <= 0) {
 			gameOver = true;
 		}
 	}

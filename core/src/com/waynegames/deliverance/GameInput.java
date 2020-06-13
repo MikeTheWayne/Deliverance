@@ -33,7 +33,7 @@ public class GameInput extends InputAdapter {
 		float tX = input.x;
 		float tY = input.y;
 
-		if(!GameScreen.isGameOver() && GameScreen.getBlackScreenOpacity() >= 1f) {
+		if(GameScreen.getGameMode() == GameMode.ENDLESS && !GameScreen.isGameOver() && GameScreen.getBlackScreenOpacity() >= 1f) {
 			// Contract selection
 			if(tY >= 75 && tY <= 225) {
 				if(tX >= 110 && tX <= 230) {
