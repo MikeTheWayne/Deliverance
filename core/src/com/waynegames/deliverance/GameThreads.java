@@ -56,12 +56,13 @@ public class GameThreads {
 							System.out.println((Math.floor((van.getX() - street.getStartX() + p.getX()) / 100f) + 1) + " " + p.getTarget());
 
 							if(p.getTarget() == Math.floor((van.getX() - street.getStartX() + p.getX()) / 100f) + 1) {
-								GameScreen.incrementScore(100);
+								GameScreen.incrementScore((int) Math.ceil(100 * GameScreen.getScoreMultiplier()));
 							} else{
-								GameScreen.incrementScore(-250);
 
 								if(GameScreen.getGameMode() == GameMode.ENDLESS) {
 									GameScreen.setLivesLeft(GameScreen.getLivesLeft() - 1);
+								} else if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
+									GameScreen.incrementScore(-200);
 								}
 							}
 
@@ -74,10 +75,11 @@ public class GameThreads {
 				if(GameScreen.getStreet().getTargets().size() > 0) {
 					if(street.getTargets().get(0) < ((van.getX() - street.getStartX()) / 200f) * 2 + 1 && GameScreen.getHour() < 21) {
 						GameScreen.removeTarget();
-						GameScreen.incrementScore(-250);
 
 						if(GameScreen.getGameMode() == GameMode.ENDLESS) {
 							GameScreen.setLivesLeft(GameScreen.getLivesLeft() - 1);
+						} else if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
+							GameScreen.incrementScore(-200);
 						}
 					}
 				}

@@ -7,21 +7,19 @@ public class Contract {
 	private int parcels;
 	private float density;
 	private float scoreMultiplier;
-	private float failureMultiplier;
 
 	public Contract(int day, int difficulty) {
 
 		Random random = new Random();
 
-		float targetSpeed = 1f;
+		// 25 * Log(0.4x + 1) + 20
+		float targetSpeed = (25 - difficulty * 5) * (float) Math.log(0.4f * day + 1) + 20 + 10 * difficulty;
+		// 0.02x + 1
+		float targetScoreM = (0.02f + 0.01f * difficulty) * day + 1 + 0.25f * difficulty;
 
-		// 25 * Log(0.4 * x + 1) + 20
-		targetSpeed = (25 - difficulty * 5) * (float) Math.log(0.4f * day + 1) + 20 + 10 * difficulty;
-
-		density = (float) Math.floor((random.nextGaussian() * 0.225f + 1.5f) * 100) / 100f;
+		density = (float) random.nextGaussian() * 0.225f + 1.5f;
 		parcels = (int) (0.6f * targetSpeed * density);
-		scoreMultiplier = 1f;
-		failureMultiplier = 1f;
+		scoreMultiplier = random.nextFloat() * targetScoreM * 0.2f + targetScoreM * 0.9f;
 
 	}
 
@@ -35,10 +33,6 @@ public class Contract {
 
 	public float getScoreMultiplier() {
 		return scoreMultiplier;
-	}
-
-	public float getFailureMultiplier() {
-		return failureMultiplier;
 	}
 
 }

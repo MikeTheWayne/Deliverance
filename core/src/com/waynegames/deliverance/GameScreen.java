@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import java.text.DecimalFormat;
 import java.util.Random;
 
 public class GameScreen extends ScreenAdapter {
@@ -427,10 +428,11 @@ public class GameScreen extends ScreenAdapter {
 
 			// Draw contract information
 			for(int i = 0; i < 3; i++) {
+				DecimalFormat df = new DecimalFormat("0.00");
+
 				cbri_16.draw(spriteBatch, "Parcels: " + contracts[i].getParcels(), 110 + 150 * i + 5, 225 - 5);
-				cbri_16.draw(spriteBatch, "Density: " + contracts[i].getDensity(), 110 + 150 * i + 5, 225 - 21);
-				cbri_16.draw(spriteBatch, "Score: x" + contracts[i].getScoreMultiplier(), 110 + 150 * i + 5, 225 - 53);
-				cbri_16.draw(spriteBatch, "Penalty: x" + contracts[i].getFailureMultiplier(), 110 + 150 * i + 5, 225 - 69);
+				cbri_16.draw(spriteBatch, "Density: " + df.format(contracts[i].getDensity()), 110 + 150 * i + 5, 225 - 21);
+				cbri_16.draw(spriteBatch, "Score: x" + df.format(contracts[i].getScoreMultiplier()), 110 + 150 * i + 5, 225 - 53);
 
 				GlyphLayout acceptGlyph = new GlyphLayout(arb_12, "ACCEPT");
 				arb_12.draw(spriteBatch, acceptGlyph, 170 + 150 * i - acceptGlyph.width / 2f, 75 + 5 + acceptGlyph.height);
@@ -806,8 +808,15 @@ public class GameScreen extends ScreenAdapter {
 		parcelsLeft = contracts[contract].getParcels();
 		parcelDensity = contracts[contract].getDensity();
 		scoreMultiplier = contracts[contract].getScoreMultiplier();
-		penaltyMultiplier = contracts[contract].getFailureMultiplier();
 
 		incrementDay();
+	}
+
+	public static float getScoreMultiplier() {
+		return scoreMultiplier;
+	}
+
+	public static float getPenaltyMultiplier() {
+		return penaltyMultiplier;
 	}
 }
