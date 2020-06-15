@@ -14,10 +14,11 @@ public class Deliverance extends Game {
 	public void create () {
 
 		// Load image assets
-		loadAssets();
+		loadAssets(new String[] {"game_sprites/", "menu_sprites/"});
 
 		// Load the game screen
-		setScreen(new GameScreen(this, GameMode.ENDLESS, 3, 3));
+		//setScreen(new GameScreen(this, GameMode.ENDLESS, 3, 3));
+		setScreen(new MenuScreen(this));
 
 		// Start game threads
 		GameThreads.run();
@@ -37,18 +38,20 @@ public class Deliverance extends Game {
 	/**
 	 * Loops through the files in the assets folder, and loads all of the ".png" images
 	 */
-	private void loadAssets() {
+	private void loadAssets(String[] folders) {
 
 		assetManager = new AssetManager();
 
-		FileHandle assetsToLoad = Gdx.files.internal("game_sprites/");
+		for(String s : folders) {
+			FileHandle assetsToLoad = Gdx.files.internal(s);
 
-		for(FileHandle f : assetsToLoad.list()) {
+			for (FileHandle f : assetsToLoad.list()) {
 
-			if(f.name().contains(".png")) {
-				assetManager.load(f.path(), Texture.class);
+				if (f.name().contains(".png")) {
+					assetManager.load(f.path(), Texture.class);
+				}
+
 			}
-
 		}
 
 		assetManager.finishLoading();
