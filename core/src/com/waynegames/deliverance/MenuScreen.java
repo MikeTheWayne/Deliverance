@@ -9,8 +9,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Timer;
+
+import java.util.Random;
 
 public class MenuScreen extends ScreenAdapter {
+	private final int TICKS_PER_SECOND = 30;
 
 	private Game game;
 
@@ -19,11 +23,26 @@ public class MenuScreen extends ScreenAdapter {
 
 	private OrthographicCamera orthographicCamera;
 
-	private Sprite background, van;
+	private Timer timer;
+
+	private Sprite background, van, parcel;
+
+	private static int animStage;
+	private static float vanX;
+	private static float parcelX, parcelY, parcelVY;
+	private static int parcelsLeft;
 
 	public MenuScreen(Deliverance game) {
 
 		this.game = game;
+
+		final Random random = new Random();
+
+		animStage = 1;
+		vanX = -129 * 1.5f;
+		parcelX = -20;
+		parcelY = 35;
+		parcelVY = random.nextInt(40) + 20;
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -37,6 +56,54 @@ public class MenuScreen extends ScreenAdapter {
 		// Load menu sprites
 		this.background = new Sprite(Deliverance.assetManager.get("menu_sprites/menu_background.png", Texture.class));
 		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_01.png", Texture.class));
+		this.parcel = new Sprite(Deliverance.assetManager.get("game_sprites/box.png", Texture.class));
+
+		// Animation timer
+		timer = new Timer();
+
+		timer.scheduleTask(new Timer.Task() {
+			@Override
+			public void run() {
+
+				switch (animStage) {
+					case 1:
+						vanX += (200f - vanX / 1.75f) / TICKS_PER_SECOND;
+
+						if(vanX > 224) {
+							animStage++;
+
+							parcelsLeft = random.nextInt(15) + 15;
+						}
+						break;
+					case 2:
+						if(parcelX < 250) {
+							parcelX += (250f * 1.8f) / TICKS_PER_SECOND;
+
+							float t = parcelX / 200f;
+							parcelY = 35 + (parcelVY * t - (50f * t * t) / 2f);
+						} else{
+							parcelsLeft--;
+							parcelX = -20;
+							parcelY = 35;
+							parcelVY = random.nextInt(40) + 20;
+
+							if(parcelsLeft == 0) {
+								animStage++;
+							}
+						}
+						break;
+					case 3:
+						vanX += Math.min(200f, (vanX - 175f) / 1.75f) / TICKS_PER_SECOND;
+
+						if(vanX > 700) {
+							vanX = -129 * 1.5f;
+							animStage = 1;
+						}
+						break;
+				}
+
+			}
+		}, 0, 1f / TICKS_PER_SECOND);
 
 	}
 
@@ -55,6 +122,10 @@ public class MenuScreen extends ScreenAdapter {
 		// Draw background
 		spriteBatch.begin();
 		spriteBatch.draw(background, 0, 0);
+
+		spriteBatch.draw(parcel, parcelX, parcelY, parcel.getWidth() * 1.5f, parcel.getHeight() * 1.5f);
+		spriteBatch.draw(van, vanX, 10, van.getWidth() * 1.5f, van.getHeight() * 1.5f);
+
 		spriteBatch.end();
 		
 	}

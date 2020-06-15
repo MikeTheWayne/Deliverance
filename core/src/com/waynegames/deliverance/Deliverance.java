@@ -21,7 +21,7 @@ public class Deliverance extends Game {
 		setScreen(new MenuScreen(this));
 
 		// Start game threads
-		GameThreads.run();
+		//GameThreads.run();
 
 	}
 
