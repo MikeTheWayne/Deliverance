@@ -25,7 +25,7 @@ public class MenuScreen extends ScreenAdapter {
 
 	private Timer timer;
 
-	private Sprite background, title, van, parcel;
+	private Sprite background, title, van, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, button_challenge;
 
 	private static int animStage;
 	private static float vanX;
@@ -58,6 +58,15 @@ public class MenuScreen extends ScreenAdapter {
 		this.title = new Sprite(Deliverance.assetManager.get("menu_sprites/title.png", Texture.class));
 		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_01.png", Texture.class));
 		this.parcel = new Sprite(Deliverance.assetManager.get("game_sprites/box.png", Texture.class));
+
+		this.button_x = new Sprite(Deliverance.assetManager.get("menu_sprites/button_x.png", Texture.class));
+		this.button_settings = new Sprite(Deliverance.assetManager.get("menu_sprites/button_settings.png", Texture.class));
+		this.button_achievements = new Sprite(Deliverance.assetManager.get("menu_sprites/button_achievement.png", Texture.class));
+		this.button_tutorial = new Sprite(Deliverance.assetManager.get("menu_sprites/button_tutorial.png", Texture.class));
+		this.button_van = new Sprite(Deliverance.assetManager.get("menu_sprites/button_van.png", Texture.class));
+		this.button_back = new Sprite(Deliverance.assetManager.get("menu_sprites/button_back.png", Texture.class));
+		this.button_endless = new Sprite(Deliverance.assetManager.get("menu_sprites/button_endless.png", Texture.class));
+		this.button_challenge = new Sprite(Deliverance.assetManager.get("menu_sprites/button_challenge.png", Texture.class));
 
 		// Animation timer
 		timer = new Timer();
@@ -129,7 +138,18 @@ public class MenuScreen extends ScreenAdapter {
 		spriteBatch.draw(van, vanX, 10, van.getWidth() * 1.5f, van.getHeight() * 1.5f);
 
 		// Title
-		spriteBatch.draw(title, 70, 180);
+		spriteBatch.draw(title, 70, 200);
+
+		// Main buttons
+		spriteBatch.draw(button_endless, 145, 110);
+		spriteBatch.draw(button_challenge, 335, 110);
+
+		// Small buttons
+		spriteBatch.draw(button_x, 595, 5);
+		spriteBatch.draw(button_settings, 5, 5);
+		spriteBatch.draw(button_van, 50, 5);
+		spriteBatch.draw(button_achievements, 95, 5);
+		spriteBatch.draw(button_tutorial, 140, 5);
 
 		spriteBatch.end();
 		
