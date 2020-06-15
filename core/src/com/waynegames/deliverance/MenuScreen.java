@@ -25,7 +25,7 @@ public class MenuScreen extends ScreenAdapter {
 
 	private Timer timer;
 
-	private Sprite background, van, parcel;
+	private Sprite background, title, van, parcel;
 
 	private static int animStage;
 	private static float vanX;
@@ -55,6 +55,7 @@ public class MenuScreen extends ScreenAdapter {
 
 		// Load menu sprites
 		this.background = new Sprite(Deliverance.assetManager.get("menu_sprites/menu_background.png", Texture.class));
+		this.title = new Sprite(Deliverance.assetManager.get("menu_sprites/title.png", Texture.class));
 		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_01.png", Texture.class));
 		this.parcel = new Sprite(Deliverance.assetManager.get("game_sprites/box.png", Texture.class));
 
@@ -119,12 +120,16 @@ public class MenuScreen extends ScreenAdapter {
 		shapeRenderer.setProjectionMatrix(orthographicCamera.combined);
 		spriteBatch.setProjectionMatrix(orthographicCamera.combined);
 
-		// Draw background
 		spriteBatch.begin();
+
+		// Draw background
 		spriteBatch.draw(background, 0, 0);
 
 		spriteBatch.draw(parcel, parcelX, parcelY, parcel.getWidth() * 1.5f, parcel.getHeight() * 1.5f);
 		spriteBatch.draw(van, vanX, 10, van.getWidth() * 1.5f, van.getHeight() * 1.5f);
+
+		// Title
+		spriteBatch.draw(title, 70, 180);
 
 		spriteBatch.end();
 		
