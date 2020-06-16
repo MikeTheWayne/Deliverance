@@ -16,7 +16,7 @@ import java.util.Random;
 public class MenuScreen extends ScreenAdapter {
 	private final int TICKS_PER_SECOND = 30;
 
-	private Game game;
+	private static Game game;
 
 	private SpriteBatch spriteBatch;
 	private ShapeRenderer shapeRenderer;
@@ -25,16 +25,20 @@ public class MenuScreen extends ScreenAdapter {
 
 	private Timer timer;
 
-	private Sprite background, title, van, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, button_challenge;
+	private Sprite background, title, van, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, button_challenge, buttondown_big, buttondown_small;
 
 	private static int animStage;
 	private static float vanX;
 	private static float parcelX, parcelY, parcelVY;
 	private static int parcelsLeft;
 
-	public MenuScreen(Deliverance game) {
+	private static int buttonDown;
 
-		this.game = game;
+	private static Menus currentMenu;
+
+	public MenuScreen(Game game) {
+
+		MenuScreen.game = game;
 
 		final Random random = new Random();
 
@@ -43,6 +47,10 @@ public class MenuScreen extends ScreenAdapter {
 		parcelX = -20;
 		parcelY = 35;
 		parcelVY = random.nextInt(40) + 20;
+
+		buttonDown = -1;
+
+		currentMenu = Menus.MAIN;
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -67,6 +75,12 @@ public class MenuScreen extends ScreenAdapter {
 		this.button_back = new Sprite(Deliverance.assetManager.get("menu_sprites/button_back.png", Texture.class));
 		this.button_endless = new Sprite(Deliverance.assetManager.get("menu_sprites/button_endless.png", Texture.class));
 		this.button_challenge = new Sprite(Deliverance.assetManager.get("menu_sprites/button_challenge.png", Texture.class));
+
+		this.buttondown_big = new Sprite(Deliverance.assetManager.get("menu_sprites/button_big_down.png", Texture.class));
+		this.buttondown_small = new Sprite(Deliverance.assetManager.get("menu_sprites/button_small_down.png", Texture.class));
+
+		// Input
+		Gdx.input.setInputProcessor(new MenuInput(orthographicCamera));
 
 		// Animation timer
 		timer = new Timer();
@@ -137,19 +151,45 @@ public class MenuScreen extends ScreenAdapter {
 		spriteBatch.draw(parcel, parcelX, parcelY, parcel.getWidth() * 1.5f, parcel.getHeight() * 1.5f);
 		spriteBatch.draw(van, vanX, 10, van.getWidth() * 1.5f, van.getHeight() * 1.5f);
 
-		// Title
-		spriteBatch.draw(title, 70, 200);
+		switch (currentMenu) {
 
-		// Main buttons
-		spriteBatch.draw(button_endless, 145, 110);
-		spriteBatch.draw(button_challenge, 335, 110);
+			case MAIN:
+				// Title
+				spriteBatch.draw(title, 70, 200);
 
-		// Small buttons
-		spriteBatch.draw(button_x, 595, 5);
-		spriteBatch.draw(button_settings, 5, 5);
-		spriteBatch.draw(button_van, 50, 5);
-		spriteBatch.draw(button_achievements, 95, 5);
-		spriteBatch.draw(button_tutorial, 140, 5);
+				// Main buttons
+				spriteBatch.draw(button_endless, 145, 110);
+				spriteBatch.draw(button_challenge, 335, 110);
+
+				// Small buttons
+				spriteBatch.draw(button_x, 595, 5);
+				spriteBatch.draw(button_settings, 5, 5);
+				spriteBatch.draw(button_van, 50, 5);
+				spriteBatch.draw(button_achievements, 95, 5);
+				spriteBatch.draw(button_tutorial, 140, 5);
+
+				// Button Down
+				switch (buttonDown) {
+					case 0:
+					case 1:
+						spriteBatch.draw(buttondown_big, 145 + 190 * buttonDown, 110);
+						break;
+					case 2:
+					case 3:
+					case 4:
+					case 5:
+						spriteBatch.draw(buttondown_small, 5 + 45 * (buttonDown - 2), 5);
+						break;
+					case 6:
+						spriteBatch.draw(buttondown_small, 595, 5);
+						break;
+				}
+				break;
+
+			case SETTINGS:
+				break;
+
+		}
 
 		spriteBatch.end();
 		
@@ -161,5 +201,17 @@ public class MenuScreen extends ScreenAdapter {
 
 		spriteBatch.dispose();
 		shapeRenderer.dispose();
+	}
+
+	public static Menus getCurrentMenu() {
+		return currentMenu;
+	}
+
+	public static void setButtonDown(int buttonDown) {
+		MenuScreen.buttonDown = buttonDown;
+	}
+
+	public static Game getGame() {
+		return game;
 	}
 }

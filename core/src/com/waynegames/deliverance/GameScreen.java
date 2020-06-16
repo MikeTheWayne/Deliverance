@@ -64,9 +64,8 @@ public class GameScreen extends ScreenAdapter {
 	private static Contract[] contracts;
 
 	private static float scoreMultiplier;
-	private static float penaltyMultiplier;
 
-	GameScreen(Deliverance game, GameMode gameMode, int lives, int days) {
+	GameScreen(Game game, GameMode gameMode, int lives, int days) {
 
 		this.game = game;
 
@@ -103,8 +102,7 @@ public class GameScreen extends ScreenAdapter {
 
 		gameOver = false;
 
-		scoreMultiplier = 0;
-		penaltyMultiplier = 0;
+		scoreMultiplier = 1f;
 
 		generateContracts();
 
@@ -165,6 +163,9 @@ public class GameScreen extends ScreenAdapter {
 
 		// Set the input processor
 		Gdx.input.setInputProcessor(new GameInput(orthographicCamera));
+
+		// Start the threads
+		GameThreads.run();
 
 	}
 
@@ -814,9 +815,5 @@ public class GameScreen extends ScreenAdapter {
 
 	public static float getScoreMultiplier() {
 		return scoreMultiplier;
-	}
-
-	public static float getPenaltyMultiplier() {
-		return penaltyMultiplier;
 	}
 }
