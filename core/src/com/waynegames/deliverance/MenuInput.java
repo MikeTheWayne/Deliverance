@@ -44,8 +44,10 @@ public class MenuInput extends InputAdapter {
 						MenuScreen.setButtonDown(4);
 					} else if(tX >= 140 && tX <= 180) {
 						MenuScreen.setButtonDown(5);
-					} else if(tX >= 595) {
+					} else if(tX >= 540 && tX <= 590) {
 						MenuScreen.setButtonDown(6);
+					} else if(tX >= 595) {
+						MenuScreen.setButtonDown(7);
 					}
 				}
 				break;
@@ -59,6 +61,10 @@ public class MenuInput extends InputAdapter {
 				break;
 
 			case SETTINGS:
+			case CUSTOMISATION:
+				if(tX <= 45 && tY >= 315) {
+					MenuScreen.setButtonDown(0);
+				}
 				break;
 		}
 
@@ -99,12 +105,14 @@ public class MenuInput extends InputAdapter {
 					}
 				} else if(tY <= 45) {
 					if(tX <= 45) {
-
+						MenuScreen.setCurrentMenu(Menus.SETTINGS);
 					} else if(tX >= 50 && tX <= 90) {
-
+						MenuScreen.setCurrentMenu(Menus.CUSTOMISATION);
 					} else if(tX >= 95 && tX <= 135) {
-
+						// Achievements
 					} else if(tX >= 140 && tX <= 180) {
+						// Leaderboards
+					} else if(tX >= 540 && tX <= 590) {
 
 					} else if(tX >= 595) {
 						Gdx.app.exit();
@@ -122,6 +130,10 @@ public class MenuInput extends InputAdapter {
 				break;
 
 			case SETTINGS:
+			case CUSTOMISATION:
+				if(tX <= 45 && tY >= 315) {
+					MenuScreen.setCurrentMenu(Menus.MAIN);
+				}
 				break;
 		}
 

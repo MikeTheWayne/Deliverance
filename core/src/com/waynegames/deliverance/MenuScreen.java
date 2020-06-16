@@ -30,7 +30,7 @@ public class MenuScreen extends ScreenAdapter {
 	private static Timer timer;
 
 	private Sprite background, title, van, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, button_challenge, buttondown_big, buttondown_small,
-	button_again, buttondown_med;
+	button_again, buttondown_med, button_leaderboards;
 	private Sprite[] scoreDigits;
 
 	private BitmapFont bsh_40;
@@ -87,6 +87,7 @@ public class MenuScreen extends ScreenAdapter {
 		this.button_endless = new Sprite(Deliverance.assetManager.get("menu_sprites/button_endless.png", Texture.class));
 		this.button_challenge = new Sprite(Deliverance.assetManager.get("menu_sprites/button_challenge.png", Texture.class));
 		this.button_again = new Sprite(Deliverance.assetManager.get("menu_sprites/button_again.png", Texture.class));
+		this.button_leaderboards = new Sprite(Deliverance.assetManager.get("menu_sprites/button_leaderboards.png", Texture.class));
 
 		this.buttondown_big = new Sprite(Deliverance.assetManager.get("menu_sprites/button_big_down.png", Texture.class));
 		this.buttondown_small = new Sprite(Deliverance.assetManager.get("menu_sprites/button_small_down.png", Texture.class));
@@ -199,11 +200,12 @@ public class MenuScreen extends ScreenAdapter {
 				spriteBatch.draw(button_challenge, 335, 110);
 
 				// Small buttons
+				spriteBatch.draw(button_tutorial, 550, 5);
 				spriteBatch.draw(button_x, 595, 5);
 				spriteBatch.draw(button_settings, 5, 5);
 				spriteBatch.draw(button_van, 50, 5);
 				spriteBatch.draw(button_achievements, 95, 5);
-				spriteBatch.draw(button_tutorial, 140, 5);
+				spriteBatch.draw(button_leaderboards, 140, 5);
 
 				// Button Down
 				switch (buttonDown) {
@@ -218,7 +220,8 @@ public class MenuScreen extends ScreenAdapter {
 						spriteBatch.draw(buttondown_small, 5 + 45 * (buttonDown - 2), 5);
 						break;
 					case 6:
-						spriteBatch.draw(buttondown_small, 595, 5);
+					case 7:
+						spriteBatch.draw(buttondown_small, 550 + 45 * (buttonDown - 6), 5);
 						break;
 				}
 				break;
@@ -253,6 +256,42 @@ public class MenuScreen extends ScreenAdapter {
 				break;
 
 			case SETTINGS:
+
+				// Title
+				GlyphLayout settingsGlyph = new GlyphLayout(bsh_40, "SETTINGS");
+				bsh_40.draw(spriteBatch, settingsGlyph, 320 - settingsGlyph.width / 2f, 350);
+
+				// Buttons
+				spriteBatch.draw(button_back, 5, 315);
+
+				// Button Down
+				switch (buttonDown) {
+					case 0:
+						spriteBatch.draw(buttondown_small, 5, 315);
+						break;
+				}
+
+				break;
+
+			case CUSTOMISATION:
+
+				// Title
+				GlyphLayout customGlyph = new GlyphLayout(bsh_40, "VAN");
+				bsh_40.draw(spriteBatch, customGlyph, 320 - customGlyph.width / 2f, 350);
+
+				// Buttons
+				spriteBatch.draw(button_back, 5, 315);
+
+				// Button Down
+				switch (buttonDown) {
+					case 0:
+						spriteBatch.draw(buttondown_small, 5, 315);
+						break;
+				}
+
+				break;
+
+			case TUTORIAL:
 				break;
 
 		}
