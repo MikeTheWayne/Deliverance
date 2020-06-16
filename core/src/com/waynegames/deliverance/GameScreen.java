@@ -21,7 +21,7 @@ public class GameScreen extends ScreenAdapter {
 	static final int PIXELS_PER_METRE = 20;
 	private static final int FIRST_STREET_START_X = 2400;
 
-	private Game game;
+	private static Game game;
 
 	private SpriteBatch spriteBatch;
 	private ShapeRenderer shapeRenderer;
@@ -67,7 +67,7 @@ public class GameScreen extends ScreenAdapter {
 
 	GameScreen(Game game, GameMode gameMode, int lives, int days) {
 
-		this.game = game;
+		GameScreen.game = game;
 
 		vanObj = new Van();
 		parcels = new Parcel[100];
@@ -455,9 +455,18 @@ public class GameScreen extends ScreenAdapter {
 	public void dispose() {
 		super.dispose();
 
+		GameThreads.stop();
+
 		spriteBatch.dispose();
 		shapeRenderer.dispose();
 		cbri_12.dispose();
+	}
+
+	@Override
+	public void resume() {
+		super.resume();
+
+		GameThreads.run();
 	}
 
 	private void generateShopBanners() {
@@ -815,5 +824,13 @@ public class GameScreen extends ScreenAdapter {
 
 	public static float getScoreMultiplier() {
 		return scoreMultiplier;
+	}
+
+	public static Game getGame() {
+		return game;
+	}
+
+	public static int getScore() {
+		return score;
 	}
 }

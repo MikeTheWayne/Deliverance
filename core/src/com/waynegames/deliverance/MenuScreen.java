@@ -6,11 +6,15 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
 
+import java.awt.Menu;
 import java.util.Random;
 
 public class MenuScreen extends ScreenAdapter {
@@ -23,9 +27,13 @@ public class MenuScreen extends ScreenAdapter {
 
 	private OrthographicCamera orthographicCamera;
 
-	private Timer timer;
+	private static Timer timer;
 
-	private Sprite background, title, van, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, button_challenge, buttondown_big, buttondown_small;
+	private Sprite background, title, van, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, button_challenge, buttondown_big, buttondown_small,
+	button_again, buttondown_med;
+	private Sprite[] scoreDigits;
+
+	private BitmapFont bsh_40;
 
 	private static int animStage;
 	private static float vanX;
@@ -36,7 +44,7 @@ public class MenuScreen extends ScreenAdapter {
 
 	private static Menus currentMenu;
 
-	public MenuScreen(Game game) {
+	public MenuScreen(Game game, Menus targetMenu) {
 
 		MenuScreen.game = game;
 
@@ -50,7 +58,7 @@ public class MenuScreen extends ScreenAdapter {
 
 		buttonDown = -1;
 
-		currentMenu = Menus.MAIN;
+		currentMenu = targetMenu;
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -60,6 +68,9 @@ public class MenuScreen extends ScreenAdapter {
 
 		this.orthographicCamera.position.set(this.orthographicCamera.viewportWidth / 2f, this.orthographicCamera.viewportHeight / 2f, 0);
 		this.orthographicCamera.update();
+
+		// Load Fonts
+		this.bsh_40 = new BitmapFont(Gdx.files.internal("fonts/bsh_40.fnt"));
 
 		// Load menu sprites
 		this.background = new Sprite(Deliverance.assetManager.get("menu_sprites/menu_background.png", Texture.class));
@@ -75,9 +86,17 @@ public class MenuScreen extends ScreenAdapter {
 		this.button_back = new Sprite(Deliverance.assetManager.get("menu_sprites/button_back.png", Texture.class));
 		this.button_endless = new Sprite(Deliverance.assetManager.get("menu_sprites/button_endless.png", Texture.class));
 		this.button_challenge = new Sprite(Deliverance.assetManager.get("menu_sprites/button_challenge.png", Texture.class));
+		this.button_again = new Sprite(Deliverance.assetManager.get("menu_sprites/button_again.png", Texture.class));
 
 		this.buttondown_big = new Sprite(Deliverance.assetManager.get("menu_sprites/button_big_down.png", Texture.class));
 		this.buttondown_small = new Sprite(Deliverance.assetManager.get("menu_sprites/button_small_down.png", Texture.class));
+		this.buttondown_med = new Sprite(Deliverance.assetManager.get("menu_sprites/button_med_down.png", Texture.class));
+
+		// Score digits
+		this.scoreDigits = new Sprite[10];
+		for(int i = 0; i < 10; i++) {
+			this.scoreDigits[i] = new Sprite(new TextureRegion(Deliverance.assetManager.get("game_sprites/score_digits.png", Texture.class), 18 * (i % 5), 22 * (i / 5), 18, 22));
+		}
 
 		// Input
 		Gdx.input.setInputProcessor(new MenuInput(orthographicCamera));
@@ -151,6 +170,24 @@ public class MenuScreen extends ScreenAdapter {
 		spriteBatch.draw(parcel, parcelX, parcelY, parcel.getWidth() * 1.5f, parcel.getHeight() * 1.5f);
 		spriteBatch.draw(van, vanX, 10, van.getWidth() * 1.5f, van.getHeight() * 1.5f);
 
+		spriteBatch.end();
+
+		// Screen tint
+
+		if(currentMenu != Menus.MAIN) {
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+			shapeRenderer.setColor(0, 0, 0, 0.5f);
+			shapeRenderer.rect(0, 0, 640, 360);
+
+			shapeRenderer.end();
+			Gdx.gl.glDisable(GL20.GL_BLEND);
+		}
+
+		spriteBatch.begin();
+
 		switch (currentMenu) {
 
 			case MAIN:
@@ -186,6 +223,35 @@ public class MenuScreen extends ScreenAdapter {
 				}
 				break;
 
+			case GAMEOVER:
+
+				// Title
+				GlyphLayout gameOverGlyph = new GlyphLayout(bsh_40, "GAME OVER");
+				bsh_40.draw(spriteBatch, gameOverGlyph, 320 - gameOverGlyph.width / 2f, 350);
+
+				// Score
+				String scoreString = String.valueOf(GameScreen.getScore());
+
+				for(int i = 0; i < scoreString.length(); i++) {
+					spriteBatch.draw(scoreDigits[Integer.parseInt(scoreString.substring(i, i + 1))], 320 - 9 * scoreString.length() + 18 * i, 280 - 22);
+				}
+
+				// Buttons
+				spriteBatch.draw(button_back, 5, 5);
+				spriteBatch.draw(button_again, 260, 5);
+
+				// Button Down
+				switch (buttonDown) {
+					case 0:
+						spriteBatch.draw(buttondown_small, 5, 5);
+						break;
+					case 1:
+						spriteBatch.draw(buttondown_med, 260, 5, 120, 60);
+						break;
+				}
+
+				break;
+
 			case SETTINGS:
 				break;
 
@@ -199,6 +265,8 @@ public class MenuScreen extends ScreenAdapter {
 	public void dispose() {
 		super.dispose();
 
+		timer.stop();
+
 		spriteBatch.dispose();
 		shapeRenderer.dispose();
 	}
@@ -207,11 +275,21 @@ public class MenuScreen extends ScreenAdapter {
 		return currentMenu;
 	}
 
+	public static void setCurrentMenu(Menus currentMenu) {
+		MenuScreen.currentMenu = currentMenu;
+	}
+
 	public static void setButtonDown(int buttonDown) {
 		MenuScreen.buttonDown = buttonDown;
 	}
 
 	public static Game getGame() {
 		return game;
+	}
+
+	public static void stopTimer() {
+		if(timer != null) {
+			timer.stop();
+		}
 	}
 }

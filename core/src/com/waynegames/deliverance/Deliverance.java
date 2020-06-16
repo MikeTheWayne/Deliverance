@@ -18,7 +18,7 @@ public class Deliverance extends Game {
 
 		// Load the game screen
 		//setScreen(new GameScreen(this, GameMode.ENDLESS, 3, 3));
-		setScreen(new MenuScreen(this));
+		setScreen(new MenuScreen(this, Menus.MAIN));
 
 		// Start game threads
 		//GameThreads.run();

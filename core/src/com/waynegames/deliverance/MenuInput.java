@@ -50,6 +50,14 @@ public class MenuInput extends InputAdapter {
 				}
 				break;
 
+			case GAMEOVER:
+				if(tX <= 45 && tY <= 45) {
+					MenuScreen.setButtonDown(0);
+				} else if(tX >= 260 && tX <= 380 && tY >= 5 && tY <= 65) {
+					MenuScreen.setButtonDown(1);
+				}
+				break;
+
 			case SETTINGS:
 				break;
 		}
@@ -83,8 +91,10 @@ public class MenuInput extends InputAdapter {
 			case MAIN:
 				if(tY >= 110 && tY <= 190) {
 					if(tX >= 145 && tX <= 305) {
+						MenuScreen.stopTimer();
 						MenuScreen.getGame().setScreen(new GameScreen(MenuScreen.getGame(), GameMode.ENDLESS, 3, 3));
 					} else if(tX >= 335 && tX <= 495) {
+						MenuScreen.stopTimer();
 						MenuScreen.getGame().setScreen(new GameScreen(MenuScreen.getGame(), GameMode.CHALLENGE, 3, 3));
 					}
 				} else if(tY <= 45) {
@@ -99,6 +109,15 @@ public class MenuInput extends InputAdapter {
 					} else if(tX >= 595) {
 						Gdx.app.exit();
 					}
+				}
+				break;
+
+			case GAMEOVER:
+				if(tX <= 45 && tY <= 45) {
+					MenuScreen.setCurrentMenu(Menus.MAIN);
+				} else if(tX >= 260 && tX <= 380 && tY >= 5 && tY <= 65) {
+					MenuScreen.stopTimer();
+					MenuScreen.getGame().setScreen(new GameScreen(MenuScreen.getGame(), GameScreen.getGameMode(), 3, 3));
 				}
 				break;
 

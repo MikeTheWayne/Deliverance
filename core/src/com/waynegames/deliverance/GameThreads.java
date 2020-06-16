@@ -19,6 +19,12 @@ public class GameThreads {
 
 	}
 
+	static void stop() {
+
+		timer.stop();
+
+	}
+
 	private static void mainThread() {
 		timer.scheduleTask(new Timer.Task() {
 			@Override
@@ -97,6 +103,8 @@ public class GameThreads {
 						GameScreen.setBlackScreenOpacity(GameScreen.getBlackScreenOpacity() + 1f / (TICKS_PER_SECOND / 2f));
 					} else if(GameScreen.isGameOver()) {
 						// Return to menu
+						GameThreads.stop();
+						GameScreen.getGame().setScreen(new MenuScreen(GameScreen.getGame(), Menus.GAMEOVER));
 					} else if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
 						GameScreen.incrementDay();
 					}
