@@ -33,16 +33,31 @@ public class GameInput extends InputAdapter {
 		float tX = input.x;
 		float tY = input.y;
 
-		if(GameScreen.getGameMode() == GameMode.ENDLESS && !GameScreen.isGameOver() && GameScreen.getBlackScreenOpacity() >= 1f) {
-			// Contract selection
-			if(tY >= 75 && tY <= 225) {
-				if(tX >= 110 && tX <= 230) {
-					GameScreen.selectContract(0);
-				} else if(tX >= 260 && tX <= 380) {
-					GameScreen.selectContract(1);
-				} else if(tX >= 410 && tX <= 530) {
-					GameScreen.selectContract(2);
+		if(!GameScreen.isGameOver() && GameScreen.getBlackScreenOpacity() >= 1f) {
+
+			if(tX < 100 && tY > 315) {
+				// Save game (including contracts)
+
+				// Return to menu
+				GameThreads.stop();
+				GameScreen.getGame().setScreen(new MenuScreen(GameScreen.getGame(), Menus.MAIN));
+			}
+
+			if(GameScreen.getGameMode() == GameMode.ENDLESS) {
+
+				// Contract selection
+				if (tY >= 75 && tY <= 225) {
+					if (tX >= 110 && tX <= 230) {
+						GameScreen.selectContract(0);
+					} else if (tX >= 260 && tX <= 380) {
+						GameScreen.selectContract(1);
+					} else if (tX >= 410 && tX <= 530) {
+						GameScreen.selectContract(2);
+					}
 				}
+
+			} else if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
+				GameScreen.incrementDay();
 			}
 
 		} else {

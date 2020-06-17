@@ -106,8 +106,6 @@ public class GameThreads {
 						// Return to menu
 						GameThreads.stop();
 						GameScreen.getGame().setScreen(new MenuScreen(GameScreen.getGame(), Menus.GAMEOVER));
-					} else if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
-						GameScreen.incrementDay();
 					}
 
 				} else if(GameScreen.getBlackScreenOpacity() > 0 && GameScreen.getHour() < 21) {

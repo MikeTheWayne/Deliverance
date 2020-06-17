@@ -30,7 +30,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2, cls_10, arb_24, arl_24, cbri_16;
 
-	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury, clock, lifedown;
+	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury, clock, lifedown, button_exit;
 	private Sprite[] pedals, scoreDigits;
 
 	private static float blackScreenOpacity;
@@ -117,11 +117,6 @@ public class GameScreen extends ScreenAdapter {
 
 		generateContracts();
 
-		if(gameMode == GameMode.CHALLENGE) {
-			// Start day without contract screen
-			incrementDay();
-		}
-
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
@@ -161,6 +156,8 @@ public class GameScreen extends ScreenAdapter {
 		this.clock = new Sprite(Deliverance.assetManager.get("game_sprites/clock.png", Texture.class));
 
 		this.lifedown = new Sprite(Deliverance.assetManager.get("game_sprites/lifedown.png", Texture.class));
+
+		this.button_exit = new Sprite(Deliverance.assetManager.get("game_sprites/button_exit.png", Texture.class));
 
 		this.pedals = new Sprite[4];
 		for(int i = 0; i < 4; i++) {
@@ -418,43 +415,62 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 
 		// Contract selection
-		if(gameMode == GameMode.ENDLESS && !gameOver && blackScreenOpacity >= 1f) {
+		if(!gameOver && blackScreenOpacity >= 1f && hour == 21) {
 
-			float sat1 = 0.3f;
-			float sat2 = 0.2f;
-			float bCol = 0.8f;
-			float tCol = 0.5f;
+			if(gameMode == GameMode.ENDLESS) {
 
-			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+				float sat1 = 0.3f;
+				float sat2 = 0.2f;
+				float bCol = 0.8f;
+				float tCol = 0.5f;
 
-			// Draw contract boxes
-			shapeRenderer.rect(110, 75, 120, 150, new Color(sat1, bCol, sat1, 1f), new Color(sat1, bCol, sat1, 1f), new Color(sat2, tCol, sat2, 1f), new Color(sat2, tCol, sat2, 1f));
-			shapeRenderer.rect(260, 75, 120, 150, new Color(sat1, sat1, bCol, 1f), new Color(sat1, sat1, bCol, 1f), new Color(sat2, sat2, tCol, 1f), new Color(sat2, sat2, tCol, 1f));
-			shapeRenderer.rect(410, 75, 120, 150, new Color(bCol, sat1, sat1, 1f), new Color(bCol, sat1, sat1, 1f), new Color(tCol, sat2, sat2, 1f), new Color(tCol, sat2, sat2, 1f));
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-			shapeRenderer.end();
+				// Draw contract boxes
+				shapeRenderer.rect(110, 75, 120, 150, new Color(sat1, bCol, sat1, 1f), new Color(sat1, bCol, sat1, 1f), new Color(sat2, tCol, sat2, 1f), new Color(sat2, tCol, sat2, 1f));
+				shapeRenderer.rect(260, 75, 120, 150, new Color(sat1, sat1, bCol, 1f), new Color(sat1, sat1, bCol, 1f), new Color(sat2, sat2, tCol, 1f), new Color(sat2, sat2, tCol, 1f));
+				shapeRenderer.rect(410, 75, 120, 150, new Color(bCol, sat1, sat1, 1f), new Color(bCol, sat1, sat1, 1f), new Color(tCol, sat2, sat2, 1f), new Color(tCol, sat2, sat2, 1f));
+
+				shapeRenderer.end();
+
+				spriteBatch.begin();
+				cbri_16.setColor(1f, 1f, 1f, 1f);
+				arb_12.setColor(1f, 1f, 1f, 1f);
+
+				// Draw contract information
+				for (int i = 0; i < 3; i++) {
+					DecimalFormat df = new DecimalFormat("0.00");
+
+					cbri_16.draw(spriteBatch, "Parcels: " + contracts[i].getParcels(), 110 + 150 * i + 5, 225 - 5);
+					cbri_16.draw(spriteBatch, "Density: " + df.format(contracts[i].getDensity()), 110 + 150 * i + 5, 225 - 21);
+					cbri_16.draw(spriteBatch, "Score: x" + df.format(contracts[i].getScoreMultiplier()), 110 + 150 * i + 5, 225 - 53);
+
+					GlyphLayout acceptGlyph = new GlyphLayout(arb_12, "ACCEPT");
+					arb_12.draw(spriteBatch, acceptGlyph, 170 + 150 * i - acceptGlyph.width / 2f, 75 + 5 + acceptGlyph.height);
+				}
+
+				spriteBatch.end();
+			}
 
 			spriteBatch.begin();
-			cbri_16.setColor(1f, 1f, 1f, 1f);
-			arb_12.setColor(1f, 1f, 1f, 1f);
-
-			// Draw contract information
-			for(int i = 0; i < 3; i++) {
-				DecimalFormat df = new DecimalFormat("0.00");
-
-				cbri_16.draw(spriteBatch, "Parcels: " + contracts[i].getParcels(), 110 + 150 * i + 5, 225 - 5);
-				cbri_16.draw(spriteBatch, "Density: " + df.format(contracts[i].getDensity()), 110 + 150 * i + 5, 225 - 21);
-				cbri_16.draw(spriteBatch, "Score: x" + df.format(contracts[i].getScoreMultiplier()), 110 + 150 * i + 5, 225 - 53);
-
-				GlyphLayout acceptGlyph = new GlyphLayout(arb_12, "ACCEPT");
-				arb_12.draw(spriteBatch, acceptGlyph, 170 + 150 * i - acceptGlyph.width / 2f, 75 + 5 + acceptGlyph.height);
-			}
 
 			// Draw day
 			arb_24.setColor(1f, 1f, 1f, 1f);
 
 			GlyphLayout dayGlyph = new GlyphLayout(arb_24, "DAY " + (day + 1));
 			arb_24.draw(spriteBatch, dayGlyph, 320 - dayGlyph.width / 2f, 300);
+
+			// Instructions
+			GlyphLayout infoGlyph;
+			if(gameMode == GameMode.ENDLESS) {
+				infoGlyph = new GlyphLayout(cbri_16, "SELECT A CONTRACT TO CONTINUE");
+			} else{
+				infoGlyph = new GlyphLayout(cbri_16, "TAP SCREEN TO CONTINUE");
+			}
+			cbri_16.draw(spriteBatch, infoGlyph, 320 - infoGlyph.width / 2f, 10 + infoGlyph.height);
+
+			// Save & exit button
+			spriteBatch.draw(button_exit, 5, 315);
 
 			spriteBatch.end();
 
@@ -774,12 +790,12 @@ public class GameScreen extends ScreenAdapter {
 
 		GameThreads.setTimeStarted(false);
 
+		hour = 9;
+		minute = 0;
+
 		day++;
 
 		vanObj.setX(0);
-
-		hour = 9;
-		minute = 0;
 
 		dayEnd = false;
 
