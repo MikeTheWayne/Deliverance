@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
 
-import java.awt.Menu;
 import java.util.Random;
 
 public class MenuScreen extends ScreenAdapter {
@@ -44,6 +43,9 @@ public class MenuScreen extends ScreenAdapter {
 
 	private static Menus currentMenu;
 
+	private static float blackScreenOpacity;
+	private static GameMode targetMode;
+
 	public MenuScreen(Game game, Menus targetMenu) {
 
 		MenuScreen.game = game;
@@ -59,6 +61,9 @@ public class MenuScreen extends ScreenAdapter {
 		buttonDown = -1;
 
 		currentMenu = targetMenu;
+
+		blackScreenOpacity = (targetMenu == Menus.GAMEOVER) ? 1f : 0f;
+		targetMode = null;
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -144,6 +149,17 @@ public class MenuScreen extends ScreenAdapter {
 							animStage = 1;
 						}
 						break;
+				}
+
+				if(targetMode != null) {
+					if(blackScreenOpacity < 1f) {
+						blackScreenOpacity += 1f / (TICKS_PER_SECOND / 2f);
+					} else{
+						MenuScreen.stopTimer();
+						MenuScreen.getGame().setScreen(new GameScreen(MenuScreen.getGame(), targetMode, 3, 3));
+					}
+				} else if(blackScreenOpacity > 0) {
+					blackScreenOpacity -= 1f / (TICKS_PER_SECOND / 2f);
 				}
 
 			}
@@ -297,6 +313,17 @@ public class MenuScreen extends ScreenAdapter {
 		}
 
 		spriteBatch.end();
+
+		// Black Screen
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		shapeRenderer.setColor(0, 0, 0, blackScreenOpacity);
+		shapeRenderer.rect(0, 0, 640, 360);
+
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 		
 	}
 
@@ -330,5 +357,9 @@ public class MenuScreen extends ScreenAdapter {
 		if(timer != null) {
 			timer.stop();
 		}
+	}
+
+	public static void setTargetMode(GameMode targetMode) {
+		MenuScreen.targetMode = targetMode;
 	}
 }
