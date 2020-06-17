@@ -3,6 +3,7 @@ package com.waynegames.deliverance;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 
 import java.text.DecimalFormat;
@@ -242,6 +244,34 @@ public class MenuScreen extends ScreenAdapter {
 						spriteBatch.draw(buttondown_small, 550 + 45 * (buttonDown - 6), 5);
 						break;
 				}
+
+				// Tooltips
+				switch (buttonDown) {
+					case 0:
+						drawTooltip(145, 110, "Unlimited days, but only 3 misses allowed", true);
+						break;
+					case 1:
+						drawTooltip(335, 110, "3 day challenge, unlimited misses", true);
+						break;
+					case 2:
+						drawTooltip(5, 45, "Settings", false);
+						break;
+					case 3:
+						drawTooltip(50, 45, "Van Customisation", false);
+						break;
+					case 4:
+						drawTooltip(95, 45, "Achievements", false);
+						break;
+					case 5:
+						drawTooltip(140, 45, "Leaderboards", false);
+						break;
+					case 6:
+						drawTooltip(550, 45, "Tutorial", false);
+						break;
+					case 7:
+						drawTooltip(595, 45, "Exit", false);
+						break;
+				}
 				break;
 
 			case GAMEOVER:
@@ -348,6 +378,26 @@ public class MenuScreen extends ScreenAdapter {
 
 		spriteBatch.dispose();
 		shapeRenderer.dispose();
+	}
+
+	private void drawTooltip(float x, float y, String text, boolean dangle) {
+
+		GlyphLayout ttGlyph = new GlyphLayout(cbri_16, text, new Color(1f, 1f, 1f, 1f), 150, Align.left, true);
+
+		spriteBatch.end();
+
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		shapeRenderer.setColor(0, 0, 0, 0.6f);
+		shapeRenderer.rect(x, y - ((dangle) ? ttGlyph.height + 10 : 0), ttGlyph.width + 10, ttGlyph.height + 10);
+
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+
+		spriteBatch.begin();
+		cbri_16.draw(spriteBatch, ttGlyph, x + 5, y + ((dangle) ? -5 : 5 + ttGlyph.height));
 	}
 
 	public static Menus getCurrentMenu() {
