@@ -65,6 +65,12 @@ public class GameScreen extends ScreenAdapter {
 
 	private static float scoreMultiplier;
 
+	// Statistics
+	private static int parcelsThrown;
+	private static int parcelsHit;
+	private static float averageSpeed;
+	private static int drivingSeconds;
+
 	GameScreen(Game game, GameMode gameMode, int lives, int days) {
 
 		GameScreen.game = game;
@@ -103,6 +109,11 @@ public class GameScreen extends ScreenAdapter {
 		gameOver = false;
 
 		scoreMultiplier = 1f;
+
+		parcelsThrown = 0;
+		parcelsHit = 0;
+		averageSpeed = 0;
+		drivingSeconds = 0;
 
 		generateContracts();
 
@@ -736,6 +747,7 @@ public class GameScreen extends ScreenAdapter {
 	public static void removeTarget() {
 		street.getTargets().remove(0);
 		parcelsLeft--;
+		parcelsThrown++;
 	}
 
 	public static float getParcelDensity() {
@@ -832,5 +844,25 @@ public class GameScreen extends ScreenAdapter {
 
 	public static int getScore() {
 		return score;
+	}
+
+	public static void incrementParcelsHit() {
+		parcelsHit++;
+	}
+
+	public static void calculateAverageSpeed() {
+		averageSpeed += (vanObj.getSpeed() - averageSpeed) / ++drivingSeconds;
+	}
+
+	public static int getParcelsHit() {
+		return parcelsHit;
+	}
+
+	public static int getParcelsThrown() {
+		return parcelsThrown;
+	}
+
+	public static float getAverageSpeed() {
+		return averageSpeed;
 	}
 }

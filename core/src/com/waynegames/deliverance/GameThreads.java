@@ -63,6 +63,7 @@ public class GameThreads {
 
 							if(p.getTarget() == Math.floor((van.getX() - street.getStartX() + p.getX()) / 100f) + 1) {
 								GameScreen.incrementScore((int) Math.ceil(100 * GameScreen.getScoreMultiplier()));
+								GameScreen.incrementParcelsHit();
 							} else{
 
 								if(GameScreen.getGameMode() == GameMode.ENDLESS) {
@@ -130,6 +131,8 @@ public class GameThreads {
 					} else {
 						GameScreen.setMinute(GameScreen.getMinute() + 5);
 					}
+
+					GameScreen.calculateAverageSpeed();
 				}
 
 

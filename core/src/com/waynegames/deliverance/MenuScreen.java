@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
 
+import java.text.DecimalFormat;
 import java.util.Random;
 
 public class MenuScreen extends ScreenAdapter {
@@ -32,7 +33,7 @@ public class MenuScreen extends ScreenAdapter {
 	button_again, buttondown_med, button_leaderboards;
 	private Sprite[] scoreDigits;
 
-	private BitmapFont bsh_40;
+	private BitmapFont bsh_40, cbri_16;
 
 	private static int animStage;
 	private static float vanX;
@@ -76,6 +77,7 @@ public class MenuScreen extends ScreenAdapter {
 
 		// Load Fonts
 		this.bsh_40 = new BitmapFont(Gdx.files.internal("fonts/bsh_40.fnt"));
+		this.cbri_16 = new BitmapFont(Gdx.files.internal("fonts/cbri_16.fnt"));
 
 		// Load menu sprites
 		this.background = new Sprite(Deliverance.assetManager.get("menu_sprites/menu_background.png", Texture.class));
@@ -254,6 +256,17 @@ public class MenuScreen extends ScreenAdapter {
 				for(int i = 0; i < scoreString.length(); i++) {
 					spriteBatch.draw(scoreDigits[Integer.parseInt(scoreString.substring(i, i + 1))], 320 - 9 * scoreString.length() + 18 * i, 280 - 22);
 				}
+
+				// Statistics
+				DecimalFormat df = new DecimalFormat("0.00");
+
+				GlyphLayout parcelsDelivered = new GlyphLayout(cbri_16, "Parcels Delivered: " + GameScreen.getParcelsHit());
+				GlyphLayout accuracy = new GlyphLayout(cbri_16, "Accuracy: " + df.format(GameScreen.getParcelsHit() / (float) GameScreen.getParcelsThrown() * 100) + "%");
+				GlyphLayout averageSpeed = new GlyphLayout(cbri_16, "Average Speed: " + df.format(GameScreen.getAverageSpeed() * 2.237) + "mph");
+
+				cbri_16.draw(spriteBatch, parcelsDelivered, 320 - parcelsDelivered.width / 2f, 220);
+				cbri_16.draw(spriteBatch, accuracy, 320 - accuracy.width / 2f, 200);
+				cbri_16.draw(spriteBatch, averageSpeed, 320 - averageSpeed.width / 2f, 180);
 
 				// Buttons
 				spriteBatch.draw(button_back, 5, 5);
