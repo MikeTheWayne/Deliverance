@@ -151,7 +151,7 @@ public class GameScreen extends ScreenAdapter {
 
 		this.logo_hurlers = new Sprite(Deliverance.assetManager.get("game_sprites/logo_hurlers.png", Texture.class));
 
-		this.speedo = new Sprite(Deliverance.assetManager.get("game_sprites/speedometer.png", Texture.class));
+		this.speedo = new Sprite(Deliverance.assetManager.get("game_sprites/speedometer" + ((MenuScreen.isKmph()) ? "_kmph" : "") + ".png", Texture.class));
 		this.dial = new Sprite(Deliverance.assetManager.get("game_sprites/speedodial.png", Texture.class));
 		this.clock = new Sprite(Deliverance.assetManager.get("game_sprites/clock.png", Texture.class));
 

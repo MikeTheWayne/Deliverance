@@ -233,7 +233,6 @@ public class MenuScreen extends ScreenAdapter {
 		spriteBatch.end();
 
 		// Screen tint
-
 		if(currentMenu != Menus.MAIN) {
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -401,7 +400,7 @@ public class MenuScreen extends ScreenAdapter {
 
 				GlyphLayout parcelsDelivered = new GlyphLayout(cbri_16, "Parcels Delivered: " + GameScreen.getParcelsHit());
 				GlyphLayout accuracy = new GlyphLayout(cbri_16, "Accuracy: " + df.format(GameScreen.getParcelsHit() / (float) GameScreen.getParcelsThrown() * 100) + "%");
-				GlyphLayout averageSpeed = new GlyphLayout(cbri_16, "Average Speed: " + df.format(GameScreen.getAverageSpeed() * 2.237) + "mph");
+				GlyphLayout averageSpeed = new GlyphLayout(cbri_16, "Average Speed: " + ((kmph) ? df.format(GameScreen.getAverageSpeed() * 2.237 * 1.609) + "kmph" : df.format(GameScreen.getAverageSpeed() * 2.237) + "mph"));
 
 				cbri_16.draw(spriteBatch, parcelsDelivered, 320 - parcelsDelivered.width / 2f, 220);
 				cbri_16.draw(spriteBatch, accuracy, 320 - accuracy.width / 2f, 200);
@@ -494,10 +493,10 @@ public class MenuScreen extends ScreenAdapter {
 				DecimalFormat df2 = new DecimalFormat("0.00");
 
 				cbri_16.draw(spriteBatch, "Top Speed:", 200, 255);
-				cbri_16.draw(spriteBatch, "Acceleration (0-60):", 200, 235);
+				cbri_16.draw(spriteBatch, "Acceleration " + ((kmph) ? "(0-100)" : "(0-60):"), 200, 235);
 				cbri_16.draw(spriteBatch, "Braking:", 200, 215);
 
-				cbri_16.draw(spriteBatch, df2.format(maxSpeed) + "mph", 350, 255);
+				cbri_16.draw(spriteBatch, ((kmph) ? df2.format(maxSpeed * 1.609) + "kmph" : df2.format(maxSpeed) + "mph"), 350, 255);
 				cbri_16.draw(spriteBatch, df2.format(accel) + "s", 350, 235);
 				cbri_16.draw(spriteBatch, df2.format(brake) + "(m/s)/s", 350, 215);
 
@@ -630,5 +629,9 @@ public class MenuScreen extends ScreenAdapter {
 
 	public static void invertKmph() {
 		kmph = !kmph;
+	}
+
+	public static boolean isKmph() {
+		return kmph;
 	}
 }
