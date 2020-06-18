@@ -64,6 +64,15 @@ public class MenuInput extends InputAdapter {
 				if(tX <= 45 && tY >= 315) {
 					MenuScreen.setButtonDown(0);
 				}
+
+				// Sliders
+				if(tX >= 10 && tX <= 470) {
+					if(tY >= 240 && tY <= 270) {
+						MenuScreen.setSoundVolume((tX - 40) / 400);
+					} else if(tY >= 160 && tY <= 190) {
+						MenuScreen.setMusicVolume((tX - 40) / 400);
+					}
+				}
 				break;
 
 			case CUSTOMISATION:
@@ -137,6 +146,15 @@ public class MenuInput extends InputAdapter {
 				break;
 
 			case SETTINGS:
+				if(tX <= 45 && tY >= 315) {
+					MenuScreen.setCurrentMenu(Menus.MAIN);
+				}
+
+				if(tX >= 40 && tX <= 70 && tY >= 100 && tY <= 130) {
+					MenuScreen.invertKmph();
+				}
+				break;
+
 			case CUSTOMISATION:
 				if(tX <= 45 && tY >= 315) {
 					MenuScreen.setCurrentMenu(Menus.MAIN);

@@ -59,6 +59,12 @@ public class MenuScreen extends ScreenAdapter {
 	private static int accelerationLevel;
 	private static int brakingLevel;
 
+	// Settings
+	private static float soundVolume;
+	private static float musicVolume;
+
+	private static boolean kmph;
+
 	public MenuScreen(Game game, Menus targetMenu) {
 
 		MenuScreen.game = game;
@@ -86,6 +92,10 @@ public class MenuScreen extends ScreenAdapter {
 		maxSpeedLevel = 0; 		// 60 <= x <= 100		x = 39 * log((L / 5.2) + 1) + 60
 		accelerationLevel = 0; 	// 60 >= x >= 10		x = E ^ (3.738 - (x / 12)) + 8
 		brakingLevel = 0; 		// 6 <= x <= 9			x = 3.1 * log((L / 6) + 1) + 6
+
+		soundVolume = 1f;
+		musicVolume = 1f;
+		kmph = false;
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -261,18 +271,47 @@ public class MenuScreen extends ScreenAdapter {
 				// Level bar
 				shapeRenderer.setColor(24 / 255f, 75 / 255f, 175 / 255f, 1f);
 				shapeRenderer.rect(200, 270, 400, 30);
-				shapeRenderer.setColor(40 / 255f, 40 / 255f, 40 / 255f, 1f);
-				shapeRenderer.rect(202, 272, 396, 26);
+
+				Color levelL = new Color(40 / 255f, 120 / 255f, 200 / 255f, 1f);
+				Color levelR = new Color(100 / 255f, 168 / 255f, 255 / 255f, 1f);
+				shapeRenderer.rect(202, 272, 396, 26, levelL, levelR, levelR, levelL);
 
 				int prevLevelRequiredExp = (int) (200 * Math.pow(level - 2, 1.25f) + 5000);
 				int nextLevelRequiredExp = (int) (200 * Math.pow(level - 1, 1.25f) + 5000);
-				shapeRenderer.setColor(100 / 255f, 168 / 255f, 255 / 255f, 1f);
-				shapeRenderer.rect(202, 272, ((exp - prevLevelRequiredExp) / (float) (nextLevelRequiredExp - prevLevelRequiredExp)) * 396, 26);
+				shapeRenderer.setColor(40 / 255f, 40 / 255f, 40 / 255f, 1f);
+				shapeRenderer.rect(202 + ((exp - prevLevelRequiredExp) / (float) (nextLevelRequiredExp - prevLevelRequiredExp)) * 396, 272, 396 + (1 - ((exp - prevLevelRequiredExp) / (float) (nextLevelRequiredExp - prevLevelRequiredExp))), 26);
 
 
 				break;
 
 			case SETTINGS:
+				// Slider backgrounds
+				shapeRenderer.setColor(24 / 255f, 75 / 255f, 175 / 255f, 1f);
+				shapeRenderer.rect(40, 240, 400, 30);
+				shapeRenderer.rect(40, 160, 400, 30);
+
+				// Slider foregrounds
+				Color soundL = new Color(0, 0.5f, 0, 1f);
+				Color soundR = new Color(0.5f, 1f, 0.5f, 1f);
+				Color musicL = new Color(0, 0, 0.5f, 1f);
+				Color musicR = new Color(0.5f, 0.5f, 1f, 1f);
+				shapeRenderer.rect(42, 242, 396, 26, soundL, soundR, soundR, soundL);
+				shapeRenderer.rect(42, 162, 396, 26, musicL, musicR, musicR, musicL);
+
+				shapeRenderer.setColor(40 / 255f, 40 / 255f, 40 / 255f, 1f);
+				shapeRenderer.rect(42 + 396 * (soundVolume), 242, 396 * (1 - soundVolume), 26);
+				shapeRenderer.rect(42 + 396 * (musicVolume), 162, 396 * (1 - musicVolume), 26);
+
+				// Radio buttons
+				shapeRenderer.setColor(24 / 255f, 75 / 255f, 175 / 255f, 1f);
+				shapeRenderer.rect(40, 100, 30, 30);
+				shapeRenderer.setColor(1f, 1f, 1f, 1f);
+				shapeRenderer.rect(42, 102, 26, 26);
+
+				if(kmph) {
+					shapeRenderer.setColor(0f, 0f, 0f, 0f);
+					shapeRenderer.rect(46, 106, 18, 18);
+				}
 				break;
 		}
 
@@ -389,6 +428,15 @@ public class MenuScreen extends ScreenAdapter {
 				// Title
 				GlyphLayout settingsGlyph = new GlyphLayout(bsh_40, "SETTINGS");
 				bsh_40.draw(spriteBatch, settingsGlyph, 320 - settingsGlyph.width / 2f, 350);
+
+				// Setting headers
+				cbri_16.draw(spriteBatch, "Sound Volume", 40, 285);
+				cbri_16.draw(spriteBatch, "Music Volume", 40, 205);
+				cbri_16.draw(spriteBatch, "Use kmph units", 80, 120);
+
+				// Slider percentages
+				cbri_16.draw(spriteBatch, (int) (soundVolume * 100) + "%", 455, 260);
+				cbri_16.draw(spriteBatch, (int) (musicVolume * 100) + "%", 455, 180);
 
 				// Buttons
 				spriteBatch.draw(button_back, 5, 315);
@@ -556,5 +604,31 @@ public class MenuScreen extends ScreenAdapter {
 
 	public static void setVanSelected(int vanSelected) {
 		MenuScreen.vanSelected = vanSelected;
+	}
+
+	public static void setSoundVolume(float soundVolume) {
+
+		if(soundVolume < 0) {
+			soundVolume = 0;
+		} else if(soundVolume > 1f) {
+			soundVolume = 1f;
+		}
+
+		MenuScreen.soundVolume = soundVolume;
+	}
+
+	public static void setMusicVolume(float musicVolume) {
+
+		if(musicVolume < 0) {
+			musicVolume = 0;
+		} else if(musicVolume > 1f) {
+			musicVolume = 1f;
+		}
+
+		MenuScreen.musicVolume = musicVolume;
+	}
+
+	public static void invertKmph() {
+		kmph = !kmph;
 	}
 }
