@@ -31,11 +31,11 @@ public class MenuScreen extends ScreenAdapter {
 
 	private static Timer timer;
 
-	private Sprite background, title, van, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, button_challenge, buttondown_big, buttondown_small,
-	button_again, buttondown_med, button_leaderboards;
-	private Sprite[] scoreDigits;
+	private Sprite background, title, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, button_challenge, buttondown_big, buttondown_small,
+	button_again, buttondown_med, button_leaderboards, button_upgrade_s, button_upgrade_a, button_upgrade_b;
+	private Sprite[] scoreDigits, vans;
 
-	private BitmapFont bsh_40, cbri_16;
+	private BitmapFont bsh_40, cbri_16, arl_10, arb_24;
 
 	private static int animStage;
 	private static float vanX;
@@ -48,6 +48,16 @@ public class MenuScreen extends ScreenAdapter {
 
 	private static float blackScreenOpacity;
 	private static GameMode targetMode;
+
+	private static int vanSelected;
+
+	private static int level;
+	private static int exp;
+
+	// Van upgrade levels
+	private static int maxSpeedLevel;
+	private static int accelerationLevel;
+	private static int brakingLevel;
 
 	public MenuScreen(Game game, Menus targetMenu) {
 
@@ -68,6 +78,15 @@ public class MenuScreen extends ScreenAdapter {
 		blackScreenOpacity = (targetMenu == Menus.GAMEOVER) ? 1f : 0f;
 		targetMode = null;
 
+		vanSelected = 0;
+
+		level = 1;
+		exp = 0;
+
+		maxSpeedLevel = 0; 		// 60 <= x <= 100		x = 39 * log((L / 5.2) + 1) + 60
+		accelerationLevel = 0; 	// 60 >= x >= 10		x = E ^ (3.738 - (x / 12)) + 8
+		brakingLevel = 0; 		// 6 <= x <= 9			x = 3.1 * log((L / 6) + 1) + 6
+
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
@@ -80,11 +99,12 @@ public class MenuScreen extends ScreenAdapter {
 		// Load Fonts
 		this.bsh_40 = new BitmapFont(Gdx.files.internal("fonts/bsh_40.fnt"));
 		this.cbri_16 = new BitmapFont(Gdx.files.internal("fonts/cbri_16.fnt"));
+		this.arl_10 = new BitmapFont(Gdx.files.internal("fonts/arl_10.fnt"));
+		this.arb_24 = new BitmapFont(Gdx.files.internal("fonts/arb_24.fnt"));
 
 		// Load menu sprites
 		this.background = new Sprite(Deliverance.assetManager.get("menu_sprites/menu_background.png", Texture.class));
 		this.title = new Sprite(Deliverance.assetManager.get("menu_sprites/title.png", Texture.class));
-		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_01.png", Texture.class));
 		this.parcel = new Sprite(Deliverance.assetManager.get("game_sprites/box.png", Texture.class));
 
 		this.button_x = new Sprite(Deliverance.assetManager.get("menu_sprites/button_x.png", Texture.class));
@@ -97,6 +117,9 @@ public class MenuScreen extends ScreenAdapter {
 		this.button_challenge = new Sprite(Deliverance.assetManager.get("menu_sprites/button_challenge.png", Texture.class));
 		this.button_again = new Sprite(Deliverance.assetManager.get("menu_sprites/button_again.png", Texture.class));
 		this.button_leaderboards = new Sprite(Deliverance.assetManager.get("menu_sprites/button_leaderboards.png", Texture.class));
+		this.button_upgrade_s = new Sprite(Deliverance.assetManager.get("menu_sprites/button_upgrade_s.png", Texture.class));
+		this.button_upgrade_a = new Sprite(Deliverance.assetManager.get("menu_sprites/button_upgrade_a.png", Texture.class));
+		this.button_upgrade_b = new Sprite(Deliverance.assetManager.get("menu_sprites/button_upgrade_b.png", Texture.class));
 
 		this.buttondown_big = new Sprite(Deliverance.assetManager.get("menu_sprites/button_big_down.png", Texture.class));
 		this.buttondown_small = new Sprite(Deliverance.assetManager.get("menu_sprites/button_small_down.png", Texture.class));
@@ -106,6 +129,12 @@ public class MenuScreen extends ScreenAdapter {
 		this.scoreDigits = new Sprite[10];
 		for(int i = 0; i < 10; i++) {
 			this.scoreDigits[i] = new Sprite(new TextureRegion(Deliverance.assetManager.get("game_sprites/score_digits.png", Texture.class), 18 * (i % 5), 22 * (i / 5), 18, 22));
+		}
+
+		// Vans
+		this.vans = new Sprite[8];
+		for(int i = 0; i < 8; i++) {
+			this.vans[i] = new Sprite(Deliverance.assetManager.get("game_sprites/van_0" + (i + 1) + ".png", Texture.class));
 		}
 
 		// Input
@@ -138,7 +167,7 @@ public class MenuScreen extends ScreenAdapter {
 							parcelsLeft--;
 							parcelX = -20;
 							parcelY = 35;
-							parcelVY = random.nextInt(40) + 20;
+							parcelVY = random.nextInt(30) + 25;
 
 							if(parcelsLeft == 0) {
 								animStage++;
@@ -189,7 +218,7 @@ public class MenuScreen extends ScreenAdapter {
 		spriteBatch.draw(background, 0, 0);
 
 		spriteBatch.draw(parcel, parcelX, parcelY, parcel.getWidth() * 1.5f, parcel.getHeight() * 1.5f);
-		spriteBatch.draw(van, vanX, 10, van.getWidth() * 1.5f, van.getHeight() * 1.5f);
+		spriteBatch.draw(vans[vanSelected], vanX, 10, vans[vanSelected].getWidth() * 1.5f, vans[vanSelected].getHeight() * 1.5f);
 
 		spriteBatch.end();
 
@@ -207,6 +236,47 @@ public class MenuScreen extends ScreenAdapter {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		}
 
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		switch (currentMenu) {
+			case CUSTOMISATION:
+				shapeRenderer.setColor(24 / 255f, 75 / 255f, 175 / 255f, 1f);
+
+				// Van boxes
+				shapeRenderer.rect(20, 170, 602, 2);
+				shapeRenderer.rect(20, 90, 600, 2);
+				shapeRenderer.rect(20, 10, 600, 2);
+
+				for(int i = 0; i < 5; i++) {
+					shapeRenderer.rect(20 + i * 150, 10, 2, 160);
+				}
+
+				// Van selection box
+				shapeRenderer.setColor(1f, 1f, 1f, 1f);
+				shapeRenderer.rect(20 + (vanSelected % 4) * 150, 170 - (float) (vanSelected / 4) * 80, 152, 2);
+				shapeRenderer.rect(20 + (vanSelected % 4) * 150, 90 - (float) (vanSelected / 4) * 80, 152, 2);
+				shapeRenderer.rect(20 + (vanSelected % 4) * 150, 90 - (float) (vanSelected / 4) * 80, 2, 80);
+				shapeRenderer.rect(170 + (vanSelected % 4) * 150, 90 - (float) (vanSelected / 4) * 80, 2, 80);
+
+				// Level bar
+				shapeRenderer.setColor(24 / 255f, 75 / 255f, 175 / 255f, 1f);
+				shapeRenderer.rect(200, 270, 400, 30);
+				shapeRenderer.setColor(40 / 255f, 40 / 255f, 40 / 255f, 1f);
+				shapeRenderer.rect(202, 272, 396, 26);
+
+				int prevLevelRequiredExp = (int) (200 * Math.pow(level - 2, 1.25f) + 5000);
+				int nextLevelRequiredExp = (int) (200 * Math.pow(level - 1, 1.25f) + 5000);
+				shapeRenderer.setColor(100 / 255f, 168 / 255f, 255 / 255f, 1f);
+				shapeRenderer.rect(202, 272, ((exp - prevLevelRequiredExp) / (float) (nextLevelRequiredExp - prevLevelRequiredExp)) * 396, 26);
+
+
+				break;
+
+			case SETTINGS:
+				break;
+		}
+
+		shapeRenderer.end();
 		spriteBatch.begin();
 
 		switch (currentMenu) {
@@ -338,6 +408,55 @@ public class MenuScreen extends ScreenAdapter {
 				GlyphLayout customGlyph = new GlyphLayout(bsh_40, "VAN");
 				bsh_40.draw(spriteBatch, customGlyph, 320 - customGlyph.width / 2f, 350);
 
+				// Level
+				arl_10.draw(spriteBatch, "LEVEL", 200, 310);
+				arb_24.draw(spriteBatch, level + "", 236, 321);
+
+				// Exp: 200 * (L - 1) ^ 1.25 + 5000
+				int prevLevelRequiredExp = (int) (200 * Math.pow(level - 2, 1.25f) + 5000);
+				int nextLevelRequiredExp = (int) (200 * Math.pow(level - 1, 1.25f) + 5000);
+				GlyphLayout expGlyph = new GlyphLayout(cbri_16, (exp - prevLevelRequiredExp) + "/" + nextLevelRequiredExp);
+
+				cbri_16.draw(spriteBatch, expGlyph, 600 - expGlyph.width, 315);
+
+				// Points
+				arl_10.draw(spriteBatch, "POINTS", 500, 255);
+				arb_24.draw(spriteBatch, "" + (level - 1 - maxSpeedLevel - accelerationLevel - brakingLevel), 545, 255);
+
+				// Upgrade icons
+				if(level - 1 - maxSpeedLevel - accelerationLevel - brakingLevel > 0) {
+					spriteBatch.draw(button_upgrade_s, 480, 180);
+					spriteBatch.draw(button_upgrade_a, 525, 180);
+					spriteBatch.draw(button_upgrade_b, 570, 180);
+				}
+
+				// Van
+				spriteBatch.draw(vans[vanSelected], 50, 200);
+
+				// Vans
+				for(int i = 0; i < vans.length; i++) {
+					spriteBatch.draw(vans[i], 30 + (i % 4) * 150, 100 - (float) (i / 4) * 80);
+				}
+
+				// Van stats
+				float maxSpeed = 39 * (float) Math.log((maxSpeedLevel / 5.2f) + 1) + 60;
+				float accel = (float) Math.pow(Math.E, 3.7376 - (accelerationLevel / 12f)) + 8;
+				float brake = 3.1f * (float) Math.log((maxSpeedLevel / 6f) + 1) + 6;
+
+				DecimalFormat df2 = new DecimalFormat("0.00");
+
+				cbri_16.draw(spriteBatch, "Top Speed:", 200, 255);
+				cbri_16.draw(spriteBatch, "Acceleration (0-60):", 200, 235);
+				cbri_16.draw(spriteBatch, "Braking:", 200, 215);
+
+				cbri_16.draw(spriteBatch, df2.format(maxSpeed) + "mph", 350, 255);
+				cbri_16.draw(spriteBatch, df2.format(accel) + "s", 350, 235);
+				cbri_16.draw(spriteBatch, df2.format(brake) + "(m/s)/s", 350, 215);
+
+				cbri_16.draw(spriteBatch, "[" + maxSpeedLevel + "]", 450, 255);
+				cbri_16.draw(spriteBatch, "[" + accelerationLevel + "]", 450, 235);
+				cbri_16.draw(spriteBatch, "[" + brakingLevel + "]", 450, 215);
+
 				// Buttons
 				spriteBatch.draw(button_back, 5, 315);
 
@@ -345,6 +464,11 @@ public class MenuScreen extends ScreenAdapter {
 				switch (buttonDown) {
 					case 0:
 						spriteBatch.draw(buttondown_small, 5, 315);
+						break;
+					case 1:
+					case 2:
+					case 3:
+						spriteBatch.draw(buttondown_small, 480 + (buttonDown - 1) * 45, 180);
 						break;
 				}
 
@@ -424,5 +548,13 @@ public class MenuScreen extends ScreenAdapter {
 
 	public static void setTargetMode(GameMode targetMode) {
 		MenuScreen.targetMode = targetMode;
+	}
+
+	public static int getVanSelected() {
+		return vanSelected;
+	}
+
+	public static void setVanSelected(int vanSelected) {
+		MenuScreen.vanSelected = vanSelected;
 	}
 }

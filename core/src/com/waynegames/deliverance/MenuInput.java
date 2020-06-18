@@ -61,9 +61,19 @@ public class MenuInput extends InputAdapter {
 				break;
 
 			case SETTINGS:
+				if(tX <= 45 && tY >= 315) {
+					MenuScreen.setButtonDown(0);
+				}
+				break;
+
 			case CUSTOMISATION:
 				if(tX <= 45 && tY >= 315) {
 					MenuScreen.setButtonDown(0);
+				}
+
+				if(tX >= 20 && tX <= 620 && tY >= 10 && tY <= 170) {
+					MenuScreen.setVanSelected((int) (((tX - 20) / 150) + 4 * Math.ceil((80 - (tY - 10)) / 80)));
+
 				}
 				break;
 		}

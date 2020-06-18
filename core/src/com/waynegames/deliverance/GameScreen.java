@@ -30,7 +30,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2, cls_10, arb_24, arl_24, cbri_16;
 
-	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_mercury, clock, lifedown, button_exit;
+	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_hurlers, clock, lifedown, button_exit;
 	private Sprite[] pedals, scoreDigits;
 
 	private static float blackScreenOpacity;
@@ -137,7 +137,7 @@ public class GameScreen extends ScreenAdapter {
 		this.cbri_16 = new BitmapFont(Gdx.files.internal("fonts/cbri_16.fnt"));
 
 		// Load game sprites
-		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_01.png", Texture.class));
+		this.van = new Sprite(Deliverance.assetManager.get("game_sprites/van_0" + (MenuScreen.getVanSelected() + 1) + ".png", Texture.class));
 		this.box = new Sprite(Deliverance.assetManager.get("game_sprites/box.png", Texture.class));
 		this.house = new Sprite(Deliverance.assetManager.get("game_sprites/house_01.png", Texture.class));
 		this.fence = new Sprite(Deliverance.assetManager.get("game_sprites/fence_01.png", Texture.class));
@@ -149,7 +149,7 @@ public class GameScreen extends ScreenAdapter {
 		this.warehouse_rival = new Sprite(new TextureRegion(Deliverance.assetManager.get("game_sprites/warehouse.png", Texture.class), 62, 176, 476, 130));
 		this.tree = new Sprite(Deliverance.assetManager.get("game_sprites/tree.png", Texture.class));
 
-		this.logo_mercury = new Sprite(Deliverance.assetManager.get("game_sprites/logo_mercury.png", Texture.class));
+		this.logo_hurlers = new Sprite(Deliverance.assetManager.get("game_sprites/logo_hurlers.png", Texture.class));
 
 		this.speedo = new Sprite(Deliverance.assetManager.get("game_sprites/speedometer.png", Texture.class));
 		this.dial = new Sprite(Deliverance.assetManager.get("game_sprites/speedodial.png", Texture.class));
@@ -415,7 +415,7 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 
 		// Contract selection
-		if(!gameOver && blackScreenOpacity >= 1f && hour == 21) {
+		if(!gameOver && blackScreenOpacity >= 1f && (gameMode == GameMode.ENDLESS || (hour == 21))) {
 
 			if(gameMode == GameMode.ENDLESS) {
 
@@ -577,7 +577,7 @@ public class GameScreen extends ScreenAdapter {
 	private void drawWarehouse(float x) {
 		spriteBatch.draw(tree, x - 10, 32);
 		spriteBatch.draw(warehouse, x, 0);
-		spriteBatch.draw(logo_mercury, x + 441, 135);
+		spriteBatch.draw(logo_hurlers, x + 441, 135);
 
 		spriteBatch.draw(van, x + 240, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
 		spriteBatch.draw(van, x + 340, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
