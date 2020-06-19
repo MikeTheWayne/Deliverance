@@ -17,11 +17,7 @@ public class Deliverance extends Game {
 		loadAssets(new String[] {"game_sprites/", "menu_sprites/"});
 
 		// Load the game screen
-		//setScreen(new GameScreen(this, GameMode.ENDLESS, 3, 3));
 		setScreen(new MenuScreen(this, Menus.MAIN));
-
-		// Start game threads
-		//GameThreads.run();
 
 	}
 

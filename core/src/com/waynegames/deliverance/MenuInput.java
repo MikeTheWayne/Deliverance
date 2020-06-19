@@ -155,14 +155,17 @@ public class MenuInput extends InputAdapter {
 			case GAMEOVER:
 				if(tX <= 45 && tY <= 45) {
 					MenuScreen.setCurrentMenu(Menus.MAIN);
+					MenuScreen.save();
 				} else if(tX >= 260 && tX <= 380 && tY >= 5 && tY <= 65) {
 					MenuScreen.setTargetMode(GameScreen.getGameMode());
+					MenuScreen.save();
 				}
 				break;
 
 			case SETTINGS:
 				if(tX <= 45 && tY >= 315) {
 					MenuScreen.setCurrentMenu(Menus.MAIN);
+					MenuScreen.save();
 				}
 
 				if(tX >= 40 && tX <= 70 && tY >= 100 && tY <= 130) {
@@ -171,6 +174,12 @@ public class MenuInput extends InputAdapter {
 				break;
 
 			case CUSTOMISATION:
+				if(tX <= 45 && tY >= 315) {
+					MenuScreen.setCurrentMenu(Menus.MAIN);
+					MenuScreen.save();
+				}
+				break;
+
 			case TUTORIAL:
 				if(tX <= 45 && tY >= 315) {
 					MenuScreen.setCurrentMenu(Menus.MAIN);

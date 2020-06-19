@@ -3,6 +3,7 @@ package com.waynegames.deliverance;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -101,6 +102,9 @@ public class MenuScreen extends ScreenAdapter {
 		kmph = false;
 
 		tutorialScreen = 1;
+
+		// Load values from save
+		read();
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -671,6 +675,62 @@ public class MenuScreen extends ScreenAdapter {
 
 		spriteBatch.begin();
 		cbri_16.draw(spriteBatch, ttGlyph, x + 5, y + ((dangle) ? -5 : 5 + ttGlyph.height));
+	}
+
+
+
+	public void read() {
+
+		try {
+			FileHandle file = Gdx.files.local("menusave.txt");
+
+			if(file.exists()) {
+				String[] fileContents = file.readString().split(";");
+
+				int count = 0;
+
+				// Settings
+				MenuScreen.musicVolume = Float.parseFloat(fileContents[count++]);
+				MenuScreen.soundVolume = Float.parseFloat(fileContents[count++]);
+				MenuScreen.kmph = Boolean.parseBoolean(fileContents[count++]);
+
+				// Customisation
+				MenuScreen.vanSelected = Integer.parseInt(fileContents[count++]);
+				MenuScreen.maxSpeedLevel = Integer.parseInt(fileContents[count++]);
+				MenuScreen.accelerationLevel = Integer.parseInt(fileContents[count++]);
+				MenuScreen.brakingLevel = Integer.parseInt(fileContents[count++]);
+				MenuScreen.level = Integer.parseInt(fileContents[count++]);
+				MenuScreen.exp = Integer.parseInt(fileContents[count++]);
+
+			} else{
+				save();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			save();
+		}
+
+	}
+
+	public static void save() {
+
+		FileHandle file = Gdx.files.local("menusave.txt");
+
+		file.writeString("", false);
+
+		// Settings
+		file.writeString(MenuScreen.musicVolume + ";", true);
+		file.writeString(MenuScreen.soundVolume + ";", true);
+		file.writeString(MenuScreen.kmph + ";", true);
+
+		// Customisation
+		file.writeString(MenuScreen.vanSelected + ";", true);
+		file.writeString(MenuScreen.maxSpeedLevel + ";", true);
+		file.writeString(MenuScreen.accelerationLevel + ";", true);
+		file.writeString(MenuScreen.brakingLevel + ";", true);
+		file.writeString(MenuScreen.level + ";", true);
+		file.writeString(MenuScreen.exp + ";", true);
+
 	}
 
 	public static Menus getCurrentMenu() {

@@ -3,6 +3,7 @@ package com.waynegames.deliverance;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -65,6 +66,8 @@ public class GameScreen extends ScreenAdapter {
 
 	private static float scoreMultiplier;
 
+	private static int streak;
+
 	// Statistics
 	private static int parcelsThrown;
 	private static int parcelsHit;
@@ -84,7 +87,7 @@ public class GameScreen extends ScreenAdapter {
 
 		day = 0;
 
-		dayEnd = false;
+		dayEnd = true;
 
 		score = 0;
 
@@ -110,12 +113,17 @@ public class GameScreen extends ScreenAdapter {
 
 		scoreMultiplier = 1f;
 
+		streak = 0;
+
 		parcelsThrown = 0;
 		parcelsHit = 0;
 		averageSpeed = 0;
 		drivingSeconds = 0;
 
 		generateContracts();
+
+		// Load from save, if it exists
+		read();
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -415,7 +423,7 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 
 		// Contract selection
-		if(!gameOver && blackScreenOpacity >= 1f && (gameMode == GameMode.ENDLESS || (hour == 21))) {
+		if(!gameOver && blackScreenOpacity >= 1f && ((gameMode == GameMode.ENDLESS && dayEnd) || (hour == 21))) {
 
 			if(gameMode == GameMode.ENDLESS) {
 
@@ -848,6 +856,71 @@ public class GameScreen extends ScreenAdapter {
 		scoreMultiplier = contracts[contract].getScoreMultiplier();
 
 		incrementDay();
+	}
+
+
+	public void read() {
+
+		try {
+			FileHandle file = Gdx.files.local("gamesave" + ((GameScreen.gameMode == GameMode.ENDLESS) ? "E" : "C") + ".txt");
+
+			if(file.exists()) {
+				String[] fileContents = file.readString().split(";");
+
+				int count = 0;
+
+				// Core values
+				GameScreen.day = Integer.parseInt(fileContents[count++]);
+				GameScreen.score = Integer.parseInt(fileContents[count++]);
+				GameScreen.livesLeft = Integer.parseInt(fileContents[count++]);
+				GameScreen.streak = Integer.parseInt(fileContents[count++]);
+
+				// Statistics
+				GameScreen.parcelsThrown = Integer.parseInt(fileContents[count++]);
+				GameScreen.parcelsHit = Integer.parseInt(fileContents[count++]);
+				GameScreen.averageSpeed = Float.parseFloat(fileContents[count++]);
+				GameScreen.drivingSeconds = Integer.parseInt(fileContents[count++]);
+
+				// Contracts
+				for(int i = 0; i < 3; i++) {
+					GameScreen.contracts[i].fileLoadOverride(Integer.parseInt(fileContents[count++]), Float.parseFloat(fileContents[count++]), Float.parseFloat(fileContents[count++]));
+				}
+
+				// Delete file
+				file.delete();
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void save() {
+
+		FileHandle file = Gdx.files.local("gamesave" + ((GameScreen.gameMode == GameMode.ENDLESS) ? "E" : "C") + ".txt");
+
+		file.writeString("", false);
+
+		// Core values
+		file.writeString(GameScreen.day + ";", true);
+		file.writeString(GameScreen.score + ";", true);
+		file.writeString(GameScreen.livesLeft + ";", true);
+		file.writeString(GameScreen.streak + ";", true);
+
+		// Statistics
+		file.writeString(GameScreen.parcelsThrown + ";", true);
+		file.writeString(GameScreen.parcelsHit + ";", true);
+		file.writeString(GameScreen.averageSpeed + ";", true);
+		file.writeString(GameScreen.drivingSeconds + ";", true);
+
+		// Contracts
+		for(int i = 0; i < 3; i++) {
+			file.writeString(GameScreen.contracts[i].getParcels() + ";", true);
+			file.writeString(GameScreen.contracts[i].getDensity() + ";", true);
+			file.writeString(GameScreen.contracts[i].getScoreMultiplier() + ";", true);
+		}
+
 	}
 
 	public static float getScoreMultiplier() {

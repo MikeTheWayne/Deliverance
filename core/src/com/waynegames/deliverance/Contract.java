@@ -35,4 +35,10 @@ public class Contract {
 		return scoreMultiplier;
 	}
 
+	public void fileLoadOverride(int parcels, float density, float scoreMultiplier) {
+		this.parcels = parcels;
+		this.density = density;
+		this.scoreMultiplier = scoreMultiplier;
+	}
+
 }

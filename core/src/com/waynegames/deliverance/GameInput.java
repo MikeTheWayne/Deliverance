@@ -36,7 +36,8 @@ public class GameInput extends InputAdapter {
 		if(!GameScreen.isGameOver() && GameScreen.getBlackScreenOpacity() >= 1f) {
 
 			if(tX < 100 && tY > 315) {
-				// Save game (including contracts)
+				// Save game
+				GameScreen.save();
 
 				// Return to menu
 				GameThreads.stop();
