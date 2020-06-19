@@ -1,6 +1,5 @@
 package com.waynegames.deliverance;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
@@ -11,9 +10,13 @@ public class MenuInput extends InputAdapter {
 
 	private OrthographicCamera orthographicCamera;
 
+	private boolean dragged;
+
 	MenuInput(OrthographicCamera orthographicCamera) {
 
 		this.orthographicCamera = orthographicCamera;
+
+		dragged = false;
 
 	}
 
@@ -82,9 +85,17 @@ public class MenuInput extends InputAdapter {
 
 				if(tX >= 20 && tX <= 620 && tY >= 10 && tY <= 170) {
 					MenuScreen.setVanSelected((int) (((tX - 20) / 150) + 4 * Math.ceil((80 - (tY - 10)) / 80)));
-
 				}
 				break;
+
+			case TUTORIAL:
+				if(tX <= 45 && tY >= 315) {
+					MenuScreen.setButtonDown(0);
+				} else {
+					if(!dragged) {
+						MenuScreen.setTutorialScreen(MenuScreen.getTutorialScreen() + 1);
+					}
+				}
 		}
 
 		return super.touchDown(screenX, screenY, pointer, button);
@@ -93,9 +104,13 @@ public class MenuInput extends InputAdapter {
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 
+		dragged = true;
+
 		MenuScreen.setButtonDown(-1);
 
 		touchDown(screenX, screenY, pointer, Input.Buttons.LEFT);
+
+		dragged = false;
 
 		return super.touchDragged(screenX, screenY, pointer);
 	}
@@ -130,7 +145,7 @@ public class MenuInput extends InputAdapter {
 					} else if(tX >= 140 && tX <= 180) {
 						// Leaderboards
 					} else if(tX >= 540 && tX <= 590) {
-
+						MenuScreen.setCurrentMenu(Menus.TUTORIAL);
 					} else if(tX >= 595) {
 						Gdx.app.exit();
 					}
@@ -156,8 +171,10 @@ public class MenuInput extends InputAdapter {
 				break;
 
 			case CUSTOMISATION:
+			case TUTORIAL:
 				if(tX <= 45 && tY >= 315) {
 					MenuScreen.setCurrentMenu(Menus.MAIN);
+					MenuScreen.setTutorialScreen(1);
 				}
 				break;
 		}

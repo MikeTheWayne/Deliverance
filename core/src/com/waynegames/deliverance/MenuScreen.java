@@ -32,7 +32,7 @@ public class MenuScreen extends ScreenAdapter {
 	private static Timer timer;
 
 	private Sprite background, title, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, button_challenge, buttondown_big, buttondown_small,
-	button_again, buttondown_med, button_leaderboards, button_upgrade_s, button_upgrade_a, button_upgrade_b;
+	button_again, buttondown_med, button_leaderboards, button_upgrade_s, button_upgrade_a, button_upgrade_b, tutorial_1, tutorial_2;
 	private Sprite[] scoreDigits, vans;
 
 	private BitmapFont bsh_40, cbri_16, arl_10, arb_24;
@@ -65,6 +65,9 @@ public class MenuScreen extends ScreenAdapter {
 
 	private static boolean kmph;
 
+	// Tutorial
+	private static int tutorialScreen;
+
 	public MenuScreen(Game game, Menus targetMenu) {
 
 		MenuScreen.game = game;
@@ -96,6 +99,8 @@ public class MenuScreen extends ScreenAdapter {
 		soundVolume = 1f;
 		musicVolume = 1f;
 		kmph = false;
+
+		tutorialScreen = 1;
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -134,6 +139,9 @@ public class MenuScreen extends ScreenAdapter {
 		this.buttondown_big = new Sprite(Deliverance.assetManager.get("menu_sprites/button_big_down.png", Texture.class));
 		this.buttondown_small = new Sprite(Deliverance.assetManager.get("menu_sprites/button_small_down.png", Texture.class));
 		this.buttondown_med = new Sprite(Deliverance.assetManager.get("menu_sprites/button_med_down.png", Texture.class));
+
+		this.tutorial_1 = new Sprite(Deliverance.assetManager.get("menu_sprites/tutorial_1.png", Texture.class));
+		this.tutorial_2 = new Sprite(Deliverance.assetManager.get("menu_sprites/tutorial_2.png", Texture.class));
 
 		// Score digits
 		this.scoreDigits = new Sprite[10];
@@ -522,6 +530,100 @@ public class MenuScreen extends ScreenAdapter {
 				break;
 
 			case TUTORIAL:
+				// Title
+				GlyphLayout tutorialTitleGlyph = new GlyphLayout(bsh_40, "HOW TO PLAY");
+				bsh_40.draw(spriteBatch, tutorialTitleGlyph, 320 - tutorialTitleGlyph.width / 2f, 350);
+
+				// Buttons
+				spriteBatch.draw(button_back, 5, 315);
+
+				// Tutorial text
+				switch (tutorialScreen) {
+					case 7:
+						cbri_16.draw(spriteBatch, "Every parcel that lands at the correct house increases the score of the next delivery by one. \nThis is reset every time you miss or fail a delivery.", 20, 60);
+					case 6:
+						cbri_16.draw(spriteBatch, "In challenge mode, you have three days to deliver as many parcels as possible.", 20, 100);
+					case 5:
+						cbri_16.draw(spriteBatch, "In endless mode, you have three lives. If you deliver a parcel to the wrong house, or fail to \ndeliver a parcel, you lose a life! The game ends when you miss three times.", 20, 140);
+					case 4:
+						cbri_16.draw(spriteBatch, "There are two game modes.", 20, 180);
+					case 3:
+						cbri_16.draw(spriteBatch, "Each parcel that lands in the correct place increases your score.", 20, 220);
+					case 2:
+						cbri_16.draw(spriteBatch, "You deliver parcels by throwing them at the correct house, while driving past. You don't \nhave the time to stop!", 20, 260);
+					case 1:
+						cbri_16.draw(spriteBatch, "Welcome to Deliverance! Your goal is to deliver as many parcels as possible, as accurately \nand quickly as possible.", 20, 300);
+						break;
+
+					case 11:
+						GlyphLayout tutorialGlyph4 = new GlyphLayout(cbri_16, "Red contracts are the most difficult, but come with a large score multiplier as a reward.", Color.WHITE, 160, Align.left, true);
+						cbri_16.draw(spriteBatch, tutorialGlyph4, 370, 90);
+					case 10:
+						GlyphLayout tutorialGlyph3 = new GlyphLayout(cbri_16, "Green contracts are the easiest, but come with the lowest reward.", Color.WHITE, 120, Align.left, true);
+						cbri_16.draw(spriteBatch, tutorialGlyph3, 220, 90);
+					case 9:
+						GlyphLayout tutorialGlyph2 = new GlyphLayout(cbri_16, "These determine how many parcels you have to deliver, and the average number of delivery targets per 10 houses (density).", Color.WHITE, 160, Align.left, true);
+						cbri_16.draw(spriteBatch, tutorialGlyph2, 10, 200);
+					case 8:
+						spriteBatch.draw(tutorial_2, 170, 96);
+
+						GlyphLayout tutorialGlyph1 = new GlyphLayout(cbri_16, "In endless mode, you can select a contract at the start of each day.", Color.WHITE, 160, Align.left, true);
+						cbri_16.draw(spriteBatch, tutorialGlyph1, 10, 300);
+						break;
+
+					case 19:
+						GlyphLayout tutorialGlyph12 = new GlyphLayout(cbri_16, "The speedometer is in the top left", Color.WHITE, 150, Align.left, true);
+						cbri_16.draw(spriteBatch, tutorialGlyph12, 10, 260);
+					case 18:
+						GlyphLayout tutorialGlyph11 = new GlyphLayout(cbri_16, "Your score is shown in the top right, along with lives left (in endless mode).", Color.WHITE, 250, Align.left, true);
+						cbri_16.draw(spriteBatch, tutorialGlyph11, 380, 300);
+					case 17:
+						GlyphLayout tutorialGlyph10 = new GlyphLayout(cbri_16, "The house numbers are displayed on the front of each house.", Color.WHITE, 150, Align.left, true);
+						cbri_16.draw(spriteBatch, tutorialGlyph10, 480, 180);
+					case 16:
+						GlyphLayout tutorialGlyph9 = new GlyphLayout(cbri_16, "The HUD and manifest display your next three targets.", Color.WHITE, 150, Align.left, true);
+						cbri_16.draw(spriteBatch, tutorialGlyph9, 480, 250);
+					case 15:
+						GlyphLayout tutorialGlyph8 = new GlyphLayout(cbri_16, "The clock shows how much time you have left.", Color.WHITE, 200, Align.left, true);
+						cbri_16.draw(spriteBatch, tutorialGlyph8, 180, 300);
+					case 14:
+						GlyphLayout tutorialGlyph7 = new GlyphLayout(cbri_16, "To throw a parcel, press down on the van, and swipe in the direction you want to throw the parcel. The further you swipe left or right, the further the parcel will fly.", Color.WHITE, 285, Align.left, true);
+						cbri_16.draw(spriteBatch, tutorialGlyph7, 350, 90);
+					case 13:
+						GlyphLayout tutorialGlyph6 = new GlyphLayout(cbri_16, "The brake pedal allows you to slow down quickly. Use this to avoid missing a house!", Color.WHITE, 150, Align.left, true);
+						cbri_16.draw(spriteBatch, tutorialGlyph6, 180, 90);
+					case 12:
+						spriteBatch.draw(tutorial_1, 170, 96);
+
+						GlyphLayout tutorialGlyph5 = new GlyphLayout(cbri_16, "Hold down the accelerator (the big pedal) to drive forward. The further up the screen you move your finger, the more you accelerate.", Color.WHITE, 160, Align.left, true);
+						cbri_16.draw(spriteBatch, tutorialGlyph5, 10, 150);
+						break;
+
+					case 25:
+						cbri_16.draw(spriteBatch, "Enjoy playing Deliverance! Give a 5* review if you do, it really helps!", 20, 100);
+					case 24:
+						cbri_16.draw(spriteBatch, "Getting a higher score will help you level up. Levelling up lets you can upgrade your van in \nthe Van Customisation screen, and unlocks new van styles.", 20, 140);
+					case 23:
+						cbri_16.draw(spriteBatch, "Try to get the highest score you can! Share your score with your friends, and challenge them to \nbeat your score.", 20, 180);
+					case 22:
+						cbri_16.draw(spriteBatch, "The game will end when you fail 3 parcel deliveries in endless mode, or at the end of day 3 in \nchallenge mode.", 20, 220);
+					case 21:
+						cbri_16.draw(spriteBatch, "After 21:00, you can no longer deliver parcels. You must carry on driving past the end of the \nstreet, and then back to the warehouse, where your van will stop and the day will end.", 20, 260);
+					case 20:
+						cbri_16.draw(spriteBatch, "The game starts and ends at the warehouse. You must drive a short distance before you reach \nthe first street.", 20, 300);
+						break;
+				}
+
+				// Tap screen text
+				GlyphLayout infoGlyph = new GlyphLayout(cbri_16, "TAP SCREEN TO CONTINUE");
+				cbri_16.draw(spriteBatch, infoGlyph, 320 - infoGlyph.width / 2f, 5 + infoGlyph.height);
+
+				// Button Down
+				switch (buttonDown) {
+					case 0:
+						spriteBatch.draw(buttondown_small, 5, 315);
+						break;
+				}
 				break;
 
 		}
@@ -633,5 +735,18 @@ public class MenuScreen extends ScreenAdapter {
 
 	public static boolean isKmph() {
 		return kmph;
+	}
+
+	public static int getTutorialScreen() {
+		return tutorialScreen;
+	}
+
+	public static void setTutorialScreen(int tutorialScreen) {
+		if(tutorialScreen > 25) {
+			currentMenu = Menus.MAIN;
+			tutorialScreen = 1;
+		}
+
+		MenuScreen.tutorialScreen = tutorialScreen;
 	}
 }
