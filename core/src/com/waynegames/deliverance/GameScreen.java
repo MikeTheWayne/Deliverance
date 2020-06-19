@@ -197,6 +197,16 @@ public class GameScreen extends ScreenAdapter {
 		shapeRenderer.setProjectionMatrix(orthographicCamera.combined);
 		spriteBatch.setProjectionMatrix(orthographicCamera.combined);
 
+		// Move van based on speed
+		vanObj.setX(vanObj.getX() + (vanObj.getSpeed() * GameScreen.PIXELS_PER_METRE) * delta);
+
+		// Animate parcels
+		for(Parcel p : parcels) {
+			if(p != null) {
+				p.fly(delta);
+			}
+		}
+
 		// Draw Sky
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 

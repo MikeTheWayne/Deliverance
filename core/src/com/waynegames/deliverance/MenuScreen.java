@@ -25,6 +25,8 @@ public class MenuScreen extends ScreenAdapter {
 
 	private static Game game;
 
+	private Random random = new Random();
+
 	private SpriteBatch spriteBatch;
 	private ShapeRenderer shapeRenderer;
 
@@ -73,10 +75,10 @@ public class MenuScreen extends ScreenAdapter {
 
 		MenuScreen.game = game;
 
-		final Random random = new Random();
+		random = new Random();
 
 		animStage = 1;
-		vanX = -129 * 1.5f;
+		vanX = -129 * 1.5f - 500f;
 		parcelX = -20;
 		parcelY = 35;
 		parcelVY = random.nextInt(40) + 20;
@@ -162,49 +164,12 @@ public class MenuScreen extends ScreenAdapter {
 		// Input
 		Gdx.input.setInputProcessor(new MenuInput(orthographicCamera));
 
-		// Animation timer
+		// Black screen timer
 		timer = new Timer();
 
 		timer.scheduleTask(new Timer.Task() {
 			@Override
 			public void run() {
-
-				switch (animStage) {
-					case 1:
-						vanX += (200f - vanX / 1.75f) / TICKS_PER_SECOND;
-
-						if(vanX > 224) {
-							animStage++;
-
-							parcelsLeft = random.nextInt(15) + 15;
-						}
-						break;
-					case 2:
-						if(parcelX < 250) {
-							parcelX += (250f * 1.8f) / TICKS_PER_SECOND;
-
-							float t = parcelX / 200f;
-							parcelY = 35 + (parcelVY * t - (50f * t * t) / 2f);
-						} else{
-							parcelsLeft--;
-							parcelX = -20;
-							parcelY = 35;
-							parcelVY = random.nextInt(30) + 25;
-
-							if(parcelsLeft == 0) {
-								animStage++;
-							}
-						}
-						break;
-					case 3:
-						vanX += Math.min(200f, (vanX - 175f) / 1.75f) / TICKS_PER_SECOND;
-
-						if(vanX > 700) {
-							vanX = -129 * 1.5f;
-							animStage = 1;
-						}
-						break;
-				}
 
 				if(targetMode != null) {
 					if(blackScreenOpacity < 1f) {
@@ -225,6 +190,44 @@ public class MenuScreen extends ScreenAdapter {
 	@Override
 	public void render(float delta) {
 		super.render(delta);
+
+		// Animations
+		switch (animStage) {
+			case 1:
+				vanX += (200f - vanX / 1.75f) * delta;
+
+				if(vanX > 224) {
+					animStage++;
+
+					parcelsLeft = random.nextInt(15) + 15;
+				}
+				break;
+			case 2:
+				if(parcelX < 250) {
+					parcelX += (250f * 1.9f) * delta;
+
+					float t = parcelX / 200f;
+					parcelY = 35 + (parcelVY * t - (50f * t * t) / 2f);
+				} else{
+					parcelsLeft--;
+					parcelX = -20;
+					parcelY = 35;
+					parcelVY = random.nextInt(30) + 25;
+
+					if(parcelsLeft == 0) {
+						animStage++;
+					}
+				}
+				break;
+			case 3:
+				vanX += Math.min(200f, (vanX - 175f) / 1.75f) * delta;
+
+				if(vanX > 700) {
+					vanX = -129 * 1.5f;
+					animStage = 1;
+				}
+				break;
+		}
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | ((Gdx.graphics.getBufferFormat().coverageSampling) ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));

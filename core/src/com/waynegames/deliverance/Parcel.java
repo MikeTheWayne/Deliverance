@@ -24,17 +24,17 @@ public class Parcel {
 
 	}
 
-	public void fly() {
+	public void fly(float delta) {
 		
 		final float FLIGHT_TIME = 0.65f;
 
 		if(z < 1) {
-			z += 1 / FLIGHT_TIME / GameThreads.TICKS_PER_SECOND;
-			x += (dx + vel) / GameThreads.TICKS_PER_SECOND;
+			z += 1 / FLIGHT_TIME * delta;
+			x += (dx + vel) * delta;
 			y = PARCEL_BASE_HEIGHT + GameScreen.PIXELS_PER_METRE * 2 * (5 * z - (9.81f * z * z) / 2);
 		} else{
 			this.landed = true;
-			x -= GameScreen.getVanObj().getSpeed() * (float) GameScreen.PIXELS_PER_METRE / (float) GameThreads.TICKS_PER_SECOND;
+			x -= GameScreen.getVanObj().getSpeed() * (float) GameScreen.PIXELS_PER_METRE * delta;
 		}
 
 	}
