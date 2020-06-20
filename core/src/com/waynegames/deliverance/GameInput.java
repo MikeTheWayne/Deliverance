@@ -11,7 +11,7 @@ public class GameInput extends InputAdapter {
 	private static float pedalPressure, brakePressure;
 	private int pedalPressurePointer, parcelThrowPointer;
 
-	private float initX;
+	private float initX, initY;
 
 	GameInput(OrthographicCamera orthographicCamera) {
 
@@ -72,6 +72,7 @@ public class GameInput extends InputAdapter {
 				this.pedalPressurePointer = pointer;
 			} else if (tX >= 200 && tX <= 450 && tY <= 120) {
 				this.initX = tX;
+				this.initY = tY;
 				this.parcelThrowPointer = pointer;
 			}
 
@@ -118,8 +119,10 @@ public class GameInput extends InputAdapter {
 			this.pedalPressurePointer = -1;
 		} else if (pointer == parcelThrowPointer) {
 
+			float fingerDistance = (float) Math.sqrt(Math.pow(initX - tX, 2) + Math.pow(initY - tY, 2));
+
 			// Throw parcel
-			if(GameScreen.getHour() < 21 && GameScreen.getStreet().getTargets().size() > 0 && GameScreen.getParcelsLeft() > 0) {
+			if(GameScreen.getHour() < 21 && GameScreen.getStreet().getTargets().size() > 0 && GameScreen.getParcelsLeft() > 0 && fingerDistance > 30) {
 				for (int i = 0; i < GameScreen.getParcels().length; i++) {
 					if (GameScreen.getParcels()[i] == null || GameScreen.getParcels()[i].getX() < -100 || i == GameScreen.getParcels().length - 1) {
 						GameScreen.setParcel(new Parcel(tX - initX, GameScreen.getVanObj().getSpeed(), GameScreen.getStreet().getTargets().get(0)), i);

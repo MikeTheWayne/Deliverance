@@ -54,9 +54,7 @@ public class GameThreads {
 					if(p != null) {
 						if(p.isLanded() && !p.isClaimed()) {
 
-							System.out.println((Math.floor((van.getX() - street.getStartX() + p.getX()) / 100f) + 1) + " " + p.getTarget());
-
-							if(p.getTarget() == Math.floor((van.getX() - street.getStartX() + p.getX()) / 100f) + 1) {
+							if(p.getTarget() == Math.floor((van.getX() - street.getStartX() + p.getX() + 6) / 100f) + 1) {
 								GameScreen.incrementScore((int) Math.ceil(100 * GameScreen.getScoreMultiplier()) + GameScreen.getStreak());
 								GameScreen.incrementParcelsHit();
 
