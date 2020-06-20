@@ -31,7 +31,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2, cls_10, arb_24, arl_24, cbri_16;
 
-	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, clock, lifedown, button_exit, wheel_half, wheel_full;
+	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, clock, lifedown, button_exit, wheel_half, wheel_full, gapfog;
 	private Sprite[] pedals, scoreDigits, logos;
 
 	private static float blackScreenOpacity;
@@ -159,6 +159,7 @@ public class GameScreen extends ScreenAdapter {
 		this.road = new Sprite(Deliverance.assetManager.get("game_sprites/road.png", Texture.class));
 
 		this.roadGap = new Sprite(Deliverance.assetManager.get("game_sprites/roadgap.png", Texture.class));
+		this.gapfog = new Sprite(Deliverance.assetManager.get("game_sprites/gapfog.png", Texture.class));
 		this.store = new Sprite(Deliverance.assetManager.get("game_sprites/store_01.png", Texture.class));
 		this.warehouse = new Sprite(Deliverance.assetManager.get("game_sprites/warehouse.png", Texture.class));
 		this.warehouse_rival = new Sprite(new TextureRegion(Deliverance.assetManager.get("game_sprites/warehouse.png", Texture.class), 62, 176, 476, 130));
@@ -291,10 +292,12 @@ public class GameScreen extends ScreenAdapter {
 			spriteBatch.draw(store, street.getStartX() + street.getLength() / 2f * 200 - (int) Math.floor(vanObj.getX()), 32);
 			spriteBatch.draw(store, street.getStartX() + street.getLength() / 2f * 200 - (int) Math.floor(vanObj.getX()) + 800, 32, -250, 200);
 			spriteBatch.draw(roadGap, street.getStartX() + street.getLength() / 2f * 200 - (int) Math.floor(vanObj.getX()) + 250, 19);
+			spriteBatch.draw(gapfog, street.getStartX() + street.getLength() / 2f * 200 - (int) Math.floor(vanObj.getX()) + 250, 19);
 		} else if(vanObj.getX() <= street.getStartX()) {
 			spriteBatch.draw(store, street.getStartX() - (int) Math.floor(vanObj.getX()) - 800, 32);
 			spriteBatch.draw(store, street.getStartX() - (int) Math.floor(vanObj.getX()), 32, -250, 200);
 			spriteBatch.draw(roadGap, street.getStartX() - (int) Math.floor(vanObj.getX()) - 550, 19);
+			spriteBatch.draw(gapfog, street.getStartX() - (int) Math.floor(vanObj.getX()) - 550, 19);
 		}
 
 		spriteBatch.end();
@@ -349,8 +352,15 @@ public class GameScreen extends ScreenAdapter {
 		for(Parcel p : parcels) {
 			if(p != null) {
 				spriteBatch.draw(box, p.getX(), p.getY(), 13 + 13 / 3f * (1 - p.getZ()), 15 + 15 / 3f * (1 - p.getZ()));
+
+				if(p.isLanded()) {
+					cls_10.setColor(1f, 1f, 0f, 1f - p.getScoreTextY() / 50f);
+					cls_10.draw(spriteBatch, p.getScoreText(), p.getX(), p.getY() + p.getScoreTextY() + 15);
+				}
 			}
 		}
+
+		cls_10.setColor(1f, 1f, 1f, 1f);
 
 		// Fences
 		for(int x = 0; x < 5; x++) {

@@ -8,8 +8,11 @@ public class Parcel {
 
 	private int target;
 
-	private boolean claimed = false;
-	private boolean landed = false;
+	private boolean claimed;
+	private boolean landed;
+
+	private String scoreText;
+	private float scoreTextY;
 
 	Parcel(float dx, float vel, int target) {
 
@@ -21,6 +24,12 @@ public class Parcel {
 		this.vel = vel;
 
 		this.target = target;
+
+		this.claimed = false;
+		this.landed = false;
+
+		this.scoreText = "";
+		this.scoreTextY = 0f;
 
 	}
 
@@ -35,6 +44,10 @@ public class Parcel {
 		} else{
 			this.landed = true;
 			x -= GameScreen.getVanObj().getSpeed() * (float) GameScreen.PIXELS_PER_METRE * delta;
+
+			if(scoreTextY < 50) {
+				scoreTextY += delta * 50f;
+			}
 		}
 
 	}
@@ -65,5 +78,17 @@ public class Parcel {
 
 	public void setClaimed() {
 		this.claimed = true;
+	}
+
+	public void setScoreText(String scoreText) {
+		this.scoreText = scoreText;
+	}
+
+	public String getScoreText() {
+		return scoreText;
+	}
+
+	public float getScoreTextY() {
+		return scoreTextY;
 	}
 }

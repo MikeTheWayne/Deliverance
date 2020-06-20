@@ -58,6 +58,8 @@ public class GameThreads {
 								GameScreen.incrementScore((int) Math.ceil(100 * GameScreen.getScoreMultiplier()) + GameScreen.getStreak());
 								GameScreen.incrementParcelsHit();
 
+								p.setScoreText("+" + (int) Math.ceil(100 * GameScreen.getScoreMultiplier()));
+
 								if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
 									GameScreen.incrementStreak();
 								}
