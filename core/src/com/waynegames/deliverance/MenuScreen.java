@@ -35,7 +35,7 @@ public class MenuScreen extends ScreenAdapter {
 	private static Timer timer;
 
 	private Sprite background, title, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, button_challenge, buttondown_big, buttondown_small,
-	button_again, buttondown_med, button_leaderboards, button_upgrade_s, button_upgrade_a, button_upgrade_b, tutorial_1, tutorial_2;
+	button_again, buttondown_med, button_leaderboards, button_upgrade_s, button_upgrade_a, button_upgrade_b, tutorial_1, tutorial_2, wheel_half, wheel_full;
 	private Sprite[] scoreDigits, vans;
 
 	private BitmapFont bsh_40, cbri_16, arl_10, arb_24;
@@ -71,6 +71,9 @@ public class MenuScreen extends ScreenAdapter {
 	// Tutorial
 	private static int tutorialScreen;
 
+	// Wheel anim
+	private static boolean wheelAnim;
+
 	public MenuScreen(Game game, Menus targetMenu) {
 
 		MenuScreen.game = game;
@@ -104,6 +107,8 @@ public class MenuScreen extends ScreenAdapter {
 		kmph = false;
 
 		tutorialScreen = 1;
+
+		wheelAnim = false;
 
 		// Load values from save
 		read();
@@ -149,6 +154,9 @@ public class MenuScreen extends ScreenAdapter {
 		this.tutorial_1 = new Sprite(Deliverance.assetManager.get("menu_sprites/tutorial_1.png", Texture.class));
 		this.tutorial_2 = new Sprite(Deliverance.assetManager.get("menu_sprites/tutorial_2.png", Texture.class));
 
+		this.wheel_half = new Sprite(Deliverance.assetManager.get("game_sprites/wheel_half.png", Texture.class));
+		this.wheel_full = new Sprite(Deliverance.assetManager.get("game_sprites/wheel_full.png", Texture.class));
+
 		// Score digits
 		this.scoreDigits = new Sprite[10];
 		for(int i = 0; i < 10; i++) {
@@ -168,8 +176,18 @@ public class MenuScreen extends ScreenAdapter {
 		timer = new Timer();
 
 		timer.scheduleTask(new Timer.Task() {
+
+			int wheelAnimDelay = 0;
+
 			@Override
 			public void run() {
+
+				if(animStage == 1 || animStage == 3) {
+					if(wheelAnimDelay++ == 2) {
+						wheelAnim = !wheelAnim;
+						wheelAnimDelay = 0;
+					}
+				}
 
 				if(targetMode != null) {
 					if(blackScreenOpacity < 1f) {
@@ -244,6 +262,17 @@ public class MenuScreen extends ScreenAdapter {
 
 		spriteBatch.draw(parcel, parcelX, parcelY, parcel.getWidth() * 1.5f, parcel.getHeight() * 1.5f);
 		spriteBatch.draw(vans[vanSelected], vanX, 10, vans[vanSelected].getWidth() * 1.5f, vans[vanSelected].getHeight() * 1.5f);
+
+		// Wheel animation
+		if(wheelAnim) {
+			if(vanSelected == 0 || vanSelected == 6) {
+				spriteBatch.draw(wheel_half, vanX + 20 * 1.5f, 10, wheel_half.getWidth() * 1.5f, wheel_half.getHeight() * 1.5f);
+				spriteBatch.draw(wheel_half, vanX + 109 * 1.5f, 10, wheel_half.getWidth() * 1.5f, wheel_half.getHeight() * 1.5f);
+			} else{
+				spriteBatch.draw(wheel_full, vanX + 20 * 1.5f, 10, wheel_full.getWidth() * 1.5f, wheel_full.getHeight() * 1.5f);
+				spriteBatch.draw(wheel_full, vanX + 95 * 1.5f, 10, wheel_full.getWidth() * 1.5f, wheel_full.getHeight() * 1.5f);
+			}
+		}
 
 		spriteBatch.end();
 

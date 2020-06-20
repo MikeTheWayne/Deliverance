@@ -31,7 +31,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2, cls_10, arb_24, arl_24, cbri_16;
 
-	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, clock, lifedown, button_exit;
+	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, clock, lifedown, button_exit, wheel_half, wheel_full;
 	private Sprite[] pedals, scoreDigits, logos;
 
 	private static float blackScreenOpacity;
@@ -73,6 +73,10 @@ public class GameScreen extends ScreenAdapter {
 	private static int parcelsHit;
 	private static float averageSpeed;
 	private static int drivingSeconds;
+
+	// Wheel anim
+	private boolean wheelAnim;
+	private int wheelAnimDelay;
 
 	GameScreen(Game game, GameMode gameMode, int lives, int days) {
 
@@ -119,6 +123,9 @@ public class GameScreen extends ScreenAdapter {
 		parcelsHit = 0;
 		averageSpeed = 0;
 		drivingSeconds = 0;
+
+		wheelAnim = false;
+		wheelAnimDelay = 0;
 
 		generateContracts();
 
@@ -175,6 +182,9 @@ public class GameScreen extends ScreenAdapter {
 
 		this.button_exit = new Sprite(Deliverance.assetManager.get("game_sprites/button_exit.png", Texture.class));
 
+		this.wheel_half = new Sprite(Deliverance.assetManager.get("game_sprites/wheel_half.png", Texture.class));
+		this.wheel_full = new Sprite(Deliverance.assetManager.get("game_sprites/wheel_full.png", Texture.class));
+
 		this.pedals = new Sprite[4];
 		for(int i = 0; i < 4; i++) {
 			this.pedals[i] = new Sprite(new TextureRegion(Deliverance.assetManager.get("game_sprites/pedals.png", Texture.class), i * 80, 0, 80, 120));
@@ -212,6 +222,14 @@ public class GameScreen extends ScreenAdapter {
 		for(Parcel p : parcels) {
 			if(p != null) {
 				p.fly(delta);
+			}
+		}
+
+		// Wheel animation
+		if(vanObj.getSpeed() > 0) {
+			if (wheelAnimDelay++ >= 8 - (vanObj.getSpeed() / 4f)) {
+				wheelAnim = !wheelAnim;
+				wheelAnimDelay = 0;
 			}
 		}
 
@@ -368,6 +386,17 @@ public class GameScreen extends ScreenAdapter {
 
 		// Van
 		spriteBatch.draw(van, 256, 3);
+
+		// Wheel animation
+		if(wheelAnim) {
+			if(MenuScreen.getVanSelected() == 0 || MenuScreen.getVanSelected() == 6) {
+				spriteBatch.draw(wheel_half, 256 + 20, 3);
+				spriteBatch.draw(wheel_half, 256 + 109, 3);
+			} else{
+				spriteBatch.draw(wheel_full, 256 + 20, 3);
+				spriteBatch.draw(wheel_full, 256 + 95, 3);
+			}
+		}
 
 		spriteBatch.end();
 
