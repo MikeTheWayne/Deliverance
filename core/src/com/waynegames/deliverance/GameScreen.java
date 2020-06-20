@@ -31,8 +31,8 @@ public class GameScreen extends ScreenAdapter {
 
 	private BitmapFont cbri_12, arl_10, arb_12, arb_12_2, cls_10, arb_24, arl_24, cbri_16;
 
-	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, logo_hurlers, clock, lifedown, button_exit;
-	private Sprite[] pedals, scoreDigits;
+	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, clock, lifedown, button_exit;
+	private Sprite[] pedals, scoreDigits, logos;
 
 	private static float blackScreenOpacity;
 
@@ -157,7 +157,15 @@ public class GameScreen extends ScreenAdapter {
 		this.warehouse_rival = new Sprite(new TextureRegion(Deliverance.assetManager.get("game_sprites/warehouse.png", Texture.class), 62, 176, 476, 130));
 		this.tree = new Sprite(Deliverance.assetManager.get("game_sprites/tree.png", Texture.class));
 
-		this.logo_hurlers = new Sprite(Deliverance.assetManager.get("game_sprites/logo_hurlers.png", Texture.class));
+		this.logos = new Sprite[8];
+		this.logos[0] = new Sprite(Deliverance.assetManager.get("game_sprites/logo_hurlers.png", Texture.class));
+		this.logos[1] = new Sprite(Deliverance.assetManager.get("game_sprites/logo_drop.png", Texture.class));
+		this.logos[2] = new Sprite(Deliverance.assetManager.get("game_sprites/logo_congo.png", Texture.class));
+		this.logos[3] = new Sprite(Deliverance.assetManager.get("game_sprites/logo_fnf.png", Texture.class));
+		this.logos[4] = new Sprite(Deliverance.assetManager.get("game_sprites/logo_werf.png", Texture.class));
+		this.logos[5] = new Sprite(Deliverance.assetManager.get("game_sprites/logo_imperial.png", Texture.class));
+		this.logos[6] = new Sprite(Deliverance.assetManager.get("game_sprites/logo_oops.png", Texture.class));
+		this.logos[7] = new Sprite(Deliverance.assetManager.get("game_sprites/logo_gold.png", Texture.class));
 
 		this.speedo = new Sprite(Deliverance.assetManager.get("game_sprites/speedometer" + ((MenuScreen.isKmph()) ? "_kmph" : "") + ".png", Texture.class));
 		this.dial = new Sprite(Deliverance.assetManager.get("game_sprites/speedodial.png", Texture.class));
@@ -595,7 +603,7 @@ public class GameScreen extends ScreenAdapter {
 	private void drawWarehouse(float x) {
 		spriteBatch.draw(tree, x - 10, 32);
 		spriteBatch.draw(warehouse, x, 0);
-		spriteBatch.draw(logo_hurlers, x + 441, 135);
+		spriteBatch.draw(logos[MenuScreen.getVanSelected()], x + 441, 135);
 
 		spriteBatch.draw(van, x + 240, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
 		spriteBatch.draw(van, x + 340, 32, 0, 0, van.getWidth(), van.getHeight(), 0.7f, 0.7f, 0f);
@@ -614,6 +622,8 @@ public class GameScreen extends ScreenAdapter {
 		spriteBatch.begin();
 		spriteBatch.draw(warehouse_rival, x + 600, 32);
 		spriteBatch.draw(warehouse_rival, x + 1100, 32);
+		spriteBatch.draw(logos[(MenuScreen.getVanSelected() + 1 + ((vanObj.getX() > 10000) ? 2 : 0)) % 7], x + 600 + 441 - 62, 135 + 32 - 54);
+		spriteBatch.draw(logos[(MenuScreen.getVanSelected() + 2 + ((vanObj.getX() > 10000) ? 2 : 0)) % 7], x + 1100 + 441 - 62, 135 + 32 - 54);
 		spriteBatch.end();
 
 		// Shrubbery
