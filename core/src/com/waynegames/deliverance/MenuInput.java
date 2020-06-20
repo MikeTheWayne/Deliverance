@@ -33,10 +33,10 @@ public class MenuInput extends InputAdapter {
 		switch (MenuScreen.getCurrentMenu()) {
 			case MAIN:
 				if(tY >= 110 && tY <= 190) {
-					if(tX >= 145 && tX <= 305) {
+					if(tX >= 240 && tX <= 400) {
 						MenuScreen.setButtonDown(0);
 					} else if(tX >= 335 && tX <= 495) {
-						MenuScreen.setButtonDown(1);
+						//MenuScreen.setButtonDown(1);
 					}
 				} else if(tY <= 45) {
 					if(tX <= 45) {
@@ -130,10 +130,10 @@ public class MenuInput extends InputAdapter {
 		switch (MenuScreen.getCurrentMenu()) {
 			case MAIN:
 				if(tY >= 110 && tY <= 190) {
-					if(tX >= 145 && tX <= 305) {
+					if(tX >= 240 && tX <= 400) {
 						MenuScreen.setTargetMode(GameMode.ENDLESS);
 					} else if(tX >= 335 && tX <= 495) {
-						MenuScreen.setTargetMode(GameMode.CHALLENGE);
+						//MenuScreen.setTargetMode(GameMode.CHALLENGE);
 					}
 				} else if(tY <= 45) {
 					if(tX <= 45) {

@@ -339,8 +339,8 @@ public class MenuScreen extends ScreenAdapter {
 				spriteBatch.draw(title, 70, 200);
 
 				// Main buttons
-				spriteBatch.draw(button_endless, 145, 110);
-				spriteBatch.draw(button_challenge, 335, 110);
+				spriteBatch.draw(button_endless, 240, 110);
+				//spriteBatch.draw(button_challenge, 335, 110);
 
 				// Small buttons
 				spriteBatch.draw(button_tutorial, 550, 5);
@@ -353,8 +353,8 @@ public class MenuScreen extends ScreenAdapter {
 				// Button Down
 				switch (buttonDown) {
 					case 0:
-					case 1:
-						spriteBatch.draw(buttondown_big, 145 + 190 * buttonDown, 110);
+					//case 1:
+						spriteBatch.draw(buttondown_big, 240 + 190 * buttonDown, 110);
 						break;
 					case 2:
 					case 3:
@@ -371,11 +371,11 @@ public class MenuScreen extends ScreenAdapter {
 				// Tooltips
 				switch (buttonDown) {
 					case 0:
-						drawTooltip(145, 110, "Unlimited days, but only 3 misses allowed", true);
+						drawTooltip(240, 110, "Begin game", true);
 						break;
-					case 1:
+					/*case 1:
 						drawTooltip(335, 110, "3 day challenge, unlimited misses", true);
-						break;
+						break;*/
 					case 2:
 						drawTooltip(5, 45, "Settings", false);
 						break;
@@ -546,14 +546,16 @@ public class MenuScreen extends ScreenAdapter {
 
 				// Tutorial text
 				switch (tutorialScreen) {
-					case 7:
-						cbri_16.draw(spriteBatch, "Every parcel that lands at the correct house increases the score of the next delivery by one. \nThis is reset every time you miss or fail a delivery.", 20, 60);
-					case 6:
-						cbri_16.draw(spriteBatch, "In challenge mode, you have three days to deliver as many parcels as possible.", 20, 100);
+					//case 7:
+						//cbri_16.draw(spriteBatch, "Every parcel that lands at the correct house increases the score of the next delivery by one. \nThis is reset every time you miss or fail a delivery.", 20, 60);
 					case 5:
-						cbri_16.draw(spriteBatch, "In endless mode, you have three lives. If you deliver a parcel to the wrong house, or fail to \ndeliver a parcel, you lose a life! The game ends when you miss three times.", 20, 140);
+						//cbri_16.draw(spriteBatch, "In challenge mode, you have three days to deliver as many parcels as possible.", 20, 100);
+						tutorialScreen = 8;
 					case 4:
-						cbri_16.draw(spriteBatch, "There are two game modes.", 20, 180);
+						cbri_16.draw(spriteBatch, "You have three lives. If you deliver a parcel to the wrong house, or fail to \ndeliver a parcel, you lose a life! The game ends when you miss three times.", 20, 180);
+					//case 4:
+						//cbri_16.draw(spriteBatch, "There are two game modes.", 20, 180);
+						//tutorialScreen = 5;
 					case 3:
 						cbri_16.draw(spriteBatch, "Each parcel that lands in the correct place increases your score.", 20, 220);
 					case 2:
@@ -574,7 +576,7 @@ public class MenuScreen extends ScreenAdapter {
 					case 8:
 						spriteBatch.draw(tutorial_2, 170, 96);
 
-						GlyphLayout tutorialGlyph1 = new GlyphLayout(cbri_16, "In endless mode, you can select a contract at the start of each day.", Color.WHITE, 160, Align.left, true);
+						GlyphLayout tutorialGlyph1 = new GlyphLayout(cbri_16, "You select a contract at the start of each day.", Color.WHITE, 160, Align.left, true);
 						cbri_16.draw(spriteBatch, tutorialGlyph1, 10, 300);
 						break;
 
@@ -613,7 +615,7 @@ public class MenuScreen extends ScreenAdapter {
 					case 23:
 						cbri_16.draw(spriteBatch, "Try to get the highest score you can! Share your score with your friends, and challenge them to \nbeat your score.", 20, 180);
 					case 22:
-						cbri_16.draw(spriteBatch, "The game will end when you fail 3 parcel deliveries in endless mode, or at the end of day 3 in \nchallenge mode.", 20, 220);
+						cbri_16.draw(spriteBatch, "The game will end when you fail 3 parcel deliveries.", 20, 220);
 					case 21:
 						cbri_16.draw(spriteBatch, "After 21:00, you can no longer deliver parcels. You must carry on driving past the end of the \nstreet, and then back to the warehouse, where your van will stop and the day will end.", 20, 260);
 					case 20:

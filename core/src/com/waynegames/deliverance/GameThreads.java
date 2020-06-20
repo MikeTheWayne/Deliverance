@@ -57,14 +57,18 @@ public class GameThreads {
 							System.out.println((Math.floor((van.getX() - street.getStartX() + p.getX()) / 100f) + 1) + " " + p.getTarget());
 
 							if(p.getTarget() == Math.floor((van.getX() - street.getStartX() + p.getX()) / 100f) + 1) {
-								GameScreen.incrementScore((int) Math.ceil(100 * GameScreen.getScoreMultiplier()));
+								GameScreen.incrementScore((int) Math.ceil(100 * GameScreen.getScoreMultiplier()) + GameScreen.getStreak());
 								GameScreen.incrementParcelsHit();
+
+								if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
+									GameScreen.incrementStreak();
+								}
 							} else{
 
 								if(GameScreen.getGameMode() == GameMode.ENDLESS) {
 									GameScreen.setLivesLeft(GameScreen.getLivesLeft() - 1);
 								} else if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
-									GameScreen.incrementScore(-200);
+									GameScreen.resetStreak();
 								}
 							}
 
@@ -81,7 +85,7 @@ public class GameThreads {
 						if(GameScreen.getGameMode() == GameMode.ENDLESS) {
 							GameScreen.setLivesLeft(GameScreen.getLivesLeft() - 1);
 						} else if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
-							GameScreen.incrementScore(-200);
+							GameScreen.resetStreak();
 						}
 					}
 				}
@@ -97,6 +101,10 @@ public class GameThreads {
 				if(van.getX() >= street.getStartX() + street.getLength() / 2f * 200 + 1680 || GameScreen.isGameOver()) {
 					if(GameScreen.getBlackScreenOpacity() < 1) {
 						GameScreen.setBlackScreenOpacity(GameScreen.getBlackScreenOpacity() + 1f / (TICKS_PER_SECOND / 2f));
+
+						if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
+							GameScreen.checkChallengeGameOver();
+						}
 					} else if(GameScreen.isGameOver()) {
 						// Return to menu
 						GameThreads.stop();

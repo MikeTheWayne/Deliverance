@@ -94,7 +94,7 @@ public class GameScreen extends ScreenAdapter {
 		blackScreenOpacity = 1f;
 
 		parcelsLeft = 300;
-		parcelDensity = 1.8f;
+		parcelDensity = 1.5f;
 
 		street = new Street(FIRST_STREET_START_X);
 
@@ -804,6 +804,12 @@ public class GameScreen extends ScreenAdapter {
 		GameScreen.blackScreenOpacity = blackScreenOpacity;
 	}
 
+	public static void checkChallengeGameOver() {
+		if(day == maxDays) {
+			gameOver = true;
+		}
+	}
+
 	public static void incrementDay() {
 
 		GameThreads.setTimeStarted(false);
@@ -825,10 +831,6 @@ public class GameScreen extends ScreenAdapter {
 
 		if(gameMode == GameMode.CHALLENGE) {
 			parcelsLeft = 300;
-
-			if(day > maxDays) {
-				gameOver = true;
-			}
 		}
 
 	}
@@ -963,5 +965,17 @@ public class GameScreen extends ScreenAdapter {
 
 	public static float getAverageSpeed() {
 		return averageSpeed;
+	}
+
+	public static int getStreak() {
+		return streak;
+	}
+
+	public static void incrementStreak() {
+		streak++;
+	}
+
+	public static void resetStreak() {
+		streak = 0;
 	}
 }
