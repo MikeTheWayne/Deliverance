@@ -51,6 +51,10 @@ public class Street {
 			}
 		}
 
+		if(returnList.size() == GameScreen.getParcelsLeft()) {
+			length = (int) Math.ceil(returnList.get(returnList.size() - 1) / 10f) * 10;
+		}
+
 		return returnList;
 
 	}
