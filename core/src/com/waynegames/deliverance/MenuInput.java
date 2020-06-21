@@ -83,8 +83,13 @@ public class MenuInput extends InputAdapter {
 					MenuScreen.setButtonDown(0);
 				}
 
+				// Van selector
 				if(tX >= 20 && tX <= 620 && tY >= 10 && tY <= 170) {
-					MenuScreen.setVanSelected((int) (((tX - 20) / 150) + 4 * Math.ceil((80 - (tY - 10)) / 80)));
+					int vanTouched = (int) (((tX - 20) / 150) + 4 * Math.ceil((80 - (tY - 10)) / 80));
+
+					if(MenuScreen.getLevel() >= vanTouched * 10) {
+						MenuScreen.setVanSelected(vanTouched);
+					}
 				}
 				break;
 

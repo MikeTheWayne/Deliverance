@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Timer;
 public class GameThreads {
 	static final int TICKS_PER_SECOND = 30;
 	static final float FRICTION_COEFFICIENT = 0.5f;
+	static final float ACCELERATION_DELAY_COEFFICIENT = 0.07f;
 
 	private static Timer timer;
 
@@ -35,7 +36,7 @@ public class GameThreads {
 
 				// Accelerate van based on pressure on pedal
 				// acceleration = (a - cx) - (a - p(a + F) / 10) - F, a = Current max acceleration of van, c = Current acceleration delay coefficient of van, p = pedal pressure, F = friction coefficient
-				van.setSpeed(van.getSpeed() + (((van.getAcceleration() - van.getAccelDelayCoefficient() * van.getSpeed()) - (van.getAcceleration() - GameInput.getPedalPressure() * (van.getAcceleration() + FRICTION_COEFFICIENT) / 10f) - FRICTION_COEFFICIENT) / TICKS_PER_SECOND));
+				van.setSpeed(van.getSpeed() + (((van.getAcceleration() - ACCELERATION_DELAY_COEFFICIENT * van.getSpeed()) - (van.getAcceleration() - GameInput.getPedalPressure() * (van.getAcceleration() + FRICTION_COEFFICIENT) / 10f) - FRICTION_COEFFICIENT) / TICKS_PER_SECOND));
 
 				// Braking
 				van.setSpeed(van.getSpeed() - (van.getBraking() * GameInput.getBrakePressure() / 10f) / TICKS_PER_SECOND);

@@ -428,10 +428,10 @@ public class GameScreen extends ScreenAdapter {
 
 		// UI
 		// Pedal
-		spriteBatch.draw(pedals[(int) (GameInput.getPedalPressure() / 10f * 4)], 10, 10, 80, 120 - 60 * (GameInput.getPedalPressure() / 10f));
+		spriteBatch.draw(pedals[(int) (GameInput.getPedalPressure() / 10f * 3)], 10, 10, 80, 120 - 60 * (GameInput.getPedalPressure() / 10f));
 
 		// Brake
-		spriteBatch.draw(pedals[(int) (GameInput.getBrakePressure() / 10f * 4)], 100, 10, 60, 80 - 40 * (GameInput.getBrakePressure() / 10f));
+		spriteBatch.draw(pedals[(int) (GameInput.getBrakePressure() / 10f * 3)], 100, 10, 60, 80 - 40 * (GameInput.getBrakePressure() / 10f));
 
 		// Speedometer
 		spriteBatch.draw(speedo, 0, 300);

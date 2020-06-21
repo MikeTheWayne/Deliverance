@@ -64,11 +64,11 @@ public class GameInput extends InputAdapter {
 		} else {
 			// Main game
 
-			if (tX < 90 && tY < 130) {
-				pedalPressure = tY / 13f;
+			if (tX < 90 && tY < 160) {
+				pedalPressure = Math.min(tY / 13f, 10f);
 				this.pedalPressurePointer = pointer;
-			} else if (tX < 160 && tY < 90) {
-				brakePressure = tY / 9f;
+			} else if (tX < 160 && tY < 120) {
+				brakePressure = Math.min(tY / 9f, 10f);
 				this.pedalPressurePointer = pointer;
 			} else if (tX >= 200 && tX <= 450 && tY <= 120) {
 				this.initX = tX;
@@ -91,13 +91,13 @@ public class GameInput extends InputAdapter {
 		float tX = input.x;
 		float tY = input.y;
 
-		if(tX < 90 && tY < 130 && pointer == pedalPressurePointer) {
-			pedalPressure = tY / 13f;
+		if(tX < 90 && tY < 160 && pointer == pedalPressurePointer) {
+			pedalPressure = Math.min(tY / 13f, 10f);
 			brakePressure = 0;
 			GameThreads.setTimeStarted(true);
-		} else if(tX < 160 && tY < 90 && pointer == pedalPressurePointer) {
+		} else if(tX < 160 && tY < 120 && pointer == pedalPressurePointer) {
+			brakePressure = Math.min(tY / 9f, 10f);
 			pedalPressure = 0;
-			brakePressure = tY / 9f;
 		}
 
 		return super.touchDragged(screenX, screenY, pointer);
@@ -122,7 +122,7 @@ public class GameInput extends InputAdapter {
 			float fingerDistance = (float) Math.sqrt(Math.pow(initX - tX, 2) + Math.pow(initY - tY, 2));
 
 			// Throw parcel
-			if(GameScreen.getHour() < 21 && GameScreen.getStreet().getTargets().size() > 0 && GameScreen.getParcelsLeft() > 0 && fingerDistance > 30) {
+			if(GameScreen.getHour() < 21 && GameScreen.getStreet().getTargets().size() > 0 && GameScreen.getParcelsLeft() > 0 && fingerDistance > 10) {
 				for (int i = 0; i < GameScreen.getParcels().length; i++) {
 					if (GameScreen.getParcels()[i] == null || GameScreen.getParcels()[i].getX() < -100 || i == GameScreen.getParcels().length - 1) {
 						GameScreen.setParcel(new Parcel(tX - initX, GameScreen.getVanObj().getSpeed(), GameScreen.getStreet().getTargets().get(0)), i);

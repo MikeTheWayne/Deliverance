@@ -6,18 +6,16 @@ public class Van {
 	private float speed;
 
 	private float acceleration;
-	private float accelDelayCoefficient;
-
 	private float braking;
 
 	Van () {
 		this.x = 0;
 		this.speed = 0;
 
-		this.acceleration = 2.0f;
-		this.accelDelayCoefficient = 0.07f;
-
-		this.braking = 6f; // 6 <= x <= 9
+		// 2.2 + 1.85 * log (x / 64 + 1)	60 <= x <= 100
+		this.acceleration = 2f + Math.min(2.1f * (float) Math.log((MenuScreen.getLevel() - 1) / 64f + 1), 1.4f);
+		// 6 + 5 * log (x / 50 + 1) 		6 <= x <= 9
+		this.braking = 6f + Math.min(5f * (float) Math.log((MenuScreen.getLevel() - 1) / 50f + 1), 3f);
 	}
 
 	public float getSpeed() {
@@ -42,10 +40,6 @@ public class Van {
 
 	public float getAcceleration() {
 		return acceleration;
-	}
-
-	public float getAccelDelayCoefficient() {
-		return accelDelayCoefficient;
 	}
 
 	public float getBraking() {

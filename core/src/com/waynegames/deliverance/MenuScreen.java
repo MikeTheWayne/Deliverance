@@ -34,8 +34,8 @@ public class MenuScreen extends ScreenAdapter {
 
 	private static Timer timer;
 
-	private Sprite background, title, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, button_challenge, buttondown_big, buttondown_small,
-	button_again, buttondown_med, button_leaderboards, button_upgrade_s, button_upgrade_a, button_upgrade_b, tutorial_1, tutorial_2, wheel_half, wheel_full;
+	private Sprite background, title, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, buttondown_big, buttondown_small,
+	button_again, buttondown_med, button_leaderboards, tutorial_1, tutorial_2, wheel_half, wheel_full;
 	private Sprite[] scoreDigits, vans;
 
 	private BitmapFont bsh_40, cbri_16, arl_10, arb_24;
@@ -59,11 +59,6 @@ public class MenuScreen extends ScreenAdapter {
 
 	private int oldLevel;
 	private int oldExp;
-
-	// Van upgrade levels
-	private static int maxSpeedLevel;
-	private static int accelerationLevel;
-	private static int brakingLevel;
 
 	// Settings
 	private static float soundVolume;
@@ -103,10 +98,6 @@ public class MenuScreen extends ScreenAdapter {
 
 		oldLevel = 1;
 		oldExp = 0;
-
-		maxSpeedLevel = 0; 		// 60 <= x <= 100		x = 39 * log((L / 5.2) + 1) + 60
-		accelerationLevel = 0; 	// 60 >= x >= 10		x = E ^ (3.738 - (x / 12)) + 8
-		brakingLevel = 0; 		// 6 <= x <= 9			x = 3.1 * log((L / 6) + 1) + 6
 
 		soundVolume = 1f;
 		musicVolume = 1f;
@@ -168,12 +159,8 @@ public class MenuScreen extends ScreenAdapter {
 		this.button_van = new Sprite(Deliverance.assetManager.get("menu_sprites/button_van.png", Texture.class));
 		this.button_back = new Sprite(Deliverance.assetManager.get("menu_sprites/button_back.png", Texture.class));
 		this.button_endless = new Sprite(Deliverance.assetManager.get("menu_sprites/button_endless.png", Texture.class));
-		this.button_challenge = new Sprite(Deliverance.assetManager.get("menu_sprites/button_challenge.png", Texture.class));
 		this.button_again = new Sprite(Deliverance.assetManager.get("menu_sprites/button_again.png", Texture.class));
 		this.button_leaderboards = new Sprite(Deliverance.assetManager.get("menu_sprites/button_leaderboards.png", Texture.class));
-		this.button_upgrade_s = new Sprite(Deliverance.assetManager.get("menu_sprites/button_upgrade_s.png", Texture.class));
-		this.button_upgrade_a = new Sprite(Deliverance.assetManager.get("menu_sprites/button_upgrade_a.png", Texture.class));
-		this.button_upgrade_b = new Sprite(Deliverance.assetManager.get("menu_sprites/button_upgrade_b.png", Texture.class));
 
 		this.buttondown_big = new Sprite(Deliverance.assetManager.get("menu_sprites/button_big_down.png", Texture.class));
 		this.buttondown_small = new Sprite(Deliverance.assetManager.get("menu_sprites/button_small_down.png", Texture.class));
@@ -582,17 +569,6 @@ public class MenuScreen extends ScreenAdapter {
 
 				cbri_16.draw(spriteBatch, expGlyph, 600 - expGlyph.width, 315);
 
-				// Points
-				arl_10.draw(spriteBatch, "POINTS", 500, 255);
-				arb_24.draw(spriteBatch, "" + (level - 1 - maxSpeedLevel - accelerationLevel - brakingLevel), 545, 255);
-
-				// Upgrade icons
-				if(level - 1 - maxSpeedLevel - accelerationLevel - brakingLevel > 0) {
-					spriteBatch.draw(button_upgrade_s, 480, 180);
-					spriteBatch.draw(button_upgrade_a, 525, 180);
-					spriteBatch.draw(button_upgrade_b, 570, 180);
-				}
-
 				// Van
 				spriteBatch.draw(vans[vanSelected], 50, 200);
 
@@ -601,10 +577,22 @@ public class MenuScreen extends ScreenAdapter {
 					spriteBatch.draw(vans[i], 30 + (i % 4) * 150, 100 - (float) (i / 4) * 80);
 				}
 
+				// Van level lock text
+				for (int i = 1; i < 8; i++) {
+					if (level < i * 10) {
+						GlyphLayout lvlReqGlyph = new GlyphLayout(cbri_16, "Lvl " + i * 10);
+						cbri_16.draw(spriteBatch, lvlReqGlyph, 168 - lvlReqGlyph.width + (i % 4) * 150, 168 - (float) (i / 4) * 80);
+					}
+				}
+
 				// Van stats
-				float maxSpeed = 39 * (float) Math.log((maxSpeedLevel / 5.2f) + 1) + 60;
-				float accel = (float) Math.pow(Math.E, 3.7376 - (accelerationLevel / 12f)) + 8;
-				float brake = 3.1f * (float) Math.log((maxSpeedLevel / 6f) + 1) + 6;
+				// 2.2 + 1.85 * log (x / 64 + 1)	60 <= x <= 100
+				float acc = 2f + Math.min(2.1f * (float) Math.log((level - 1) / 64f + 1), 1.4f);
+
+				// Acceleration: -ln(a - 26.822c) + ln(a) / c
+				float maxSpeed = (2.237f * acc) / GameThreads.ACCELERATION_DELAY_COEFFICIENT;
+				float accel = (float) -Math.log(acc - 26.822f * GameThreads.ACCELERATION_DELAY_COEFFICIENT) / GameThreads.ACCELERATION_DELAY_COEFFICIENT + (float) Math.log(acc) / GameThreads.ACCELERATION_DELAY_COEFFICIENT;
+				float brake = 6f + Math.min(5f * (float) Math.log((level - 1) / 50f + 1), 3f);
 
 				DecimalFormat df2 = new DecimalFormat("0.00");
 
@@ -615,10 +603,6 @@ public class MenuScreen extends ScreenAdapter {
 				cbri_16.draw(spriteBatch, ((kmph) ? df2.format(maxSpeed * 1.609) + "kmph" : df2.format(maxSpeed) + "mph"), 350, 255);
 				cbri_16.draw(spriteBatch, df2.format(accel) + "s", 350, 235);
 				cbri_16.draw(spriteBatch, df2.format(brake) + "(m/s)/s", 350, 215);
-
-				cbri_16.draw(spriteBatch, "[" + maxSpeedLevel + "]", 450, 255);
-				cbri_16.draw(spriteBatch, "[" + accelerationLevel + "]", 450, 235);
-				cbri_16.draw(spriteBatch, "[" + brakingLevel + "]", 450, 215);
 
 				// Buttons
 				spriteBatch.draw(button_back, 5, 315);
@@ -740,11 +724,22 @@ public class MenuScreen extends ScreenAdapter {
 
 		spriteBatch.end();
 
-		// Black Screen
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
+		// Van level locking
+		if(currentMenu == Menus.CUSTOMISATION) {
+			shapeRenderer.setColor(0, 0, 0, 0.4f);
+
+			for (int i = 1; i < 8; i++) {
+				if (level < i * 10) {
+					shapeRenderer.rect(22 + (i % 4) * 150, 92 - (float) (i / 4) * 80, 148, 78);
+				}
+			}
+		}
+
+		// Black Screen
 		shapeRenderer.setColor(0, 0, 0, blackScreenOpacity);
 		shapeRenderer.rect(0, 0, 640, 360);
 
@@ -802,9 +797,6 @@ public class MenuScreen extends ScreenAdapter {
 
 				// Customisation
 				MenuScreen.vanSelected = Integer.parseInt(fileContents[count++]);
-				MenuScreen.maxSpeedLevel = Integer.parseInt(fileContents[count++]);
-				MenuScreen.accelerationLevel = Integer.parseInt(fileContents[count++]);
-				MenuScreen.brakingLevel = Integer.parseInt(fileContents[count++]);
 				MenuScreen.level = Integer.parseInt(fileContents[count++]);
 				MenuScreen.exp = Integer.parseInt(fileContents[count++]);
 
@@ -831,9 +823,6 @@ public class MenuScreen extends ScreenAdapter {
 
 		// Customisation
 		file.writeString(MenuScreen.vanSelected + ";", true);
-		file.writeString(MenuScreen.maxSpeedLevel + ";", true);
-		file.writeString(MenuScreen.accelerationLevel + ";", true);
-		file.writeString(MenuScreen.brakingLevel + ";", true);
 		file.writeString(MenuScreen.level + ";", true);
 		file.writeString(MenuScreen.exp + ";", true);
 
@@ -914,5 +903,9 @@ public class MenuScreen extends ScreenAdapter {
 		}
 
 		MenuScreen.tutorialScreen = tutorialScreen;
+	}
+
+	public static int getLevel() {
+		return level;
 	}
 }
