@@ -57,6 +57,9 @@ public class MenuScreen extends ScreenAdapter {
 	private static int level;
 	private static int exp;
 
+	private int oldLevel;
+	private int oldExp;
+
 	// Van upgrade levels
 	private static int maxSpeedLevel;
 	private static int accelerationLevel;
@@ -98,6 +101,9 @@ public class MenuScreen extends ScreenAdapter {
 		level = 1;
 		exp = 0;
 
+		oldLevel = 1;
+		oldExp = 0;
+
 		maxSpeedLevel = 0; 		// 60 <= x <= 100		x = 39 * log((L / 5.2) + 1) + 60
 		accelerationLevel = 0; 	// 60 >= x >= 10		x = E ^ (3.738 - (x / 12)) + 8
 		brakingLevel = 0; 		// 6 <= x <= 9			x = 3.1 * log((L / 6) + 1) + 6
@@ -112,6 +118,28 @@ public class MenuScreen extends ScreenAdapter {
 
 		// Load values from save
 		read();
+
+		// Levelling
+		if(targetMenu == Menus.GAMEOVER) {
+			oldLevel = level;
+			oldExp = exp;
+
+			exp += GameScreen.getScore();
+
+			// Exp: 200 * (L - 1) ^ 1.25 + 5000
+			int requiredForNextLevel = (int) (200 * Math.pow(level - 1, 1.25f) + 5000);
+
+			do {
+				if(exp >= requiredForNextLevel) {
+					exp -= requiredForNextLevel;
+					level++;
+				}
+
+				requiredForNextLevel = (int) (200 * Math.pow(level - 1, 1.25f) + 5000);
+			} while (exp > requiredForNextLevel);
+
+			save();
+		}
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -247,6 +275,27 @@ public class MenuScreen extends ScreenAdapter {
 				break;
 		}
 
+		// Level bar animation
+		if(oldLevel != level || oldExp != exp) {
+			int requiredForNextLevel = (int) (200 * Math.pow(oldLevel - 1, 1.25f) + 5000);
+
+			if (oldLevel == level) {
+				float rateOfChange = Math.min(((exp - oldExp) + requiredForNextLevel / 40f), requiredForNextLevel / 3f);
+				oldExp += rateOfChange * delta;
+
+				if(oldExp > exp) {
+					oldExp = exp;
+				}
+			} else {
+				oldExp += requiredForNextLevel / 3f * delta;
+
+				if(oldExp > requiredForNextLevel) {
+					oldExp = 0;
+					oldLevel++;
+				}
+			}
+		}
+
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | ((Gdx.graphics.getBufferFormat().coverageSampling) ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
@@ -292,6 +341,22 @@ public class MenuScreen extends ScreenAdapter {
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
 		switch (currentMenu) {
+
+			case GAMEOVER:
+				// Level bar
+				shapeRenderer.setColor(24 / 255f, 75 / 255f, 175 / 255f, 1f);
+				shapeRenderer.rect(120, 100, 400, 30);
+
+				Color levelL1 = new Color(40 / 255f, 120 / 255f, 200 / 255f, 1f);
+				Color levelR1 = new Color(100 / 255f, 168 / 255f, 255 / 255f, 1f);
+				shapeRenderer.rect(122, 102, 396, 26, levelL1, levelR1, levelR1, levelL1);
+
+				int nextLevelRequiredExp1 = (int) (200 * Math.pow(oldLevel - 1, 1.25f) + 5000);
+				shapeRenderer.setColor(40 / 255f, 40 / 255f, 40 / 255f, 1f);
+				shapeRenderer.rect(122 + (oldExp / (float) (nextLevelRequiredExp1)) * 396, 102, 396 * (1 - (oldExp / (float) (nextLevelRequiredExp1))), 26);
+
+				break;
+
 			case CUSTOMISATION:
 				shapeRenderer.setColor(24 / 255f, 75 / 255f, 175 / 255f, 1f);
 
@@ -319,11 +384,9 @@ public class MenuScreen extends ScreenAdapter {
 				Color levelR = new Color(100 / 255f, 168 / 255f, 255 / 255f, 1f);
 				shapeRenderer.rect(202, 272, 396, 26, levelL, levelR, levelR, levelL);
 
-				int prevLevelRequiredExp = (int) (200 * Math.pow(level - 2, 1.25f) + 5000);
 				int nextLevelRequiredExp = (int) (200 * Math.pow(level - 1, 1.25f) + 5000);
 				shapeRenderer.setColor(40 / 255f, 40 / 255f, 40 / 255f, 1f);
-				shapeRenderer.rect(202 + ((exp - prevLevelRequiredExp) / (float) (nextLevelRequiredExp - prevLevelRequiredExp)) * 396, 272, 396 + (1 - ((exp - prevLevelRequiredExp) / (float) (nextLevelRequiredExp - prevLevelRequiredExp))), 26);
-
+				shapeRenderer.rect(202 + (exp / (float) (nextLevelRequiredExp)) * 396, 272, 396 * (1 - (exp / (float) (nextLevelRequiredExp))), 26);
 
 				break;
 
@@ -450,6 +513,16 @@ public class MenuScreen extends ScreenAdapter {
 				cbri_16.draw(spriteBatch, accuracy, 320 - accuracy.width / 2f, 200);
 				cbri_16.draw(spriteBatch, averageSpeed, 320 - averageSpeed.width / 2f, 180);
 
+				// Level
+				arl_10.draw(spriteBatch, "LEVEL", 120, 140);
+				arb_24.draw(spriteBatch, oldLevel + "", 156, 151);
+
+				// Exp: 200 * (L - 1) ^ 1.25 + 5000
+				int nextLevelRequiredExp1 = (int) (200 * Math.pow(oldLevel - 1, 1.25f) + 5000);
+				GlyphLayout expGlyph1 = new GlyphLayout(cbri_16, oldExp + "/" + nextLevelRequiredExp1);
+
+				cbri_16.draw(spriteBatch, expGlyph1, 520 - expGlyph1.width, 145);
+
 				// Buttons
 				spriteBatch.draw(button_back, 5, 5);
 				spriteBatch.draw(button_again, 260, 5);
@@ -504,9 +577,8 @@ public class MenuScreen extends ScreenAdapter {
 				arb_24.draw(spriteBatch, level + "", 236, 321);
 
 				// Exp: 200 * (L - 1) ^ 1.25 + 5000
-				int prevLevelRequiredExp = (int) (200 * Math.pow(level - 2, 1.25f) + 5000);
 				int nextLevelRequiredExp = (int) (200 * Math.pow(level - 1, 1.25f) + 5000);
-				GlyphLayout expGlyph = new GlyphLayout(cbri_16, (exp - prevLevelRequiredExp) + "/" + nextLevelRequiredExp);
+				GlyphLayout expGlyph = new GlyphLayout(cbri_16, exp + "/" + nextLevelRequiredExp);
 
 				cbri_16.draw(spriteBatch, expGlyph, 600 - expGlyph.width, 315);
 

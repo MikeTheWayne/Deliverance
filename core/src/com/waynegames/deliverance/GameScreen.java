@@ -557,8 +557,6 @@ public class GameScreen extends ScreenAdapter {
 	@Override
 	public void resume() {
 		super.resume();
-
-		GameThreads.run();
 	}
 
 	private void generateShopBanners() {
