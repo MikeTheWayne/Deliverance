@@ -145,4 +145,8 @@ public class GameThreads {
 	public static void setTimeStarted(boolean timeStarted) {
 		GameThreads.timeStarted = timeStarted;
 	}
+
+	public static boolean isTimeStarted() {
+		return timeStarted;
+	}
 }

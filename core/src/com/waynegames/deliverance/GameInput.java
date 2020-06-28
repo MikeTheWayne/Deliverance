@@ -67,6 +67,8 @@ public class GameInput extends InputAdapter {
 			if (tX < 90 && tY < 160) {
 				pedalPressure = Math.min(tY / 13f, 10f);
 				this.pedalPressurePointer = pointer;
+				GameThreads.setTimeStarted(true);
+				GameScreen.playMusic();
 			} else if (tX < 160 && tY < 120) {
 				brakePressure = Math.min(tY / 9f, 10f);
 				this.pedalPressurePointer = pointer;
@@ -94,7 +96,6 @@ public class GameInput extends InputAdapter {
 		if(tX < 90 && tY < 160 && pointer == pedalPressurePointer) {
 			pedalPressure = Math.min(tY / 13f, 10f);
 			brakePressure = 0;
-			GameThreads.setTimeStarted(true);
 		} else if(tX < 160 && tY < 120 && pointer == pedalPressurePointer) {
 			brakePressure = Math.min(tY / 9f, 10f);
 			pedalPressure = 0;

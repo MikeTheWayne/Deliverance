@@ -3,6 +3,7 @@ package com.waynegames.deliverance;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -34,6 +35,10 @@ public class GameScreen extends ScreenAdapter {
 	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, clock, lifedown, button_exit, wheel_half, wheel_full, gapfog;
 	private Sprite[] pedals, scoreDigits, logos;
 
+	// Music
+	private static Music music;
+
+	// Game Values
 	private static float blackScreenOpacity;
 
 	private static int daySeed;
@@ -131,6 +136,11 @@ public class GameScreen extends ScreenAdapter {
 
 		// Load from save, if it exists
 		read();
+
+		// Music
+		music = Gdx.audio.newMusic(Gdx.files.internal("music/deliverance_music.mp3"));
+		music.setVolume(MenuScreen.getMusicVolume());
+		music.setLooping(false);
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -552,11 +562,22 @@ public class GameScreen extends ScreenAdapter {
 		spriteBatch.dispose();
 		shapeRenderer.dispose();
 		cbri_12.dispose();
+		music.dispose();
+	}
+
+	@Override
+	public void pause() {
+		super.pause();
+		music.pause();
 	}
 
 	@Override
 	public void resume() {
 		super.resume();
+
+		if(GameThreads.isTimeStarted() && hour < 21) {
+			music.play();
+		}
 	}
 
 	private void generateShopBanners() {
@@ -1024,5 +1045,11 @@ public class GameScreen extends ScreenAdapter {
 
 	public static void resetStreak() {
 		streak = 0;
+	}
+
+	public static void playMusic() {
+		if(!music.isPlaying() && hour == 9) {
+			music.play();
+		}
 	}
 }

@@ -862,6 +862,14 @@ public class MenuScreen extends ScreenAdapter {
 		MenuScreen.vanSelected = vanSelected;
 	}
 
+	public static float getSoundVolume() {
+		return soundVolume;
+	}
+
+	public static float getMusicVolume() {
+		return musicVolume;
+	}
+
 	public static void setSoundVolume(float soundVolume) {
 
 		if(soundVolume < 0) {
