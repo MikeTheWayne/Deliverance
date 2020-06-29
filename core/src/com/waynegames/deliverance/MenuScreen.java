@@ -3,6 +3,7 @@ package com.waynegames.deliverance;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -39,6 +40,8 @@ public class MenuScreen extends ScreenAdapter {
 	private Sprite[] scoreDigits, vans;
 
 	private BitmapFont bsh_40, cbri_16, arl_10, arb_24;
+
+	private static Music music;
 
 	private static int animStage;
 	private static float vanX;
@@ -132,6 +135,12 @@ public class MenuScreen extends ScreenAdapter {
 			save();
 		}
 
+		// Music
+		music = Gdx.audio.newMusic(Gdx.files.internal("music/menu_music.mp3"));
+		music.setVolume(musicVolume);
+		music.setLooping(true);
+		music.play();
+
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
@@ -209,6 +218,8 @@ public class MenuScreen extends ScreenAdapter {
 						blackScreenOpacity += 1f / (TICKS_PER_SECOND / 2f);
 					} else{
 						MenuScreen.stopTimer();
+						music.stop();
+						music.setPosition(0);
 						MenuScreen.getGame().setScreen(new GameScreen(MenuScreen.getGame(), targetMode, 3, 3));
 					}
 				} else if(blackScreenOpacity > 0) {
@@ -756,6 +767,22 @@ public class MenuScreen extends ScreenAdapter {
 
 		spriteBatch.dispose();
 		shapeRenderer.dispose();
+		music.dispose();
+	}
+
+	@Override
+	public void pause() {
+		super.pause();
+
+		music.stop();
+		music.setPosition(0);
+	}
+
+	@Override
+	public void resume() {
+		super.resume();
+
+		music.play();
 	}
 
 	private void drawTooltip(float x, float y, String text, boolean dangle) {
@@ -890,6 +917,8 @@ public class MenuScreen extends ScreenAdapter {
 		}
 
 		MenuScreen.musicVolume = musicVolume;
+
+		music.setVolume(musicVolume);
 	}
 
 	public static void invertKmph() {

@@ -109,6 +109,8 @@ public class GameThreads {
 					} else if(GameScreen.isGameOver()) {
 						// Return to menu
 						GameThreads.stop();
+						GameScreen.stopMusic();
+						GameScreen.disposeMusic();
 						GameScreen.getGame().setScreen(new MenuScreen(GameScreen.getGame(), Menus.GAMEOVER));
 					}
 

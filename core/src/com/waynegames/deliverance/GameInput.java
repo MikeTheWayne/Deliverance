@@ -41,6 +41,8 @@ public class GameInput extends InputAdapter {
 
 				// Return to menu
 				GameThreads.stop();
+				GameScreen.stopMusic();
+				GameScreen.disposeMusic();
 				GameScreen.getGame().setScreen(new MenuScreen(GameScreen.getGame(), Menus.MAIN));
 			}
 

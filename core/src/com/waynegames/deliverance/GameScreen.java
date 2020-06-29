@@ -492,6 +492,8 @@ public class GameScreen extends ScreenAdapter {
 		// Contract selection
 		if(!gameOver && blackScreenOpacity >= 1f && ((gameMode == GameMode.ENDLESS && dayEnd) || (hour == 21))) {
 
+			GameScreen.stopMusic();
+
 			if(gameMode == GameMode.ENDLESS) {
 
 				float sat1 = 0.3f;
@@ -1051,5 +1053,16 @@ public class GameScreen extends ScreenAdapter {
 		if(!music.isPlaying() && hour == 9) {
 			music.play();
 		}
+	}
+
+	public static void stopMusic() {
+		if(music.isPlaying()) {
+			music.stop();
+			music.setPosition(0);
+		}
+	}
+
+	public static void disposeMusic() {
+		music.dispose();
 	}
 }
