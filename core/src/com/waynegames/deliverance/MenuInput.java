@@ -137,20 +137,26 @@ public class MenuInput extends InputAdapter {
 				if(tY >= 110 && tY <= 190) {
 					if(tX >= 240 && tX <= 400) {
 						MenuScreen.setTargetMode(GameMode.ENDLESS);
+						MenuScreen.playClick();
 					} else if(tX >= 335 && tX <= 495) {
 						//MenuScreen.setTargetMode(GameMode.CHALLENGE);
 					}
 				} else if(tY <= 45) {
 					if(tX <= 45) {
 						MenuScreen.setCurrentMenu(Menus.SETTINGS);
+						MenuScreen.playClick();
 					} else if(tX >= 50 && tX <= 90) {
 						MenuScreen.setCurrentMenu(Menus.CUSTOMISATION);
+						MenuScreen.playClick();
 					} else if(tX >= 95 && tX <= 135) {
 						// Achievements
+						MenuScreen.playClick();
 					} else if(tX >= 140 && tX <= 180) {
 						// Leaderboards
+						MenuScreen.playClick();
 					} else if(tX >= 540 && tX <= 590) {
 						MenuScreen.setCurrentMenu(Menus.TUTORIAL);
+						MenuScreen.playClick();
 					} else if(tX >= 595) {
 						Gdx.app.exit();
 					}
@@ -161,9 +167,11 @@ public class MenuInput extends InputAdapter {
 				if(tX <= 45 && tY <= 45) {
 					MenuScreen.setCurrentMenu(Menus.MAIN);
 					MenuScreen.save();
+					MenuScreen.playClick();
 				} else if(tX >= 260 && tX <= 380 && tY >= 5 && tY <= 65) {
 					MenuScreen.setTargetMode(GameScreen.getGameMode());
 					MenuScreen.save();
+					MenuScreen.playClick();
 				}
 				break;
 
@@ -171,10 +179,12 @@ public class MenuInput extends InputAdapter {
 				if(tX <= 45 && tY >= 315) {
 					MenuScreen.setCurrentMenu(Menus.MAIN);
 					MenuScreen.save();
+					MenuScreen.playClick();
 				}
 
 				if(tX >= 40 && tX <= 70 && tY >= 100 && tY <= 130) {
 					MenuScreen.invertKmph();
+					MenuScreen.playClick();
 				}
 				break;
 
@@ -182,6 +192,7 @@ public class MenuInput extends InputAdapter {
 				if(tX <= 45 && tY >= 315) {
 					MenuScreen.setCurrentMenu(Menus.MAIN);
 					MenuScreen.save();
+					MenuScreen.playClick();
 				}
 				break;
 
@@ -189,6 +200,7 @@ public class MenuInput extends InputAdapter {
 				if(tX <= 45 && tY >= 315) {
 					MenuScreen.setCurrentMenu(Menus.MAIN);
 					MenuScreen.setTutorialScreen(1);
+					MenuScreen.playClick();
 				}
 				break;
 		}

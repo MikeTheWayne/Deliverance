@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -35,8 +36,11 @@ public class GameScreen extends ScreenAdapter {
 	private Sprite van, box, house, fence, road, speedo, dial, roadGap, store, warehouse, warehouse_rival, tree, clock, lifedown, button_exit, wheel_half, wheel_full, gapfog;
 	private Sprite[] pedals, scoreDigits, logos;
 
-	// Music
+	// Music & Sound
 	private static Music music;
+	private static Sound rev, ding, miss;
+
+	private static long revId;
 
 	// Game Values
 	private static float blackScreenOpacity;
@@ -142,6 +146,10 @@ public class GameScreen extends ScreenAdapter {
 		music.setVolume(MenuScreen.getMusicVolume());
 		music.setLooping(false);
 
+		rev = Gdx.audio.newSound(Gdx.files.internal("sound/rev.mp3"));
+		ding = Gdx.audio.newSound(Gdx.files.internal("sound/ding.mp3"));
+		miss = Gdx.audio.newSound(Gdx.files.internal("sound/miss.mp3"));
+
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
 		this.shapeRenderer = new ShapeRenderer();
@@ -228,6 +236,9 @@ public class GameScreen extends ScreenAdapter {
 
 		// Move van based on speed
 		vanObj.setX(vanObj.getX() + (vanObj.getSpeed() * GameScreen.PIXELS_PER_METRE) * delta);
+
+		// Adjust van sound based on speed
+		rev.setPitch(revId, 0.85f + 0.5f * (vanObj.getSpeed() / 30f));
 
 		// Animate parcels
 		for(Parcel p : parcels) {
@@ -565,6 +576,9 @@ public class GameScreen extends ScreenAdapter {
 		shapeRenderer.dispose();
 		cbri_12.dispose();
 		music.dispose();
+		rev.dispose();
+		ding.dispose();
+		miss.dispose();
 	}
 
 	@Override
@@ -1052,6 +1066,9 @@ public class GameScreen extends ScreenAdapter {
 	public static void playMusic() {
 		if(!music.isPlaying() && hour == 9) {
 			music.play();
+
+			revId = rev.loop();
+			rev.setVolume(revId, MenuScreen.getSoundVolume() / 5f);
 		}
 	}
 
@@ -1059,10 +1076,27 @@ public class GameScreen extends ScreenAdapter {
 		if(music.isPlaying()) {
 			music.stop();
 			music.setPosition(0);
+
+			rev.stop();
 		}
 	}
 
 	public static void disposeMusic() {
 		music.dispose();
+		rev.dispose();
+		ding.dispose();
+		miss.dispose();
+	}
+
+	public static void stopRev() {
+		rev.stop();
+	}
+
+	public static void playDing() {
+		ding.play(0.25f * MenuScreen.getSoundVolume());
+	}
+
+	public static void playMiss() {
+		miss.play(1f * MenuScreen.getSoundVolume());
 	}
 }

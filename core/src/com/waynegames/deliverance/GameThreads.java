@@ -64,6 +64,8 @@ public class GameThreads {
 								if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
 									GameScreen.incrementStreak();
 								}
+
+								GameScreen.playDing();
 							} else{
 
 								if(GameScreen.getGameMode() == GameMode.ENDLESS) {
@@ -71,6 +73,8 @@ public class GameThreads {
 								} else if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
 									GameScreen.resetStreak();
 								}
+
+								GameScreen.playMiss();
 							}
 
 							p.setClaimed();
@@ -88,6 +92,8 @@ public class GameThreads {
 						} else if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
 							GameScreen.resetStreak();
 						}
+
+						GameScreen.playMiss();
 					}
 				}
 
@@ -106,6 +112,8 @@ public class GameThreads {
 						if(GameScreen.getGameMode() == GameMode.CHALLENGE) {
 							GameScreen.checkChallengeGameOver();
 						}
+
+						GameScreen.stopRev();
 					} else if(GameScreen.isGameOver()) {
 						// Return to menu
 						GameThreads.stop();

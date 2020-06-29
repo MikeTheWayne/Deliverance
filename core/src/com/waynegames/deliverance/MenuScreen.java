@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -26,7 +27,7 @@ public class MenuScreen extends ScreenAdapter {
 
 	private static Game game;
 
-	private Random random = new Random();
+	private Random random;
 
 	private SpriteBatch spriteBatch;
 	private ShapeRenderer shapeRenderer;
@@ -42,6 +43,7 @@ public class MenuScreen extends ScreenAdapter {
 	private BitmapFont bsh_40, cbri_16, arl_10, arb_24;
 
 	private static Music music;
+	private static Sound click;
 
 	private static int animStage;
 	private static float vanX;
@@ -135,11 +137,13 @@ public class MenuScreen extends ScreenAdapter {
 			save();
 		}
 
-		// Music
+		// Music & Sound
 		music = Gdx.audio.newMusic(Gdx.files.internal("music/menu_music.mp3"));
 		music.setVolume(musicVolume);
 		music.setLooping(true);
 		music.play();
+
+		click = Gdx.audio.newSound(Gdx.files.internal("sound/click.wav"));
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -944,5 +948,9 @@ public class MenuScreen extends ScreenAdapter {
 
 	public static int getLevel() {
 		return level;
+	}
+
+	public static void playClick() {
+		click.play(0.35f * soundVolume);
 	}
 }
