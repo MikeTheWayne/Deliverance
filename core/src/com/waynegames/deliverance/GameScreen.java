@@ -93,6 +93,10 @@ public class GameScreen extends ScreenAdapter {
 	private static int tutorialScreen;
 	private static int tutorialAnim;
 
+	// Hit & miss glow
+	private static float hitGlow;
+	private static float missGlow;
+
 	GameScreen(Game game, GameMode gameMode, int lives, int days) {
 
 		GameScreen.game = game;
@@ -141,6 +145,9 @@ public class GameScreen extends ScreenAdapter {
 
 		wheelAnim = false;
 		wheelAnimDelay = 0;
+
+		missGlow = 0;
+		hitGlow = 0;
 
 		generateContracts();
 
@@ -455,6 +462,24 @@ public class GameScreen extends ScreenAdapter {
 			shapeRenderer.end();
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		}
+
+		// Score Glow
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		if(hitGlow > 0) {
+			hitGlow -= delta;
+			shapeRenderer.rect(560, 260, 100, 100, new Color(0, 0, 0, 0), new Color(0, 0, 0, 0), new Color(0, 1f, 0, 0.8f * hitGlow), new Color(0, 0, 0, 0));
+		}
+
+		if(missGlow > 0) {
+			missGlow -= delta;
+			shapeRenderer.rect(560, 260, 100, 100, new Color(0, 0, 0, 0), new Color(0, 0, 0, 0), new Color(1f, 0, 0, 0.8f * missGlow), new Color(0, 0, 0, 0));
+		}
+
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 
 		spriteBatch.begin();
 
@@ -1187,10 +1212,12 @@ public class GameScreen extends ScreenAdapter {
 
 	public static void playDing() {
 		ding.play(0.25f * MenuScreen.getSoundVolume());
+		hitGlow = 1f;
 	}
 
 	public static void playMiss() {
 		miss.play(1f * MenuScreen.getSoundVolume());
+		missGlow = 1f;
 	}
 
 	public static boolean isTutorial() {
