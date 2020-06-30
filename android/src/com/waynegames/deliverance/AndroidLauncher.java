@@ -9,6 +9,9 @@ import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -18,19 +21,58 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class AndroidLauncher extends AndroidApplication {
+public class AndroidLauncher extends AndroidApplication implements AdInterface {
 
 	GoogleSignInAccount signedInAccount;
+
+	InterstitialAd interstitialAd;
+
+	private boolean adShown;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		adShown = false;
+
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+
+		// Test id: ca-app-pub-3940256099942544/1033173712
+		this.interstitialAd = new InterstitialAd(this);
+		this.interstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+
+		interstitialAd.setAdListener(new AdListener() {
+
+			@Override
+			public void onAdClosed() {
+				super.onAdClosed();
+				loadInterstitialAd();
+				adShown = true;
+			}
+		});
+
+		loadInterstitialAd();
 
 		//signInSilently();
 
-		initialize(new Deliverance(), config);
+		initialize(new Deliverance(this), config);
+	}
+
+	private void loadInterstitialAd() {
+		AdRequest interstitialRequest = new AdRequest.Builder().build();
+		interstitialAd.loadAd(interstitialRequest);
+	}
+
+	public void showInterstitial() {
+		runOnUiThread(new Runnable() {
+			public void run() {
+				if (interstitialAd.isLoaded()) {
+					interstitialAd.show();
+				} else {
+					loadInterstitialAd();
+				}
+			}
+		});
 	}
 
 	private void signInSilently() {
@@ -105,5 +147,11 @@ public class AndroidLauncher extends AndroidApplication {
 		});
 	}
 
+	public boolean isAdShown() {
+		return adShown;
+	}
 
+	public void setAdShown(boolean adShown) {
+		this.adShown = adShown;
+	}
 }

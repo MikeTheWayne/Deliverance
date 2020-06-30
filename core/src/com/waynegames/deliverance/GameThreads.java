@@ -9,9 +9,11 @@ public class GameThreads {
 
 	private static Timer timer;
 
-	private static boolean timeStarted = false;
+	private static boolean timeStarted;
 
 	static void run() {
+
+		timeStarted = false;
 
 		timer = new Timer();
 
@@ -122,8 +124,13 @@ public class GameThreads {
 						GameScreen.getGame().setScreen(new MenuScreen(GameScreen.getGame(), Menus.GAMEOVER));
 					}
 
+					if(GameScreen.getBlackScreenOpacity() >= 0.6f && !Deliverance.adInterface.isAdShown()) {
+						Deliverance.adInterface.showInterstitial();
+					}
+
 				} else if(GameScreen.getBlackScreenOpacity() > 0 && GameScreen.getHour() < 21) {
 					GameScreen.setBlackScreenOpacity(GameScreen.getBlackScreenOpacity() - 1f / (TICKS_PER_SECOND / 2f));
+					Deliverance.adInterface.setAdShown(false);
 				}
 
 			}

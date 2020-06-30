@@ -9,7 +9,13 @@ import com.badlogic.gdx.graphics.Texture;
 public class Deliverance extends Game {
 
 	static AssetManager assetManager;
-	
+
+	static AdInterface adInterface;
+
+	public Deliverance(AdInterface adInterface) {
+		Deliverance.adInterface = adInterface;
+	}
+
 	@Override
 	public void create () {
 
