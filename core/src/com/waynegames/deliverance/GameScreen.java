@@ -164,9 +164,11 @@ public class GameScreen extends ScreenAdapter {
 		music.setVolume(MenuScreen.getMusicVolume());
 		music.setLooping(false);
 
-		rev = Gdx.audio.newSound(Gdx.files.internal("sound/rev.mp3"));
-		ding = Gdx.audio.newSound(Gdx.files.internal("sound/ding.mp3"));
-		miss = Gdx.audio.newSound(Gdx.files.internal("sound/miss.mp3"));
+		if(MenuScreen.getSoundVolume() > 0) {
+			rev = Gdx.audio.newSound(Gdx.files.internal("sound/rev.mp3"));
+			ding = Gdx.audio.newSound(Gdx.files.internal("sound/ding.mp3"));
+			miss = Gdx.audio.newSound(Gdx.files.internal("sound/miss.mp3"));
+		}
 
 		// Graphics
 		this.spriteBatch = new SpriteBatch();
@@ -256,7 +258,9 @@ public class GameScreen extends ScreenAdapter {
 		vanObj.setX(vanObj.getX() + (vanObj.getSpeed() * GameScreen.PIXELS_PER_METRE) * delta);
 
 		// Adjust van sound based on speed
-		rev.setPitch(revId, 0.85f + 0.5f * (vanObj.getSpeed() / 30f));
+		if(MenuScreen.getSoundVolume() > 0) {
+			rev.setPitch(revId, 0.85f + 0.5f * (vanObj.getSpeed() / 30f));
+		}
 
 		// Animate parcels
 		for(Parcel p : parcels) {
@@ -1185,8 +1189,10 @@ public class GameScreen extends ScreenAdapter {
 		if(!music.isPlaying() && hour == 9) {
 			music.play();
 
-			revId = rev.loop();
-			rev.setVolume(revId, MenuScreen.getSoundVolume() / 5f);
+			if(MenuScreen.getSoundVolume() > 0) {
+				revId = rev.loop();
+				rev.setVolume(revId, MenuScreen.getSoundVolume() / 5f);
+			}
 		}
 	}
 
@@ -1195,7 +1201,9 @@ public class GameScreen extends ScreenAdapter {
 			music.stop();
 			music.setPosition(0);
 
-			rev.stop();
+			if(MenuScreen.getSoundVolume() > 0) {
+				rev.stop();
+			}
 		}
 	}
 
@@ -1207,16 +1215,24 @@ public class GameScreen extends ScreenAdapter {
 	}
 
 	public static void stopRev() {
-		rev.stop();
+		if(MenuScreen.getSoundVolume() > 0) {
+			rev.stop();
+		}
 	}
 
 	public static void playDing() {
-		ding.play(0.25f * MenuScreen.getSoundVolume());
+		if(MenuScreen.getSoundVolume() > 0) {
+			ding.play(0.25f * MenuScreen.getSoundVolume());
+		}
+
 		hitGlow = 1f;
 	}
 
 	public static void playMiss() {
-		miss.play(1f * MenuScreen.getSoundVolume());
+		if(MenuScreen.getSoundVolume() > 0) {
+			miss.play(1f * MenuScreen.getSoundVolume());
+		}
+
 		missGlow = 1f;
 	}
 
