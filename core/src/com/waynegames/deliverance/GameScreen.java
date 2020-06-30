@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Align;
 
 import java.text.DecimalFormat;
 import java.util.Random;
@@ -87,6 +88,11 @@ public class GameScreen extends ScreenAdapter {
 	private boolean wheelAnim;
 	private int wheelAnimDelay;
 
+	// On-screen tutorial
+	private static boolean tutorial;
+	private static int tutorialScreen;
+	private static int tutorialAnim;
+
 	GameScreen(Game game, GameMode gameMode, int lives, int days) {
 
 		GameScreen.game = game;
@@ -137,6 +143,11 @@ public class GameScreen extends ScreenAdapter {
 		wheelAnimDelay = 0;
 
 		generateContracts();
+
+		// Tutorial
+		tutorial = MenuScreen.isFirstPlay();
+		tutorialScreen = 1;
+		tutorialAnim = 0;
 
 		// Load from save, if it exists
 		read();
@@ -489,6 +500,11 @@ public class GameScreen extends ScreenAdapter {
 			drawManifestHUD();
 		}
 
+		// Tutorial
+		if(tutorial) {
+			drawTutorial();
+		}
+
 		// Black Screen
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -525,6 +541,8 @@ public class GameScreen extends ScreenAdapter {
 				cbri_16.setColor(1f, 1f, 1f, 1f);
 				arb_12.setColor(1f, 1f, 1f, 1f);
 
+				String[] difficulties = {"EASY", "MEDIUM", "CHALLENGING"};
+
 				// Draw contract information
 				for (int i = 0; i < 3; i++) {
 					DecimalFormat df = new DecimalFormat("0.00");
@@ -533,8 +551,8 @@ public class GameScreen extends ScreenAdapter {
 					cbri_16.draw(spriteBatch, "Density: " + df.format(contracts[i].getDensity()), 110 + 150 * i + 5, 225 - 21);
 					cbri_16.draw(spriteBatch, "Score: x" + df.format(contracts[i].getScoreMultiplier()), 110 + 150 * i + 5, 225 - 53);
 
-					GlyphLayout acceptGlyph = new GlyphLayout(arb_12, "ACCEPT");
-					arb_12.draw(spriteBatch, acceptGlyph, 170 + 150 * i - acceptGlyph.width / 2f, 75 + 5 + acceptGlyph.height);
+					GlyphLayout difficultyGlyph = new GlyphLayout(arb_12, difficulties[i]);
+					arb_12.draw(spriteBatch, difficultyGlyph, 170 + 150 * i - difficultyGlyph.width / 2f, 75 + 5 + difficultyGlyph.height);
 				}
 
 				spriteBatch.end();
@@ -812,6 +830,81 @@ public class GameScreen extends ScreenAdapter {
 		shapeRenderer.end();
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 
+	}
+
+	private void drawTutorial() {
+
+		GlyphLayout tutorialText;
+
+		// Dark overlay
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+		shapeRenderer.setColor(0, 0, 0, 0.4f);
+		shapeRenderer.rect(0, 0, 640, 360);
+
+		shapeRenderer.setColor(0.8f, 0.8f, 0.8f, 0.4f);
+		if(tutorialAnim != 0) {
+			if(tutorialScreen == 1) {
+				shapeRenderer.circle(50, 30 + (tutorialAnim - 1) * 40, 15);
+			} else if(tutorialScreen == 2) {
+				shapeRenderer.circle(320 + 100 * (tutorialAnim - 1), 25 + (tutorialAnim - 1) * 50, 15);
+			}
+		}
+
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+
+		spriteBatch.begin();
+		switch (tutorialScreen) {
+			case 1:
+				tutorialText = new GlyphLayout(cbri_12, "Hold down the accelerator to speed up. The further up your finger, the faster you'll accelerate.", Color.WHITE, 200, Align.left, true);
+				cbri_12.draw(spriteBatch, tutorialText, 10, 180);
+
+				String animString = "";
+				switch (tutorialAnim) {
+					case 0:
+						animString = "No acceleration";
+						break;
+					case 1:
+						animString = "Low acceleration";
+						break;
+					case 2:
+						animString = "Medium acceleration";
+						break;
+					case 3:
+						animString = "Maximum acceleration";
+						break;
+				}
+				cbri_12.draw(spriteBatch, animString, 80, 35 + (tutorialAnim - 1) * 40);
+				break;
+			case 2:
+				tutorialText = new GlyphLayout(cbri_12, "Drag your finger from the van in the direction you want to throw a parcel. Release your finger to throw.", Color.WHITE, 200, Align.left, true);
+				cbri_12.draw(spriteBatch, tutorialText, 240, 110);
+				break;
+			case 3:
+				tutorialText = new GlyphLayout(cbri_12, "Throw the next parcel at the house number displayed in bold.", Color.WHITE, 200, Align.left, true);
+				cbri_12.draw(spriteBatch, tutorialText, 280, 280);
+				break;
+			case 4:
+				tutorialText = new GlyphLayout(cbri_12, "If it lands at the correct house, your score increases. If you miss or drive past, you lose one of your three lives.", Color.WHITE, 200, Align.left, true);
+				cbri_12.draw(spriteBatch, tutorialText, 380, 350);
+				break;
+			case 5:
+				tutorialText = new GlyphLayout(cbri_12, "The parcels you have left to deliver are shown here.", Color.WHITE, 200, Align.left, true);
+				cbri_12.draw(spriteBatch, tutorialText, 440, 255);
+				break;
+			case 6:
+				tutorialText = new GlyphLayout(cbri_12, "Deliver all the parcels before 21:00. After 21:00, you can no longer deliver parcels. Keep driving until you reach the warehouse.", Color.WHITE, 200, Align.left, true);
+				cbri_12.draw(spriteBatch, tutorialText, 240, 320);
+				break;
+		}
+
+		GlyphLayout infoGlyph = new GlyphLayout(cbri_16, "TAP SCREEN TO CONTINUE");
+		cbri_16.draw(spriteBatch, infoGlyph, 320 - infoGlyph.width / 2f, 10 + infoGlyph.height);
+
+		spriteBatch.end();
 	}
 
 	public static Van getVanObj() {
@@ -1099,4 +1192,22 @@ public class GameScreen extends ScreenAdapter {
 	public static void playMiss() {
 		miss.play(1f * MenuScreen.getSoundVolume());
 	}
+
+	public static boolean isTutorial() {
+		return tutorial;
+	}
+
+	public static void nextTutorial() {
+		if(++tutorialScreen == 7) {
+			tutorial = false;
+			MenuScreen.setFirstPlayFalse();
+		}
+	}
+
+	public static void incrementTutorialAnim() {
+		if(++tutorialAnim == 4) {
+			tutorialAnim = 0;
+		}
+	}
+
 }

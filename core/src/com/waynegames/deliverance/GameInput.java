@@ -66,18 +66,22 @@ public class GameInput extends InputAdapter {
 		} else {
 			// Main game
 
-			if (tX < 90 && tY < 160) {
-				pedalPressure = Math.min(tY / 13f, 10f);
-				this.pedalPressurePointer = pointer;
-				GameThreads.setTimeStarted(true);
-				GameScreen.playMusic();
-			} else if (tX < 160 && tY < 120) {
-				brakePressure = Math.min(tY / 9f, 10f);
-				this.pedalPressurePointer = pointer;
-			} else if (tX >= 200 && tX <= 450 && tY <= 120) {
-				this.initX = tX;
-				this.initY = tY;
-				this.parcelThrowPointer = pointer;
+			if(GameScreen.isTutorial()) {
+				GameScreen.nextTutorial();
+			} else {
+				if (tX < 90 && tY < 160) {
+					pedalPressure = Math.min(tY / 13f, 10f);
+					this.pedalPressurePointer = pointer;
+					GameThreads.setTimeStarted(true);
+					GameScreen.playMusic();
+				} else if (tX < 160 && tY < 120) {
+					brakePressure = Math.min(tY / 9f, 10f);
+					this.pedalPressurePointer = pointer;
+				} else if (tX >= 200 && tX <= 450 && tY <= 120) {
+					this.initX = tX;
+					this.initY = tY;
+					this.parcelThrowPointer = pointer;
+				}
 			}
 
 		}
@@ -95,12 +99,14 @@ public class GameInput extends InputAdapter {
 		float tX = input.x;
 		float tY = input.y;
 
-		if(tX < 90 && tY < 160 && pointer == pedalPressurePointer) {
-			pedalPressure = Math.min(tY / 13f, 10f);
-			brakePressure = 0;
-		} else if(tX < 160 && tY < 120 && pointer == pedalPressurePointer) {
-			brakePressure = Math.min(tY / 9f, 10f);
-			pedalPressure = 0;
+		if(!GameScreen.isTutorial()) {
+			if (tX < 90 && tY < 160 && pointer == pedalPressurePointer) {
+				pedalPressure = Math.min(tY / 13f, 10f);
+				brakePressure = 0;
+			} else if (tX < 160 && tY < 120 && pointer == pedalPressurePointer) {
+				brakePressure = Math.min(tY / 9f, 10f);
+				pedalPressure = 0;
+			}
 		}
 
 		return super.touchDragged(screenX, screenY, pointer);

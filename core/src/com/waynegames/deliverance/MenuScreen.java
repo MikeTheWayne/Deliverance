@@ -73,6 +73,7 @@ public class MenuScreen extends ScreenAdapter {
 
 	// Tutorial
 	private static int tutorialScreen;
+	private static boolean firstPlay;
 
 	// Wheel anim
 	private static boolean wheelAnim;
@@ -111,6 +112,8 @@ public class MenuScreen extends ScreenAdapter {
 		tutorialScreen = 1;
 
 		wheelAnim = false;
+
+		firstPlay = true;
 
 		// Load values from save
 		read();
@@ -245,6 +248,7 @@ public class MenuScreen extends ScreenAdapter {
 				vanX += (200f - vanX / 1.75f) * delta;
 
 				if(vanX > 224) {
+					vanX = 224;
 					animStage++;
 
 					parcelsLeft = random.nextInt(15) + 15;
@@ -662,6 +666,7 @@ public class MenuScreen extends ScreenAdapter {
 						cbri_16.draw(spriteBatch, "You deliver parcels by throwing them at the correct house, while driving past. You don't \nhave the time to stop!", 20, 260);
 					case 1:
 						cbri_16.draw(spriteBatch, "Welcome to Deliverance! Your goal is to deliver as many parcels as possible, as accurately \nand quickly as possible.", 20, 300);
+						firstPlay = true;
 						break;
 
 					case 11:
@@ -831,6 +836,9 @@ public class MenuScreen extends ScreenAdapter {
 				MenuScreen.level = Integer.parseInt(fileContents[count++]);
 				MenuScreen.exp = Integer.parseInt(fileContents[count++]);
 
+				// Tutorial
+				MenuScreen.firstPlay = Boolean.parseBoolean(fileContents[count++]);
+
 			} else{
 				save();
 			}
@@ -856,6 +864,9 @@ public class MenuScreen extends ScreenAdapter {
 		file.writeString(MenuScreen.vanSelected + ";", true);
 		file.writeString(MenuScreen.level + ";", true);
 		file.writeString(MenuScreen.exp + ";", true);
+
+		// Tutorial
+		file.writeString(MenuScreen.firstPlay + ";", true);
 
 	}
 
@@ -952,5 +963,14 @@ public class MenuScreen extends ScreenAdapter {
 
 	public static void playClick() {
 		click.play(0.35f * soundVolume);
+	}
+
+	public static boolean isFirstPlay() {
+		return firstPlay;
+	}
+
+	public static void setFirstPlayFalse() {
+		MenuScreen.firstPlay = false;
+		save();
 	}
 }

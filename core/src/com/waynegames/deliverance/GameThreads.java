@@ -142,6 +142,11 @@ public class GameThreads {
 			@Override
 			public void run() {
 
+				// Tutorial
+				if(GameScreen.isTutorial()) {
+					GameScreen.incrementTutorialAnim();
+				}
+
 				// Time
 				if(GameScreen.getHour() < 21 && timeStarted) {
 					if (GameScreen.getMinute() == 55) {
