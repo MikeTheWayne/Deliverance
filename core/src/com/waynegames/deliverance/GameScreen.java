@@ -165,9 +165,9 @@ public class GameScreen extends ScreenAdapter {
 		music.setLooping(false);
 
 		if(MenuScreen.getSoundVolume() > 0) {
-			rev = Gdx.audio.newSound(Gdx.files.internal("sound/rev.mp3"));
-			ding = Gdx.audio.newSound(Gdx.files.internal("sound/ding.mp3"));
-			miss = Gdx.audio.newSound(Gdx.files.internal("sound/miss.mp3"));
+			rev = Gdx.audio.newSound(Gdx.files.internal("sound/rev.wav"));
+			ding = Gdx.audio.newSound(Gdx.files.internal("sound/ding.wav"));
+			miss = Gdx.audio.newSound(Gdx.files.internal("sound/miss.wav"));
 		}
 
 		// Graphics
@@ -623,9 +623,12 @@ public class GameScreen extends ScreenAdapter {
 		shapeRenderer.dispose();
 		cbri_12.dispose();
 		music.dispose();
-		rev.dispose();
-		ding.dispose();
-		miss.dispose();
+
+		if(MenuScreen.getSoundVolume() > 0) {
+			rev.dispose();
+			ding.dispose();
+			miss.dispose();
+		}
 	}
 
 	@Override
@@ -1209,9 +1212,12 @@ public class GameScreen extends ScreenAdapter {
 
 	public static void disposeMusic() {
 		music.dispose();
-		rev.dispose();
-		ding.dispose();
-		miss.dispose();
+
+		if(MenuScreen.getSoundVolume() > 0) {
+			rev.dispose();
+			ding.dispose();
+			miss.dispose();
+		}
 	}
 
 	public static void stopRev() {

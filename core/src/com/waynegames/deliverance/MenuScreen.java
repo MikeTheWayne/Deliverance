@@ -552,7 +552,7 @@ public class MenuScreen extends ScreenAdapter {
 				bsh_40.draw(spriteBatch, settingsGlyph, 320 - settingsGlyph.width / 2f, 350);
 
 				// Setting headers
-				cbri_16.draw(spriteBatch, "Sound Volume (set to 0% to reduce lag)", 40, 285);
+				cbri_16.draw(spriteBatch, "Sound Volume", 40, 285);
 				cbri_16.draw(spriteBatch, "Music Volume", 40, 205);
 				cbri_16.draw(spriteBatch, "Use kmph units", 80, 120);
 
