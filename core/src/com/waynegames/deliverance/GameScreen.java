@@ -641,6 +641,8 @@ public class GameScreen extends ScreenAdapter {
 	public void resume() {
 		super.resume();
 
+		Deliverance.adInterface.signInSilently(true);
+
 		if(GameThreads.isTimeStarted() && hour < 21) {
 			music.play();
 		}

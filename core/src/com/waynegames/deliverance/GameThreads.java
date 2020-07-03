@@ -122,6 +122,7 @@ public class GameThreads {
 						GameScreen.stopMusic();
 						GameScreen.disposeMusic();
 						GameScreen.getGame().setScreen(new MenuScreen(GameScreen.getGame(), Menus.GAMEOVER));
+						Deliverance.adInterface.submitScore(GameScreen.getScore());
 					}
 
 					if(GameScreen.getBlackScreenOpacity() >= 0.6f && !Deliverance.adInterface.isAdShown()) {

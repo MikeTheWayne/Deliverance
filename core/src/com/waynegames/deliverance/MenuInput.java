@@ -58,6 +58,8 @@ public class MenuInput extends InputAdapter {
 			case GAMEOVER:
 				if(tX <= 45 && tY <= 45) {
 					MenuScreen.setButtonDown(0);
+				} else if(tX >= 50 && tX <= 90 && tY <= 45) {
+					MenuScreen.setButtonDown(2);
 				} else if(tX >= 260 && tX <= 380 && tY >= 5 && tY <= 65) {
 					MenuScreen.setButtonDown(1);
 				}
@@ -152,7 +154,7 @@ public class MenuInput extends InputAdapter {
 						// Achievements
 						MenuScreen.playClick();
 					} else if(tX >= 140 && tX <= 180) {
-						// Leaderboards
+						Deliverance.adInterface.showLeaderboard();
 						MenuScreen.playClick();
 					} else if(tX >= 540 && tX <= 590) {
 						MenuScreen.setCurrentMenu(Menus.TUTORIAL);
@@ -172,6 +174,9 @@ public class MenuInput extends InputAdapter {
 					MenuScreen.setTargetMode(GameScreen.getGameMode());
 					MenuScreen.save();
 					MenuScreen.playClick();
+				} else if(tX >= 50 && tX <= 90 && tY <= 45) {
+					Deliverance.adInterface.showLeaderboard();
+					MenuScreen.playClick();
 				}
 				break;
 
@@ -185,6 +190,15 @@ public class MenuInput extends InputAdapter {
 				if(tX >= 40 && tX <= 70 && tY >= 100 && tY <= 130) {
 					MenuScreen.invertKmph();
 					MenuScreen.playClick();
+				}
+
+				// GPG
+				if(tX > 590 && tY < 60) {
+					if(Deliverance.adInterface.isSignedIn()) {
+						Deliverance.adInterface.signOut();
+					} else{
+						Deliverance.adInterface.startSignInIntent();
+					}
 				}
 				break;
 

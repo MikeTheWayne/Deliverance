@@ -3,7 +3,6 @@ package com.waynegames.deliverance;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -18,7 +17,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.games.Games;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 public class AndroidLauncher extends AndroidApplication implements AdInterface {
@@ -53,8 +54,6 @@ public class AndroidLauncher extends AndroidApplication implements AdInterface {
 
 		loadInterstitialAd();
 
-		//signInSilently();
-
 		initialize(new Deliverance(this), config);
 	}
 
@@ -75,9 +74,9 @@ public class AndroidLauncher extends AndroidApplication implements AdInterface {
 		});
 	}
 
-	private void signInSilently() {
+	public void signInSilently(final boolean asked) {
 
-		GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().requestIdToken("226616651429-oit0968tbhm0d4sdt5ml565a5010c9nl.apps.googleusercontent.com").build();
+		GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).requestEmail().build();
 		GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
 		if (GoogleSignIn.hasPermissions(account, signInOptions.getScopeArray())) {
@@ -96,7 +95,9 @@ public class AndroidLauncher extends AndroidApplication implements AdInterface {
 						// The signed in account is stored in the task's result.
 						signedInAccount = task.getResult();
 					} else {
-						startSignInIntent();
+						if(!asked) {
+							startSignInIntent();
+						}
 					}
 				}
 
@@ -105,8 +106,8 @@ public class AndroidLauncher extends AndroidApplication implements AdInterface {
 
 	}
 
-	private void startSignInIntent() {
-		GoogleSignInClient signInClient = GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().requestIdToken("226616651429-oit0968tbhm0d4sdt5ml565a5010c9nl.apps.googleusercontent.com").build());
+	public void startSignInIntent() {
+		GoogleSignInClient signInClient = GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).requestEmail().build());
 		Intent intent = signInClient.getSignInIntent();
 		startActivityForResult(intent, 1);
 	}
@@ -117,9 +118,6 @@ public class AndroidLauncher extends AndroidApplication implements AdInterface {
 
 		if (requestCode == 1) {
 			GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-			int statusCode = result.getStatus().getStatusCode();
-
-			Log.d("Logg", "***********************" + statusCode);
 
 			if (result.isSuccess()) {
 				// The signed in account is stored in the result.
@@ -131,12 +129,12 @@ public class AndroidLauncher extends AndroidApplication implements AdInterface {
 					message = "Unknown Google Sign-In Error!";
 				}
 
-				new AlertDialog.Builder(this).setMessage(message).setNeutralButton(android.R.string.ok, null).show();
+				//new AlertDialog.Builder(this).setMessage(message).setNeutralButton(android.R.string.ok, null).show();
 			}
 		}
 	}
 
-	private void signOut() {
+	public void signOut() {
 		GoogleSignInClient signInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
 
 		signInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
@@ -145,6 +143,29 @@ public class AndroidLauncher extends AndroidApplication implements AdInterface {
 				// at this point, the user is signed out.
 			}
 		});
+	}
+
+	public void showLeaderboard() {
+		if(isSignedIn()) {
+			Games.getLeaderboardsClient(this, GoogleSignIn.getLastSignedInAccount(this)).getLeaderboardIntent("CgkIpd2em8wGEAIQAA").addOnSuccessListener(new OnSuccessListener<Intent>() {
+				@Override
+				public void onSuccess(Intent intent) {
+					startActivityForResult(intent, 9004);
+				}
+			});
+		} else{
+			startSignInIntent();
+		}
+	}
+
+	public void submitScore(int score) {
+		if(isSignedIn()) {
+			Games.getLeaderboardsClient(this, GoogleSignIn.getLastSignedInAccount(this)).submitScore("CgkIpd2em8wGEAIQAA", score);
+		}
+	}
+
+	public boolean isSignedIn() {
+		return !(GoogleSignIn.getLastSignedInAccount(this) == null);
 	}
 
 	public boolean isAdShown() {

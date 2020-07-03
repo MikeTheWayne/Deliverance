@@ -37,7 +37,7 @@ public class MenuScreen extends ScreenAdapter {
 	private static Timer timer;
 
 	private Sprite background, title, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, buttondown_big, buttondown_small,
-	button_again, buttondown_med, button_leaderboards, tutorial_1, tutorial_2, wheel_half, wheel_full;
+	button_again, buttondown_med, button_leaderboards, tutorial_1, tutorial_2, wheel_half, wheel_full, sign_in;
 	private Sprite[] scoreDigits, vans;
 
 	private BitmapFont bsh_40, cbri_16, arl_10, arb_24;
@@ -78,6 +78,9 @@ public class MenuScreen extends ScreenAdapter {
 	// Wheel anim
 	private static boolean wheelAnim;
 
+	// GPG
+	private static boolean googlePlayGamesAsked;
+
 	public MenuScreen(Game game, Menus targetMenu) {
 
 		MenuScreen.game = game;
@@ -117,6 +120,12 @@ public class MenuScreen extends ScreenAdapter {
 
 		// Load values from save
 		read();
+
+		// GPG sign in
+		Deliverance.adInterface.signInSilently(googlePlayGamesAsked);
+		googlePlayGamesAsked = true;
+
+		save();
 
 		// Levelling
 		if(targetMenu == Menus.GAMEOVER) {
@@ -188,6 +197,8 @@ public class MenuScreen extends ScreenAdapter {
 		this.wheel_half = new Sprite(Deliverance.assetManager.get("game_sprites/wheel_half.png", Texture.class));
 		this.wheel_full = new Sprite(Deliverance.assetManager.get("game_sprites/wheel_full.png", Texture.class));
 
+		this.sign_in = new Sprite(Deliverance.assetManager.get("menu_sprites/games_controller.png", Texture.class));
+
 		// Score digits
 		this.scoreDigits = new Sprite[10];
 		for(int i = 0; i < 10; i++) {
@@ -218,19 +229,6 @@ public class MenuScreen extends ScreenAdapter {
 						wheelAnim = !wheelAnim;
 						wheelAnimDelay = 0;
 					}
-				}
-
-				if(targetMode != null) {
-					if(blackScreenOpacity < 1f) {
-						blackScreenOpacity += 1f / (TICKS_PER_SECOND / 2f);
-					} else{
-						MenuScreen.stopTimer();
-						music.stop();
-						music.setPosition(0);
-						MenuScreen.getGame().setScreen(new GameScreen(MenuScreen.getGame(), targetMode, 3, 3));
-					}
-				} else if(blackScreenOpacity > 0) {
-					blackScreenOpacity -= 1f / (TICKS_PER_SECOND / 2f);
 				}
 
 			}
@@ -300,6 +298,20 @@ public class MenuScreen extends ScreenAdapter {
 					oldLevel++;
 				}
 			}
+		}
+
+		// Screen opacity and switching
+		if(targetMode != null) {
+			if(blackScreenOpacity < 1f) {
+				blackScreenOpacity += delta * 2f;
+			} else{
+				MenuScreen.stopTimer();
+				music.stop();
+				music.setPosition(0);
+				MenuScreen.getGame().setScreen(new GameScreen(MenuScreen.getGame(), targetMode, 3, 3));
+			}
+		} else if(blackScreenOpacity > 0) {
+			blackScreenOpacity -= delta * 2f;
 		}
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -436,6 +448,13 @@ public class MenuScreen extends ScreenAdapter {
 				// Title
 				spriteBatch.draw(title, 70, 200);
 
+				// Signed in confirmation
+				if(!Deliverance.adInterface.isSignedIn()) {
+					cbri_16.setColor(1f, 0f, 0f, 1f);
+					cbri_16.draw(spriteBatch, "Not signed in", 5, 60);
+				}
+				cbri_16.setColor(1f, 1f, 1f, 1f);
+
 				// Main buttons
 				spriteBatch.draw(button_endless, 240, 110);
 				//spriteBatch.draw(button_challenge, 335, 110);
@@ -531,6 +550,7 @@ public class MenuScreen extends ScreenAdapter {
 
 				// Buttons
 				spriteBatch.draw(button_back, 5, 5);
+				spriteBatch.draw(button_leaderboards, 50, 5);
 				spriteBatch.draw(button_again, 260, 5);
 
 				// Button Down
@@ -540,6 +560,9 @@ public class MenuScreen extends ScreenAdapter {
 						break;
 					case 1:
 						spriteBatch.draw(buttondown_med, 260, 5, 120, 60);
+						break;
+					case 2:
+						spriteBatch.draw(buttondown_small, 50, 5);
 						break;
 				}
 
@@ -562,6 +585,16 @@ public class MenuScreen extends ScreenAdapter {
 
 				// Buttons
 				spriteBatch.draw(button_back, 5, 315);
+
+				if(Deliverance.adInterface.isSignedIn()) {
+					GlyphLayout signoutGlyph = new GlyphLayout(arl_10, "Tap here to sign out of Google Play Games", Color.WHITE, 60, Align.left, true);
+					arl_10.draw(spriteBatch, signoutGlyph, 635 - signoutGlyph.width, 5 + signoutGlyph.height);
+				} else {
+					spriteBatch.draw(sign_in, 595, 5, 40, 40);
+				}
+
+				// Copyright notice
+				cbri_16.draw(spriteBatch, "Copyright (c): Michael Wayne, 2020", 5, 15);
 
 				// Button Down
 				switch (buttonDown) {
@@ -791,6 +824,8 @@ public class MenuScreen extends ScreenAdapter {
 	public void resume() {
 		super.resume();
 
+		Deliverance.adInterface.signInSilently(true);
+
 		music.play();
 	}
 
@@ -839,6 +874,9 @@ public class MenuScreen extends ScreenAdapter {
 				// Tutorial
 				MenuScreen.firstPlay = Boolean.parseBoolean(fileContents[count++]);
 
+				// GPG
+				MenuScreen.googlePlayGamesAsked = Boolean.parseBoolean(fileContents[count++]);
+
 			} else{
 				save();
 			}
@@ -867,6 +905,9 @@ public class MenuScreen extends ScreenAdapter {
 
 		// Tutorial
 		file.writeString(MenuScreen.firstPlay + ";", true);
+
+		// GPG
+		file.writeString(MenuScreen.googlePlayGamesAsked + ";", true);
 
 	}
 
