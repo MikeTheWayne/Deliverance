@@ -165,6 +165,39 @@ public class AndroidLauncher extends AndroidApplication implements AdInterface {
 		}
 	}
 
+	public void showAchievements() {
+		Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this)).getAchievementsIntent().addOnSuccessListener(new OnSuccessListener<Intent>() {
+			@Override
+			public void onSuccess(Intent intent) {
+				startActivityForResult(intent, 9003);
+			}
+		});
+	}
+
+	public void unlockAchievement(int type, int level) {
+
+		String[] achievementIDs = {"CgkIpd2em8wGEAIQBg", "CgkIpd2em8wGEAIQBw", "CgkIpd2em8wGEAIQCA", "CgkIpd2em8wGEAIQCQ", "CgkIpd2em8wGEAIQCg",
+				"CgkIpd2em8wGEAIQCw", "CgkIpd2em8wGEAIQDA", "CgkIpd2em8wGEAIQDQ", "CgkIpd2em8wGEAIQDg", "CgkIpd2em8wGEAIQDw",
+				"CgkIpd2em8wGEAIQEA", "CgkIpd2em8wGEAIQEQ", "CgkIpd2em8wGEAIQEg", "CgkIpd2em8wGEAIQEw", "CgkIpd2em8wGEAIQFA",
+				"CgkIpd2em8wGEAIQFQ", "CgkIpd2em8wGEAIQFg", "CgkIpd2em8wGEAIQFw", "CgkIpd2em8wGEAIQGg", "CgkIpd2em8wGEAIQGQ"};
+
+		Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this)).unlock(achievementIDs[(type - 1) * 5 + (level - 1)]);
+
+	}
+
+	public void incrementAchievement(int type, int amount) {
+
+		String[] achievementIDs = {"CgkIpd2em8wGEAIQBg", "CgkIpd2em8wGEAIQBw", "CgkIpd2em8wGEAIQCA", "CgkIpd2em8wGEAIQCQ", "CgkIpd2em8wGEAIQCg",
+				"CgkIpd2em8wGEAIQCw", "CgkIpd2em8wGEAIQDA", "CgkIpd2em8wGEAIQDQ", "CgkIpd2em8wGEAIQDg", "CgkIpd2em8wGEAIQDw",
+				"CgkIpd2em8wGEAIQEA", "CgkIpd2em8wGEAIQEQ", "CgkIpd2em8wGEAIQEg", "CgkIpd2em8wGEAIQEw", "CgkIpd2em8wGEAIQFA",
+				"CgkIpd2em8wGEAIQFQ", "CgkIpd2em8wGEAIQFg", "CgkIpd2em8wGEAIQFw", "CgkIpd2em8wGEAIQGg", "CgkIpd2em8wGEAIQGQ"};
+
+		for(int i = 0; i < 5; i++) {
+			Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this)).increment(achievementIDs[(type - 1) * 5 + i], amount);
+		}
+
+	}
+
 	public String getSampleRate() {
 		AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 		return audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);

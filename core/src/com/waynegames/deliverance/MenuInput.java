@@ -151,7 +151,7 @@ public class MenuInput extends InputAdapter {
 						MenuScreen.setCurrentMenu(Menus.CUSTOMISATION);
 						MenuScreen.playClick();
 					} else if(tX >= 95 && tX <= 135) {
-						// Achievements
+						Deliverance.adInterface.showAchievements();
 						MenuScreen.playClick();
 					} else if(tX >= 140 && tX <= 180) {
 						Deliverance.adInterface.showLeaderboard();

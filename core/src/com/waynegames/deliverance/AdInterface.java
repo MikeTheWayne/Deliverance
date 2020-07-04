@@ -12,5 +12,8 @@ public interface AdInterface {
 	void signOut();
 	void signInSilently(boolean asked);
 	String getSampleRate();
+	void showAchievements();
+	void unlockAchievement(int type, int level);
+	void incrementAchievement(int type, int amount);
 
 }

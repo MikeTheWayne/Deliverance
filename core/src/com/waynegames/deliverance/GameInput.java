@@ -52,10 +52,13 @@ public class GameInput extends InputAdapter {
 				if (tY >= 75 && tY <= 225) {
 					if (tX >= 110 && tX <= 230) {
 						GameScreen.selectContract(0);
+						GameScreen.resetHardContractsInARow();
 					} else if (tX >= 260 && tX <= 380) {
 						GameScreen.selectContract(1);
+						GameScreen.resetHardContractsInARow();
 					} else if (tX >= 410 && tX <= 530) {
 						GameScreen.selectContract(2);
+						GameScreen.incrementHardContractsInARow();
 					}
 				}
 

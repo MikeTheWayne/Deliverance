@@ -84,6 +84,8 @@ public class GameScreen extends ScreenAdapter {
 	private static float averageSpeed;
 	private static int drivingSeconds;
 
+	private static int hardContractsInARow;
+
 	// Wheel anim
 	private boolean wheelAnim;
 	private int wheelAnimDelay;
@@ -142,6 +144,8 @@ public class GameScreen extends ScreenAdapter {
 		parcelsHit = 0;
 		averageSpeed = 0;
 		drivingSeconds = 0;
+
+		hardContractsInARow = 0;
 
 		wheelAnim = false;
 		wheelAnimDelay = 0;
@@ -987,6 +991,47 @@ public class GameScreen extends ScreenAdapter {
 	public static void setDayEnd(boolean dayEnd) {
 		if(!GameScreen.dayEnd && dayEnd) {
 			GameScreen.generateContracts();
+
+			// Achievements
+			if(day == 5) {
+				Deliverance.adInterface.unlockAchievement(2, 1);
+			}
+
+			if(day == 10) {
+				Deliverance.adInterface.unlockAchievement(2, 2);
+			}
+
+			if(day == 15) {
+				Deliverance.adInterface.unlockAchievement(2, 3);
+			}
+
+			if(day == 20) {
+				Deliverance.adInterface.unlockAchievement(2, 4);
+			}
+
+			if(day == 25) {
+				Deliverance.adInterface.unlockAchievement(2, 5);
+			}
+
+			if(hardContractsInARow >= 3) {
+				Deliverance.adInterface.unlockAchievement(4, 1);
+			}
+
+			if(hardContractsInARow >= 5) {
+				Deliverance.adInterface.unlockAchievement(4, 2);
+			}
+
+			if(hardContractsInARow >= 10) {
+				Deliverance.adInterface.unlockAchievement(4, 3);
+			}
+
+			if(hardContractsInARow >= 12) {
+				Deliverance.adInterface.unlockAchievement(4, 4);
+			}
+
+			if(hardContractsInARow >= 15) {
+				Deliverance.adInterface.unlockAchievement(4, 5);
+			}
 		}
 
 		GameScreen.dayEnd = dayEnd;
@@ -1111,6 +1156,8 @@ public class GameScreen extends ScreenAdapter {
 				GameScreen.averageSpeed = Float.parseFloat(fileContents[count++]);
 				GameScreen.drivingSeconds = Integer.parseInt(fileContents[count++]);
 
+				GameScreen.hardContractsInARow = Integer.parseInt(fileContents[count++]);
+
 				// Contracts
 				for(int i = 0; i < 3; i++) {
 					GameScreen.contracts[i].fileLoadOverride(Integer.parseInt(fileContents[count++]), Float.parseFloat(fileContents[count++]), Float.parseFloat(fileContents[count++]));
@@ -1143,6 +1190,8 @@ public class GameScreen extends ScreenAdapter {
 		file.writeString(GameScreen.parcelsHit + ";", true);
 		file.writeString(GameScreen.averageSpeed + ";", true);
 		file.writeString(GameScreen.drivingSeconds + ";", true);
+
+		file.writeString(GameScreen.hardContractsInARow + ";", true);
 
 		// Contracts
 		for(int i = 0; i < 3; i++) {
@@ -1266,6 +1315,14 @@ public class GameScreen extends ScreenAdapter {
 		if(++tutorialAnim == 4) {
 			tutorialAnim = 0;
 		}
+	}
+
+	public static void incrementHardContractsInARow() {
+		hardContractsInARow++;
+	}
+
+	public static void resetHardContractsInARow() {
+		hardContractsInARow = 0;
 	}
 
 }

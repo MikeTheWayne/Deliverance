@@ -149,6 +149,27 @@ public class MenuScreen extends ScreenAdapter {
 			save();
 		}
 
+		// Achievement (Type 3: Levels)
+		if(level >= 10) {
+			Deliverance.adInterface.unlockAchievement(3, 1);
+		}
+
+		if(level >= 25) {
+			Deliverance.adInterface.unlockAchievement(3, 2);
+		}
+
+		if(level >= 50) {
+			Deliverance.adInterface.unlockAchievement(3, 3);
+		}
+
+		if(level >= 75) {
+			Deliverance.adInterface.unlockAchievement(3, 4);
+		}
+
+		if(level >= 100) {
+			Deliverance.adInterface.unlockAchievement(3, 5);
+		}
+
 		// Music & Sound
 		music = Gdx.audio.newMusic(Gdx.files.internal("music/menu_music.mp3"));
 		music.setVolume(musicVolume);

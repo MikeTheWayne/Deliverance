@@ -117,15 +117,22 @@ public class GameThreads {
 
 						GameScreen.stopRev();
 					} else if(GameScreen.isGameOver()) {
-						// Return to menu
+						// Stop music & sound
 						GameThreads.stop();
 						GameScreen.stopMusic();
 						GameScreen.disposeMusic();
-						GameScreen.getGame().setScreen(new MenuScreen(GameScreen.getGame(), Menus.GAMEOVER));
+
+						// Score
 						Deliverance.adInterface.submitScore(GameScreen.getScore());
+
+						// Achievements
+						Deliverance.adInterface.incrementAchievement(1, GameScreen.getParcelsHit());
+
+						// Return to menu
+						GameScreen.getGame().setScreen(new MenuScreen(GameScreen.getGame(), Menus.GAMEOVER));
 					}
 
-					if(GameScreen.getBlackScreenOpacity() >= 0.6f && !Deliverance.adInterface.isAdShown()) {
+					if(GameScreen.getBlackScreenOpacity() >= 0.65f && !Deliverance.adInterface.isAdShown()) {
 						Deliverance.adInterface.showInterstitial();
 					}
 
