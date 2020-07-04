@@ -165,9 +165,16 @@ public class GameScreen extends ScreenAdapter {
 		music.setLooping(false);
 
 		if(MenuScreen.getSoundVolume() > 0) {
-			rev = Gdx.audio.newSound(Gdx.files.internal("sound/rev.wav"));
-			ding = Gdx.audio.newSound(Gdx.files.internal("sound/ding.wav"));
-			miss = Gdx.audio.newSound(Gdx.files.internal("sound/miss.wav"));
+			System.out.println(Deliverance.adInterface.getSampleRate());
+			if(Deliverance.adInterface.getSampleRate().contains("48000")) {
+				rev = Gdx.audio.newSound(Gdx.files.internal("sound/rev48.wav"));
+				ding = Gdx.audio.newSound(Gdx.files.internal("sound/ding48.wav"));
+				miss = Gdx.audio.newSound(Gdx.files.internal("sound/miss48.wav"));
+			} else{
+				rev = Gdx.audio.newSound(Gdx.files.internal("sound/rev.wav"));
+				ding = Gdx.audio.newSound(Gdx.files.internal("sound/ding.wav"));
+				miss = Gdx.audio.newSound(Gdx.files.internal("sound/miss.wav"));
+			}
 		}
 
 		// Graphics

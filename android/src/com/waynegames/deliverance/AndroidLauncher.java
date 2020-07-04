@@ -1,7 +1,8 @@
 package com.waynegames.deliverance;
 
-import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -162,6 +163,11 @@ public class AndroidLauncher extends AndroidApplication implements AdInterface {
 		if(isSignedIn()) {
 			Games.getLeaderboardsClient(this, GoogleSignIn.getLastSignedInAccount(this)).submitScore("CgkIpd2em8wGEAIQAA", score);
 		}
+	}
+
+	public String getSampleRate() {
+		AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+		return audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
 	}
 
 	public boolean isSignedIn() {

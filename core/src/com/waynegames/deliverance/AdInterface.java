@@ -11,5 +11,6 @@ public interface AdInterface {
 	void startSignInIntent();
 	void signOut();
 	void signInSilently(boolean asked);
+	String getSampleRate();
 
 }
