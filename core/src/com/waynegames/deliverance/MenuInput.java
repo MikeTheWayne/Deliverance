@@ -192,6 +192,11 @@ public class MenuInput extends InputAdapter {
 					MenuScreen.playClick();
 				}
 
+				/*if(tX >= 40 && tX <= 70 && tY >= 60 && tY <= 90) {
+					MenuScreen.invertTapThrow();
+					MenuScreen.playClick();
+				}*/
+
 				// GPG
 				if(tX > 590 && tY < 60) {
 					if(Deliverance.adInterface.isSignedIn()) {

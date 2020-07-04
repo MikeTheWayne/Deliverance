@@ -293,13 +293,14 @@ public class GameScreen extends ScreenAdapter {
 
 		if(hour < 19) {
 			shapeRenderer.setColor(135 / 255f, 206 / 255f, 235 / 255f, 1.0f);
-			shapeRenderer.rect(0, 0, 640, 360);
+			shapeRenderer.rect(0, 0, 640, 360, new Color(61 / 255f, 224 / 255f, 255 / 255f, 1.0f), new Color(61 / 255f, 224 / 255f, 255 / 255f, 1.0f),
+					new Color(51 / 255f, 204 / 255f, 255 / 255f, 1.0f), new Color(51 / 255f, 204 / 255f, 255 / 255f, 1.0f));
 		} else{
 			float sunset = ((float) hour - 19) / 2f + (float) minute / 120f;
-			Color sunsetBL = new Color((135 + 68 * sunset) / 255f, (206 - 1 * sunset) / 255f, (235 - 201 * sunset) / 255f, 1.0f);
-			Color sunsetBR = new Color((135 + 3 * sunset) / 255f, (206 - 180 * sunset) / 255f, (235 - 122 * sunset) / 255f, 1.0f);
-			Color sunsetTR = new Color((135 - 56 * sunset) / 255f, (206 - 185 * sunset) / 255f, (235 - 111 * sunset) / 255f, 1.0f);
-			Color sunsetTL = new Color((135 + 3 * sunset) / 255f, (206 - 180 * sunset) / 255f, (235 - 122 * sunset) / 255f, 1.0f);
+			Color sunsetBL = new Color((61 + 142 * sunset) / 255f, (224 - 19 * sunset) / 255f, (255 - 221 * sunset) / 255f, 1.0f);
+			Color sunsetBR = new Color((61 + 77 * sunset) / 255f, (224 - 196 * sunset) / 255f, (255 - 142 * sunset) / 255f, 1.0f);
+			Color sunsetTR = new Color((51 + 28 * sunset) / 255f, (204 - 183 * sunset) / 255f, (255 - 131 * sunset) / 255f, 1.0f);
+			Color sunsetTL = new Color((51 + 87 * sunset) / 255f, (204 - 178 * sunset) / 255f, (255 - 142 * sunset) / 255f, 1.0f);
 			shapeRenderer.rect(0, 0, 640, 360, sunsetBL, sunsetBR, sunsetTR, sunsetTL);
 		}
 

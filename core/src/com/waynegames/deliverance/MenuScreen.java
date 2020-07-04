@@ -70,6 +70,7 @@ public class MenuScreen extends ScreenAdapter {
 	private static float musicVolume;
 
 	private static boolean kmph;
+	private static boolean tapThrow;
 
 	// Tutorial
 	private static int tutorialScreen;
@@ -111,6 +112,7 @@ public class MenuScreen extends ScreenAdapter {
 		soundVolume = 1f;
 		musicVolume = 1f;
 		kmph = false;
+		tapThrow = false;
 
 		tutorialScreen = 1;
 
@@ -453,10 +455,20 @@ public class MenuScreen extends ScreenAdapter {
 				shapeRenderer.setColor(1f, 1f, 1f, 1f);
 				shapeRenderer.rect(42, 102, 26, 26);
 
+				/*shapeRenderer.setColor(24 / 255f, 75 / 255f, 175 / 255f, 1f);
+				shapeRenderer.rect(40, 60, 30, 30);
+				shapeRenderer.setColor(1f, 1f, 1f, 1f);
+				shapeRenderer.rect(42, 62, 26, 26);*/
+
 				if(kmph) {
 					shapeRenderer.setColor(0f, 0f, 0f, 0f);
 					shapeRenderer.rect(46, 106, 18, 18);
 				}
+
+				/*if(tapThrow) {
+					shapeRenderer.setColor(0f, 0f, 0f, 0f);
+					shapeRenderer.rect(46, 66, 18, 18);
+				}*/
 				break;
 		}
 
@@ -599,6 +611,7 @@ public class MenuScreen extends ScreenAdapter {
 				cbri_16.draw(spriteBatch, "Sound Volume", 40, 285);
 				cbri_16.draw(spriteBatch, "Music Volume", 40, 205);
 				cbri_16.draw(spriteBatch, "Use kmph units", 80, 120);
+				//cbri_16.draw(spriteBatch, "Tap screen to throw parcels", 80, 80);
 
 				// Slider percentages
 				cbri_16.draw(spriteBatch, (int) (soundVolume * 100) + "%", 455, 260);
@@ -1004,6 +1017,14 @@ public class MenuScreen extends ScreenAdapter {
 
 	public static boolean isKmph() {
 		return kmph;
+	}
+
+	public static void invertTapThrow() {
+		tapThrow = !tapThrow;
+	}
+
+	public static boolean isTapThrow() {
+		return tapThrow;
 	}
 
 	public static int getTutorialScreen() {
