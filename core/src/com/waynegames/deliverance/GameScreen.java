@@ -327,6 +327,11 @@ public class GameScreen extends ScreenAdapter {
 				GlyphLayout houseNumberEven = new GlyphLayout(cbri_12, "" + (int) (Math.floor((vanObj.getX() - street.getStartX()) / 200f + x) * 2 + 2));
 				cbri_12.draw(spriteBatch, houseNumberOdd, x * 200 - ((int) Math.floor(vanObj.getX()) % 200) + 17 - houseNumberOdd.width / 2, 112);
 				cbri_12.draw(spriteBatch, houseNumberEven, x * 200 - ((int) Math.floor(vanObj.getX()) % 200) + 183 - houseNumberEven.width / 2, 112);
+
+				GlyphLayout houseNumberOddBig = new GlyphLayout(arb_24, "" + (int) (Math.floor((vanObj.getX() - street.getStartX()) / 200f + x) * 2 + 1), new Color(1f, 1f, 1f, 0.2f), 300, Align.left, false);
+				GlyphLayout houseNumberEvenBig = new GlyphLayout(arb_24, "" + (int) (Math.floor((vanObj.getX() - street.getStartX()) / 200f + x) * 2 + 2), new Color(1f, 1f, 1f, 0.2f), 300, Align.left, false);
+				arb_24.draw(spriteBatch, houseNumberOddBig, x * 200 - ((int) Math.floor(vanObj.getX()) % 200) + 50 - houseNumberOddBig.width / 2, 192);
+				arb_24.draw(spriteBatch, houseNumberEvenBig, x * 200 - ((int) Math.floor(vanObj.getX()) % 200) + 150 - houseNumberEvenBig.width / 2, 192);
 			}
 		}
 
