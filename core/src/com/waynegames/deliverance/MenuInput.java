@@ -62,6 +62,8 @@ public class MenuInput extends InputAdapter {
 					MenuScreen.setButtonDown(2);
 				} else if(tX >= 260 && tX <= 380 && tY >= 5 && tY <= 65) {
 					MenuScreen.setButtonDown(1);
+				} else if(tX >= 515 && tY <= 65) {
+					MenuScreen.setButtonDown(3);
 				}
 				break;
 
@@ -176,6 +178,9 @@ public class MenuInput extends InputAdapter {
 					MenuScreen.playClick();
 				} else if(tX >= 50 && tX <= 90 && tY <= 45) {
 					Deliverance.adInterface.showLeaderboard();
+					MenuScreen.playClick();
+				} else if(tX >= 515 && tY <= 65) {
+					Deliverance.adInterface.shareScore(GameScreen.getScore());
 					MenuScreen.playClick();
 				}
 				break;

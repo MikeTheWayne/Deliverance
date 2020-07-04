@@ -15,5 +15,6 @@ public interface AdInterface {
 	void showAchievements();
 	void unlockAchievement(int type, int level);
 	void incrementAchievement(int type, int amount);
+	void shareScore(int score);
 
 }

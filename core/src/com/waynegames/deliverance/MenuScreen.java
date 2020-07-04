@@ -37,7 +37,7 @@ public class MenuScreen extends ScreenAdapter {
 	private static Timer timer;
 
 	private Sprite background, title, parcel, button_x, button_settings, button_achievements, button_tutorial, button_van, button_back, button_endless, buttondown_big, buttondown_small,
-	button_again, buttondown_med, button_leaderboards, tutorial_1, tutorial_2, wheel_half, wheel_full, sign_in;
+	button_again, buttondown_med, button_leaderboards, tutorial_1, tutorial_2, wheel_half, wheel_full, sign_in, button_share;
 	private Sprite[] scoreDigits, vans;
 
 	private BitmapFont bsh_40, cbri_16, arl_10, arb_24;
@@ -209,6 +209,7 @@ public class MenuScreen extends ScreenAdapter {
 		this.button_endless = new Sprite(Deliverance.assetManager.get("menu_sprites/button_play.png", Texture.class));
 		this.button_again = new Sprite(Deliverance.assetManager.get("menu_sprites/button_again.png", Texture.class));
 		this.button_leaderboards = new Sprite(Deliverance.assetManager.get("menu_sprites/button_leaderboards.png", Texture.class));
+		this.button_share = new Sprite(Deliverance.assetManager.get("menu_sprites/button_share.png", Texture.class));
 
 		this.buttondown_big = new Sprite(Deliverance.assetManager.get("menu_sprites/button_big_down.png", Texture.class));
 		this.buttondown_small = new Sprite(Deliverance.assetManager.get("menu_sprites/button_small_down.png", Texture.class));
@@ -585,6 +586,7 @@ public class MenuScreen extends ScreenAdapter {
 				spriteBatch.draw(button_back, 5, 5);
 				spriteBatch.draw(button_leaderboards, 50, 5);
 				spriteBatch.draw(button_again, 260, 5);
+				spriteBatch.draw(button_share, 515, 5);
 
 				// Button Down
 				switch (buttonDown) {
@@ -596,6 +598,9 @@ public class MenuScreen extends ScreenAdapter {
 						break;
 					case 2:
 						spriteBatch.draw(buttondown_small, 50, 5);
+						break;
+					case 3:
+						spriteBatch.draw(buttondown_med, 515, 5, 120, 60);
 						break;
 				}
 

@@ -198,6 +198,18 @@ public class AndroidLauncher extends AndroidApplication implements AdInterface {
 
 	}
 
+	public void shareScore(int score) {
+
+		Intent sendIntent = new Intent();
+		sendIntent.setAction(Intent.ACTION_SEND);
+		sendIntent.putExtra(Intent.EXTRA_TEXT, "I just got a score of " + score + " in Deliverance! Think you can beat my score? Get Deliverance on Google Play: https://play.google.com/store/apps/details?id=com.waynegames.deliverance");
+		sendIntent.setType("text/plain");
+
+		Intent shareIntent = Intent.createChooser(sendIntent, "Share your score!");
+		startActivity(shareIntent);
+
+	}
+
 	public String getSampleRate() {
 		AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 		return audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
