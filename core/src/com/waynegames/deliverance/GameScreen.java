@@ -164,11 +164,13 @@ public class GameScreen extends ScreenAdapter {
 		read();
 
 		// Music
-		music = Gdx.audio.newMusic(Gdx.files.internal("music/deliverance_music.mp3"));
-		music.setVolume(MenuScreen.getMusicVolume());
-		music.setLooping(false);
+		if(MenuScreen.getMusicVolume() > 0.01f) {
+			music = Gdx.audio.newMusic(Gdx.files.internal("music/deliverance_music.mp3"));
+			music.setVolume(MenuScreen.getMusicVolume());
+			music.setLooping(false);
+		}
 
-		if(MenuScreen.getSoundVolume() > 0) {
+		if(MenuScreen.getSoundVolume() > 0.01f) {
 			System.out.println(Deliverance.adInterface.getSampleRate());
 			if(Deliverance.adInterface.getSampleRate().contains("48000")) {
 				rev = Gdx.audio.newSound(Gdx.files.internal("sound/rev48.wav"));
@@ -269,7 +271,7 @@ public class GameScreen extends ScreenAdapter {
 		vanObj.setX(vanObj.getX() + (vanObj.getSpeed() * GameScreen.PIXELS_PER_METRE) * delta);
 
 		// Adjust van sound based on speed
-		if(MenuScreen.getSoundVolume() > 0) {
+		if(MenuScreen.getSoundVolume() > 0.01f) {
 			rev.setPitch(revId, 0.85f + 0.5f * (vanObj.getSpeed() / 30f));
 		}
 
@@ -639,9 +641,12 @@ public class GameScreen extends ScreenAdapter {
 		spriteBatch.dispose();
 		shapeRenderer.dispose();
 		cbri_12.dispose();
-		music.dispose();
 
-		if(MenuScreen.getSoundVolume() > 0) {
+		if(MenuScreen.getMusicVolume() > 0.01f) {
+			music.dispose();
+		}
+
+		if(MenuScreen.getSoundVolume() > 0.01f) {
 			rev.dispose();
 			ding.dispose();
 			miss.dispose();
@@ -651,7 +656,10 @@ public class GameScreen extends ScreenAdapter {
 	@Override
 	public void pause() {
 		super.pause();
-		music.pause();
+
+		if(MenuScreen.getMusicVolume() > 0.01f) {
+			music.pause();
+		}
 	}
 
 	@Override
@@ -660,7 +668,7 @@ public class GameScreen extends ScreenAdapter {
 
 		Deliverance.adInterface.signInSilently(true);
 
-		if(GameThreads.isTimeStarted() && hour < 21) {
+		if(GameThreads.isTimeStarted() && hour < 21 && MenuScreen.getMusicVolume() > 0.01f) {
 			music.play();
 		}
 	}
@@ -1253,10 +1261,14 @@ public class GameScreen extends ScreenAdapter {
 	}
 
 	public static void playMusic() {
-		if(!music.isPlaying() && hour == 9) {
-			music.play();
+		if(hour == 9) {
+			if(MenuScreen.getMusicVolume() > 0.01f) {
+				if (!music.isPlaying()) {
+					music.play();
+				}
+			}
 
-			if(MenuScreen.getSoundVolume() > 0) {
+			if (MenuScreen.getSoundVolume() > 0.01f) {
 				revId = rev.loop();
 				rev.setVolume(revId, MenuScreen.getSoundVolume() / 5f);
 			}
@@ -1264,20 +1276,24 @@ public class GameScreen extends ScreenAdapter {
 	}
 
 	public static void stopMusic() {
-		if(music.isPlaying()) {
-			music.stop();
-			music.setPosition(0);
-
-			if(MenuScreen.getSoundVolume() > 0) {
-				rev.stop();
+		if(MenuScreen.getMusicVolume() > 0.01f) {
+			if (music.isPlaying()) {
+				music.stop();
+				music.setPosition(0);
 			}
+		}
+
+		if (MenuScreen.getSoundVolume() > 0.01f) {
+			rev.stop();
 		}
 	}
 
 	public static void disposeMusic() {
-		music.dispose();
+		if(MenuScreen.getMusicVolume() > 0.01f) {
+			music.dispose();
+		}
 
-		if(MenuScreen.getSoundVolume() > 0) {
+		if(MenuScreen.getSoundVolume() > 0.01f) {
 			rev.dispose();
 			ding.dispose();
 			miss.dispose();
@@ -1285,13 +1301,13 @@ public class GameScreen extends ScreenAdapter {
 	}
 
 	public static void stopRev() {
-		if(MenuScreen.getSoundVolume() > 0) {
+		if(MenuScreen.getSoundVolume() > 0.01f) {
 			rev.stop();
 		}
 	}
 
 	public static void playDing() {
-		if(MenuScreen.getSoundVolume() > 0) {
+		if(MenuScreen.getSoundVolume() > 0.01f) {
 			ding.play(0.25f * MenuScreen.getSoundVolume());
 		}
 
@@ -1299,7 +1315,7 @@ public class GameScreen extends ScreenAdapter {
 	}
 
 	public static void playMiss() {
-		if(MenuScreen.getSoundVolume() > 0) {
+		if(MenuScreen.getSoundVolume() > 0.01f) {
 			miss.play(1f * MenuScreen.getSoundVolume());
 		}
 
