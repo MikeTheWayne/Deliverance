@@ -40,8 +40,9 @@ public class AndroidLauncher extends AndroidApplication implements AdInterface {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
 		// Test id: ca-app-pub-3940256099942544/1033173712
+		// Real id: ca-app-pub-9534514644294711/6559197663
 		this.interstitialAd = new InterstitialAd(this);
-		this.interstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+		this.interstitialAd.setAdUnitId("ca-app-pub-9534514644294711/6559197663");
 
 		interstitialAd.setAdListener(new AdListener() {
 
